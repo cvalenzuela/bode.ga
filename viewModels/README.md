@@ -1,12 +1,5 @@
-# Volumetric Capture 
+# Bode.ga Models
 
-Object: Mannequin
-
-Built with PhotoscanPro + Blender + Three.js
-
-[Live Demo Here](https://cvalenzuela.github.io/alt_docs/volumetric_capture/)
-
-![demo](imgs/movingdemo.gif)
-
+[Models](https://cvalenzuela.github.io/bode.ga/viewModels/)
 
 
