@@ -1,17 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Bodega - 24 hours Documentary</title>
+
+  <link rel="apple-touch-icon" sizes="57x57" href="./images/favicon/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="./images/favicon/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="./images/favicon/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="./images/favicon/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="./images/favicon/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="./images/favicon/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="./images/favicon/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="./images/favicon/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./images/favicon/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./images/favicon/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="./images/favicon/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon/favicon-16x16.png">
+  <link rel="manifest" href="./images/favicon/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="./images/favicon/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+
+  <link href="https://fonts.googleapis.com/css?family=Mukta|PT+Sans+Narrow" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Oswald|Roboto" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animate.css">
 </head>
+
 <body>
-  <div id="time">
+  <div id="cover">
+    <img src="./images/front.png" alt="bodega image" id="bodegaFront">
+    <p id="description">An experimental documentary that follows a series of bodegas around NYC. Based on your location you will be paired with a particular bodega. Each bodega is represented by a looping 24-hour audio recording that was taken at the same time of day.
+      <br>
+    </p>
+    <!-- <div id="options">
+      <div id="usertime" class="useroptions">
+          <h6>Your Current Time</h6>
+          <p><img src="./images/clock.png"class="icon">23:12:55</p>
+      </div>
+      <div id="userlocation" class="useroptions">
+          <h6>Your Location</h6>
+          <p><img src="./images/marker.gif"class="icon">NY, New York</p>
+      </div>   
+    </div> -->
+    <img src="./images/open.png" alt="start" id="watchBtn">
+    <img src="./images/sound.png" alt="start" id="sound">
+    <p id="turnon">Please turn on your volume</p>
+    
+    <p id="credits">Made by Jenny Lim, Scott Reitherman and Cristóbal Valenzuela
+      <br> New York, 2017</p>
+  </div>
+
+  <div id="loader">
+    <img src="./images/bananaloading.gif" alt="loading" style="width: 100px;">
+    <p>Loading...</p>
+  </div>
+
+  <div id="app">
+    <div id="time">
       <h1 id="current_time"></h1>
-  </div> 
+    </div>
+
+    <div id="moviedescription">
+      <p id="bodega">Bodega in Queens, New York</p>
+    </div>
+
+    <div id="subtitles">
+      <h4 id="firstSub"></h4><br>
+      <h4 id="secondSub"></h4>
+    </div>
+  </div>
 
   <script src="bundle.js"></script>
 </body>
+
 </html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Bodega Models</title>
+  <style>
+  * {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    color: white;
+    color: white;
+    font-family: Helvetica, arial, sans-serif;
+    background: black;
+  }
+  canvas {
+    width: 100%;
+    height: 100%
+  }
+  input{
+    margin: 10px;
+    display: inline-block;
+  }
+  #description{
+    position: absolute;
+    margin: 4vh;
+  }
+  #loader{
+    position: absolute;
+    margin: 40vh 50%;
+  }
+  #loading{
+    width: 80px;
+  }
+  #models{
+    position: absolute;
+    bottom: 3vh;
+    right: 3vw;
+  }
+  p{
+    font-size: 12px;
+    display: inline-block;
+  }
+
+  </style>
+</head>
+
+<body>
+  <div id="description">
+      <h1>Bodega Models</h1>
+  </div>
+  <div id="models">
+    
+  </div>
+  <div id="loader">
+      <img src="imgs/loading.gif" alt="loading" id="loading">
+  </div>
+  <script src="bundle/index.js"></script>
+</body>
+
+</html>

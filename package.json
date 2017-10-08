@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "browserify prod/index.js -t [ babelify --presets [ es2015 ] ] | uglifyjs -c > dist/bundle.js",
-    "watch": "watchify prod/index.js --outfile dist/bundle.js -t [ babelify --presets [ es2015 ] ]"
+    "watch": "watchify prod/index.js --outfile dist/bundle.js -t [ babelify --presets [ es2015 ] ]",
+    "build:viewModels": "browserify viewModels/js/index.js -o viewModels/bundle/index.js",
+    "watch:viewModels": "watchify viewModels/js/index.js -o viewModels/bundle/index.js"
   },
   "author": "Cristobal Valenzuela <cvalenzuela@nyu.edu> (https://github.com/cvalenzuela)",
   "license": "ISC",
@@ -18,6 +20,7 @@
     "watchify": "3.9.0"
   },
   "dependencies": {
+    "moment": "2.18.1",
     "three": "0.87.1"
   }
 }
