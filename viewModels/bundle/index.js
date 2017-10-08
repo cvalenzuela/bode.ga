@@ -44321,7 +44321,8 @@ let init = () => {
 
   // Object Loader
   objects.forEach((model, i) => {
-    let path = './dist/models/' + model + '/' + model;
+    console.log('new path')
+    let path = './../dist/models/' + model + '/' + model;
     //let path = '../../dist/models/' + model + '/' + model;
     let objectToLoad = new THREE.JSONLoader(manager).load(path + '.js', (geometry) => {
       let material = new THREE.MeshBasicMaterial();
