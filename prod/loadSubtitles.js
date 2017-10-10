@@ -1,28 +1,45 @@
 // Load the Subtitles
 
-import { subtitles } from './subtitles';
-let firstSub = document.getElementById('firstSub');
-let secondSub = document.getElementById('secondSub');
+import { debugMode } from './index';
+import * as queensSubs from './subtitles/queens';
+import * as parkSlopeSubs from './subtitles/parkSlope';
+import { subtitles as debugSubtitles } from './debug/subtitles';
+
+let subtitleElements = {
+  queens: document.getElementById('queens'),
+  parkSlope: document.getElementById('parkSlope')
+}
 
 let startSubtitles = () => {
-  subtitles.forEach((sub, i) => {
-    setTimeout(() => {
-      firstSub.style.background = '#1d1d1d';
-      firstSub.innerText = sub.first;
-      if (sub.second){
-        secondSub.style.background = '#1d1d1d';
-        secondSub.innerText = sub.second;
-      }
-    }, sub.start * 1000);
-    setTimeout(() => {
-      firstSub.style.background = '#000000';
-      firstSub.innerText = '';
-      if(sub.second){
-        secondSub.style.background = '#000000';
-        secondSub.innerText = '';
-      }
-    }, sub.end * 1000);
-  });
+  let bodegaSubtitles = {};
+  if (debugMode) {
+    bodegaSubtitles.queens = debugSubtitles;
+    bodegaSubtitles.parkSlope = [];
+  } else {
+    bodegaSubtitles.queens = queensSubs.subtitles;
+    bodegaSubtitles.parkSlope = parkSlopeSubs.subtitles;
+  }
+
+  for (let bodega in bodegaSubtitles) {
+    bodegaSubtitles[bodega].forEach((sub, i) => {
+      setTimeout(() => {
+        subtitleElements[bodega].children[0].style.background = '#1d1d1d';
+        subtitleElements[bodega].children[0].innerText = sub.first;
+        if (sub.second) {
+          subtitleElements[bodega].children[1].style.background = '#1d1d1d';
+          subtitleElements[bodega].children[1].innerText = sub.second;
+        }
+      }, sub.start * 1000);
+      setTimeout(() => {
+        subtitleElements[bodega].children[0].style.background = '#000000';
+        subtitleElements[bodega].children[0].innerText = '';
+        if (sub.second) {
+          subtitleElements[bodega].children[1].style.background = '#000000';
+          subtitleElements[bodega].children[1].innerText = '';
+        }
+      }, sub.end * 1000);
+    });
+  }
 };
 
 export { startSubtitles };

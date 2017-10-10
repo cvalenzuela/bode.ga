@@ -2,36 +2,57 @@
 
 import * as THREE from 'three';
 
-let audioSrc = './sounds/bodega_01.mp3';
+let queensSrc = './sounds/queens.mp3';
+let parkSlopeSrc = './sounds/parkSlope.mp3';
 let app = document.getElementById('app');
 let loading = document.getElementById('loader');
+let soundsLoaded = 0;
 
-let startSound = (camera, scene, startSubtitles, startTimelineOfObjects) =>  {
-  let audioListener = new THREE.AudioListener();
+let audioListener = new THREE.AudioListener();
+let queens = new THREE.Audio(audioListener);
+let parkSlope = new THREE.Audio(audioListener);
+
+let startSound = (camera, scenes, startSubtitles, startTimelineOfObjects) =>  {
+
   camera.add(audioListener);
-  let ambientSound = new THREE.Audio(audioListener);
-  scene.add(ambientSound);
 
   let loader = new THREE.AudioLoader();
 
-  loader.load(audioSrc, (audioBuffer) => {
-      loading.style.display = 'none';
-      app.style.display = 'block';
-      // app.classList.add("animated","fadeIn");
+  let onProgress = xhr => {
+    console.log(`Loading sound: ${xhr.loaded / xhr.total * 100} % loaded`);
+  };
+  let onError = err => {
+    console.log(`An error happened ${err}`);
+  }
+  // Load queens
+  loader.load(queensSrc, audioBuffer => {
+    loading.style.display = 'none';
+    app.style.display = 'block';
+    queens.setBuffer(audioBuffer);
+    queens.play();
+    soundsLoaded++;
+    startPlaying()
+  }, onProgress, onError);
 
-      ambientSound.setBuffer(audioBuffer);
-      ambientSound.play();
-      // Start subtitles and the objects to load
+  // Load parkSlope
+  loader.load(parkSlopeSrc, audioBuffer => {
+    loading.style.display = 'none';
+    app.style.display = 'block';
+    parkSlope.setBuffer(audioBuffer);
+    parkSlope.setVolume(0);
+    parkSlope.play();
+    soundsLoaded++;
+    startPlaying()
+  }, onProgress, onError);
+
+  // When both sounds are ready, start!
+  let startPlaying = () =>  {
+    if (soundsLoaded > 1) {
       startSubtitles && startSubtitles();
-      startTimelineOfObjects && startTimelineOfObjects(scene);
-    },
-    (xhr) => {
-      console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-    },
-    (xhr) => {
-      console.log('An error happened');
+      startTimelineOfObjects && startTimelineOfObjects(scenes);
     }
-  );
+  };
+
 };
 
-export { startSound };
+export { startSound, queens, parkSlope };

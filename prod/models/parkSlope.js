@@ -1,0 +1,93 @@
+// Objects to load
+
+let models = [{
+  id_sub: 1,
+  name: 'creamCheese',
+  startTime: 3,
+  endTime: 25,
+  buffer: false
+}, {
+  id_sub: 2,
+  name: 'coffee01',
+  startTime: 5,
+  endTime: 25,
+  buffer: false
+}, {
+  id_sub: 3,
+  name: 'bag',
+  startTime: 14,
+  endTime: 17,
+  buffer: false
+}, {
+  id_sub: 4,
+  // beer
+  name: 'banana',
+  startTime: 26,
+  endTime: 43,
+  buffer: false
+}, {
+  id_sub: 5,
+  name: 'bag',
+  startTime: 33,
+  endTime: 35,
+  buffer: false
+}, {
+  id_sub: 6,
+  name: 'chips',
+  startTime: 139,
+  endTime: 149,
+  buffer: false
+}, {
+  id_sub: 7,
+  // cigarettes
+  name: 'banana',
+  startTime: 222,
+  endTime: 233,
+  buffer: false
+}, {
+  id_sub: 8,
+  // napkins
+  name: 'banana',
+  startTime: 235,
+  endTime: 241,
+  buffer: false
+}, {
+  id_sub: 9,
+  name: 'bag',
+  startTime: 249,
+  endTime: 251,
+  buffer: false
+}, {
+  id_sub: 10,
+  // water
+  name: 'banana',
+  startTime: 253,
+  endTime: 265,
+  buffer: false
+}, {
+  id_sub: 11,
+  name: 'bag',
+  startTime: 266,
+  endTime: 286,
+  buffer: false
+}, {
+  id_sub: 12,
+  name: 'creamCheese',
+  startTime: 272,
+  endTime: 286,
+  buffer: false
+}, {
+  id_sub: 13,
+  name: 'hamTurkey',
+  startTime: 390,
+  endTime: 496,
+  buffer: false
+}, {
+  id_sub: 14,
+  name: 'bag',
+  startTime: 476,
+  endTime: 497,
+  buffer: false
+}]
+
+export { models };

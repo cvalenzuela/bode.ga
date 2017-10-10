@@ -27,12 +27,11 @@
 
 
   <link href="https://fonts.googleapis.com/css?family=Mukta|PT+Sans+Narrow" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Oswald|Roboto" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/animate.css">
 </head>
 
-<body>
+<body id="body">
+  <div id="overlay"></div>
   <div id="cover">
     <img src="./images/front.png" alt="bodega image" id="bodegaFront">
     <p id="description">An experimental documentary that follows a series of bodegas around NYC. Based on your location you will be paired with a particular bodega. Each bodega is represented by a looping 24-hour audio recording that was taken at the same time of day.
@@ -48,10 +47,11 @@
           <p><img src="./images/marker.gif"class="icon">NY, New York</p>
       </div>   
     </div> -->
-    <img src="./images/open.png" alt="start" id="watchBtn">
+    <!-- <img src="./images/open.png" alt="start" id="watchBtnImage"> -->
+    <button id="watchBtn">Watch</button>
     <img src="./images/sound.png" alt="start" id="sound">
     <p id="turnon">Please turn on your volume</p>
-    
+
     <p id="credits">Made by Jenny Lim, Scott Reitherman and Cristóbal Valenzuela
       <br> New York, 2017</p>
   </div>
@@ -67,13 +67,30 @@
     </div>
 
     <div id="moviedescription">
-      <p id="bodega">Bodega in Queens, New York</p>
+      <p id="currentBodega">Bodega in Long Island City, Queens</p>
     </div>
 
-    <div id="subtitles">
-      <h4 id="firstSub"></h4><br>
-      <h4 id="secondSub"></h4>
+    <div id="switchToQueens" class="bodega">
+        <img src="./images/open.png" class="bodegasImgs">
+        <p class="bodegaName">Bodega in Long Island City, Queens</p>
     </div>
+
+    <div id="switchToParkSlope" class="bodega">
+        <img src="./images/open2.png" class="bodegasImgs">
+        <p class="bodegaName">Bodega in South Park Slop, Brooklyn</p>
+    </div>
+
+    <div class="subtitles" id="queens">
+      <h4 class="runningSubtitles"></h4>
+      <br>
+      <h4 class="runningSubtitles"></h4>
+    </div>
+
+    <div class="subtitles" id="parkSlope" style="display:none;">
+        <h4 class="runningSubtitles"></h4>
+        <br>
+        <h4 class="runningSubtitles"></h4>
+      </div>
   </div>
 
   <script src="bundle.js"></script>
