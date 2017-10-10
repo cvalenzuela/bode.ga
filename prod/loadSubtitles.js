@@ -26,16 +26,16 @@ let startSubtitles = () => {
         subtitleElements[bodega].children[0].style.background = '#1d1d1d';
         subtitleElements[bodega].children[0].innerText = sub.first;
         if (sub.second) {
-          subtitleElements[bodega].children[1].style.background = '#1d1d1d';
-          subtitleElements[bodega].children[1].innerText = sub.second;
+          subtitleElements[bodega].children[2].style.background = '#1d1d1d';
+          subtitleElements[bodega].children[2].innerText = sub.second;
         }
       }, sub.start * 1000);
       setTimeout(() => {
         subtitleElements[bodega].children[0].style.background = '#000000';
         subtitleElements[bodega].children[0].innerText = '';
         if (sub.second) {
-          subtitleElements[bodega].children[1].style.background = '#000000';
-          subtitleElements[bodega].children[1].innerText = '';
+          subtitleElements[bodega].children[2].style.background = '#000000';
+          subtitleElements[bodega].children[2].innerText = '';
         }
       }, sub.end * 1000);
     });
