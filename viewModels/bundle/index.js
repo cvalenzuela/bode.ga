@@ -44248,7 +44248,7 @@ const THREE = require('three');
 const utils = require('./utils');
 
 // add all objects here
-let objects = ['oatmeal', 'hamTomato','empanada', 'croissantChesse', 'creamChesse', 'coffee02','coffee01','bagelButter', 'banana', 'bag', 'chips', 'croissant','hamTurkey'];
+let objects = ['dietcoke', 'brownBag', 'croissant02', 'oatmeal', 'hamTomato','empanada', 'croissantChesse', 'creamCheese', 'coffee02','coffee01','bagelButter', 'banana', 'bag', 'chips', 'croissant','hamTurkey'];
 let loadedModels = {};
 let container, camera, scene, renderer, currentObject, manager;
 let windowHalfX = window.innerWidth / 2;
@@ -44321,7 +44321,6 @@ let init = () => {
 
   // Object Loader
   objects.forEach((model, i) => {
-    console.log('new path')
     let path = './../dist/models/' + model + '/' + model;
     //let path = '../../dist/models/' + model + '/' + model;
     let objectToLoad = new THREE.JSONLoader(manager).load(path + '.js', (geometry) => {

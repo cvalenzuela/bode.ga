@@ -14,7 +14,7 @@ let models = [{
   buffer: false
 }, {
   id_sub: 3,
-  name: 'bag',
+  name: 'brownBag',
   startTime: 14,
   endTime: 17,
   buffer: false
@@ -53,7 +53,7 @@ let models = [{
   buffer: false
 }, {
   id_sub: 9,
-  name: 'bag',
+  name: 'brownBag',
   startTime: 249,
   endTime: 251,
   buffer: false
@@ -66,7 +66,7 @@ let models = [{
   buffer: false
 }, {
   id_sub: 11,
-  name: 'bag',
+  name: 'brownBag',
   startTime: 266,
   endTime: 286,
   buffer: false
@@ -84,7 +84,7 @@ let models = [{
   buffer: false
 }, {
   id_sub: 14,
-  name: 'bag',
+  name: 'brownBag',
   startTime: 476,
   endTime: 497,
   buffer: false

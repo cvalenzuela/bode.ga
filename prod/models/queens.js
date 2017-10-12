@@ -2,7 +2,7 @@
 
 let models = [{
   id_sub: 1,
-  name: 'croissant',
+  name: 'croissant02',
   startTime: 12,
   endTime: 54,
   buffer: false
@@ -24,7 +24,7 @@ let models = [{
   endTime: 133,
   buffer: false
 },{
-  name: 'banana', //should be 2 large diet cokes OR brown paper bag
+  name: 'brownBag', //should be 2 large diet cokes OR brown paper bag
   startTime: 135,
   endTime: 155,
   buffer: false
@@ -72,7 +72,7 @@ let models = [{
   buffer: false
 },{
   id_sub: 27,
-  name: 'banana', //should be brown bag
+  name: 'brownBag', //should be brown bag
   startTime: 283,
   endTime: 313,
   buffer: false
@@ -84,13 +84,13 @@ let models = [{
   buffer: false
 },{
   id_sub: 34,
-  name: 'coffee02', //should be 2 coffees
+  name: 'coffee01', //should be 2 coffees
   startTime: 354,
   endTime: 364,
   buffer: false
 },{
   id_sub: 40,
-  name: 'coffee01', //small coffee, not too much sugar
+  name: 'coffee02', //small coffee, not too much sugar
   startTime: 393,
   endTime: 410,
   buffer: false
