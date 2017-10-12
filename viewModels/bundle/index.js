@@ -44248,7 +44248,7 @@ const THREE = require('three');
 const utils = require('./utils');
 
 // add all objects here
-let objects = ['dietcoke', 'brownBag', 'croissant02', 'oatmeal', 'hamTomato','empanada', 'croissantChesse', 'creamCheese', 'coffee02','coffee01','bagelButter', 'banana', 'bag', 'chips', 'croissant','hamTurkey'];
+let objects = ['coke', 'brownBag', 'croissant02', 'oatmeal', 'hamTomato','empanada', 'croissantChesse', 'creamCheese', 'coffee02','coffee01','bagelButter', 'banana', 'bag', 'chips', 'croissant','hamTurkey'];
 let loadedModels = {};
 let container, camera, scene, renderer, currentObject, manager;
 let windowHalfX = window.innerWidth / 2;
