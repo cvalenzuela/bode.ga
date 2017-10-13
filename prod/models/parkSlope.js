@@ -46,8 +46,7 @@ let models = [{
   buffer: false
 }, {
   id_sub: 8,
-  // napkins
-  name: 'banana',
+  name: 'napkins',
   startTime: 235,
   endTime: 241,
   buffer: false
