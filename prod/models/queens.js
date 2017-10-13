@@ -8,37 +8,38 @@ let models = [{
   buffer: false
 },{
   name: 'banana', //should be napkins
-  startTime: 45,
+  startTime: 44,
   endTime: 54,
   buffer: false
 },{
   id_sub: 6,
   name: 'coffee01',
-  startTime: 91,
-  endTime: 133, 
+  startTime: 90,
+  endTime: 127, 
   buffer: false
 },{
   id_sub: 7,
-  name: 'empanada', //should be 2 empanadas
+  name: 'empanada', 
   startTime: 120,
-  endTime: 133,
+  endTime: 127,
   buffer: false
 },{
-  name: 'brownBag', //should be 2 large diet cokes OR brown paper bag
-  startTime: 135,
-  endTime: 155,
+  id_sub: 7,
+  name: 'empanada', 
+  startTime: 121,
+  endTime: 127,
   buffer: false
 },{
   id_sub: 10,
   name: 'coffee01',
-  startTime: 137,
-  endTime: 155,
+  startTime: 136,
+  endTime: 142,
   buffer: false
 },{
   id_sub: 16,
   name: 'banana', //add tylenol too
-  startTime: 160,
-  endTime: 198,
+  startTime: 158,
+  endTime: 175,
   buffer: false
 },{
   id_sub: 18,
@@ -49,7 +50,7 @@ let models = [{
 },{
   id_sub: 18,
   name: 'bagelButter',
-  startTime: 183,
+  startTime: 181,
   endTime: 190,
   buffer: false
 },{
@@ -60,19 +61,13 @@ let models = [{
   buffer: false
 },{
   id_sub: 22,
-  name: 'coffee01', //tea, actually
+  name: 'coffee01', //tea, actually. also add dayquil in a bit.
   startTime: 275,
   endTime: 282,
   buffer: false
 },{
-  id_sub: 25,
-  name: 'banana', //should be dayquil
-  startTime: 280,
-  endTime: 282,
-  buffer: false
-},{
   id_sub: 27,
-  name: 'brownBag', //should be brown bag
+  name: 'brownBag', 
   startTime: 283,
   endTime: 313,
   buffer: false
@@ -84,26 +79,32 @@ let models = [{
   buffer: false
 },{
   id_sub: 34,
-  name: 'coffee01', //should be 2 coffees
+  name: 'coffee02', 
   startTime: 354,
   endTime: 364,
   buffer: false
 },{
+  id_sub: 34,
+  name: 'coffee02', 
+  startTime: 355,
+  endTime: 364,
+  buffer: false
+},{
   id_sub: 40,
-  name: 'coffee02', //small coffee, not too much sugar
+  name: 'coffee01', //small coffee, not too much sugar
   startTime: 393,
   endTime: 410,
   buffer: false
 },{
   id_sub: 44,
-  name: 'coffee01',
-  startTime: 421,
+  name: 'brownBag', //
+  startTime: 420,
   endTime: 440,
   buffer: false
 },{
   id_sub: 44,
   name: 'bagelButter', //this customer also got OJ and water...TBScanned
-  startTime: 424,
+  startTime: 421,
   endTime: 440,
   buffer: false
 },{
