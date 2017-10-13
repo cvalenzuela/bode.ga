@@ -8,6 +8,10 @@ import * as queens from './models/queens';
 import * as parkSlope from './models/parkSlope';
 import { models as debugModels } from './debug/models';
 
+let parkSlopAvailable = document.getElementById('parkSlopeAvailable');
+let queensAvailable = document.getElementById('queensAvailable');
+
+
 let startTimelineOfObjects = scenes => {
   loader.style.display = 'none';
   let bodegaModels = {};
@@ -24,9 +28,11 @@ let startTimelineOfObjects = scenes => {
       let id = Date.now() + Math.random();
       setTimeout(() => {
         model.buffer ? addBufferGeometry(scenes, model) : addObject(scenes, model, id, bodega);
+        bodega == 'queens' ? queensAvailable.style.display = 'inline-block' : parkSlopAvailable.style.display = 'inline-block'
       }, model.startTime * 1000);
       setTimeout(() => {
         removeObject(scenes, model, id, bodega);
+        bodega == 'queens' ? queensAvailable.style.display = 'none' : parkSlopAvailable.style.display = 'none'
       }, model.endTime * 1000);
     });
   }

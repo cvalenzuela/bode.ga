@@ -85,6 +85,18 @@ button:hover {
     opacity: 0.8;
 }
 
+#parkSlopeAvailable{
+    display: none;
+}
+
+#queensAvailable{
+    display: none;
+}
+
+.newItemAvailable {
+    width: 70px;
+}
+
 .bodegasImgs {
     width: 70px;
     display: block;
@@ -97,7 +109,7 @@ button:hover {
     color: #c7c7c7;
 }
 
-.bodega{
+.bodega {
     cursor: pointer;
     text-align: center;
     position: absolute;

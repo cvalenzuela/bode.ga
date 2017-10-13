@@ -29,7 +29,6 @@ let startSound = (camera, scenes, startSubtitles, startTimelineOfObjects) =>  {
     loading.style.display = 'none';
     app.style.display = 'block';
     queens.setBuffer(audioBuffer);
-    queens.play();
     soundsLoaded++;
     startPlaying()
   }, onProgress, onError);
@@ -39,8 +38,6 @@ let startSound = (camera, scenes, startSubtitles, startTimelineOfObjects) =>  {
     loading.style.display = 'none';
     app.style.display = 'block';
     parkSlope.setBuffer(audioBuffer);
-    parkSlope.setVolume(0);
-    parkSlope.play();
     soundsLoaded++;
     startPlaying()
   }, onProgress, onError);
@@ -48,9 +45,30 @@ let startSound = (camera, scenes, startSubtitles, startTimelineOfObjects) =>  {
   // When both sounds are ready, start!
   let startPlaying = () =>  {
     if (soundsLoaded > 1) {
+      parkSlope.setVolume(0);
+      parkSlope.play();
+      queens.play();
       startSubtitles && startSubtitles();
       startTimelineOfObjects && startTimelineOfObjects(scenes);
+      soundsLoaded = 0;
     }
+
+    if (queens.source) {
+      queens.source.onended = () => {
+        queens.setBuffer(audioBuffer);
+        soundsLoaded++;
+        startPlaying();
+      };
+    }
+
+    if (parkSlope.source) {
+      parkSlope.source.onended = () => {
+        parkSlope.setBuffer(audioBuffer);
+        soundsLoaded++;
+        startPlaying();
+      };
+    }
+
   };
 
 };
