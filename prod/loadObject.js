@@ -8,10 +8,10 @@ let currentMeshes = {queens: {}, parkSlope: {}};
 
 // Add a Geometry
 let addObject = (scenes, model, id, bodega) => {
-  let loader = new THREE.JSONLoader().load('./models/' + model.name + '/' + model.name + '.js', geometry =>  {
+  let loader = new THREE.JSONLoader().load('dist/models/' + model.name + '/' + model.name + '.js', geometry =>  {
       let material = new THREE.MeshBasicMaterial();
       let mesh = new THREE.Mesh(geometry, material);
-      material.map = new THREE.TextureLoader().load('./models/' + model.name + '/' + model.name + '.jpg');
+      material.map = new THREE.TextureLoader().load('dist/models/' + model.name + '/' + model.name + '.jpg');
       currentMeshes[bodega][id] = mesh;
       scenes[bodega].add(mesh);
     },

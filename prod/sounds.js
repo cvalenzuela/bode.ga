@@ -2,8 +2,8 @@
 
 import * as THREE from 'three';
 
-let queensSrc = './sounds/queens.mp3';
-let parkSlopeSrc = './sounds/parkSlope.mp3';
+let queensSrc = 'dist/sounds/queens.mp3';
+let parkSlopeSrc = 'dist/sounds/parkSlope.mp3';
 let app = document.getElementById('app');
 let loading = document.getElementById('loader');
 let soundsLoaded = 0;
