@@ -3,7 +3,7 @@
 
 let subtitles = [{
   id: 1,
-  first: '- Can I pay now? I just ordered bacon, egg and chesse croissant.',
+  first: '- Can I pay now? I just ordered. Bacon, egg and chesse croissant.',
   start: 12,
   end: 17
 },{
@@ -14,21 +14,22 @@ let subtitles = [{
 },{
   id: 3,
   first: '- Thank you man.',
+  second: '- No problem.',
   start: 41,
   end: 43
 },{
   id: 4,
   first: '- You got a napkin or two, that’d be great, while you’re down there.',
-  start: 45,
+  start: 42,
   end: 49
 },{
   id: 5,
   first: '- Thank you man.',
-  start: 49,
+  start: 50,
   end: 52
 },{
   id: 6,
-  first: '- Small coffee, milk, sugar',
+  first: '- Small coffee, milk, sugar.',
   start: 91,
   end: 94
 },{
@@ -68,7 +69,7 @@ let subtitles = [{
   end: 159
 },{
   id: 14,
-  first: '- Good day',
+  first: '- Good day.',
   second: '- Good day madam, how are you?',
   start: 160,
   end: 162
@@ -79,13 +80,13 @@ let subtitles = [{
   end: 163
 },{
   id: 16,
-  first: '- Give a small Tylenol.',
+  first: '- Give me a small Tylenol.',
   start: 163,
   end: 166
 },{
   id: 17,
   first: '- OK, thank you.',
-  second: '- OK',
+  second: '- OK.',
   start: 177,
   end: 180
 },{
@@ -95,7 +96,7 @@ let subtitles = [{
   end: 183
 },{
   id: 19,
-  first: '- How much?',
+  first: '- What is it?',
   start: 184,
   end: 186
 },{
@@ -111,7 +112,7 @@ let subtitles = [{
   end: 198
 },{
   id: 22,
-  first: '- Give me a tea...',
+  first: "- Let me get a tea...",
   start: 275,
   end: 277
 },{
@@ -122,7 +123,7 @@ let subtitles = [{
   end: 278
 },{
   id: 24,
-  first: '- Yea.',
+  first: '- Yeah.',
   start: 278,
   end: 280
 },{
@@ -149,10 +150,10 @@ let subtitles = [{
   end: 288
 },{
   id: 29,
-  first: '- Come here.',
+  first: '- Here you go.',
   second: '- Thank you.',
-  start: 306,
-  end: 308
+  start: 305,
+  end: 307
 },{
   id: 30,
   first: '- Six dollars.',
@@ -160,7 +161,7 @@ let subtitles = [{
   end: 313
 },{
   id: 31,
-  first: '- How are you boy? Give me a pack of [inaudible]',
+  first: '- How are you man? Give me a pack of [inaudible]',
   start: 329,
   end: 333
 },{
@@ -171,7 +172,7 @@ let subtitles = [{
   end: 346
 },{
   id: 33,
-  first: "- It seems it's going to rain too.",
+  first: "- It seems like it's going to rain too.",
   start: 346,
   end: 349
 },{
@@ -181,8 +182,8 @@ let subtitles = [{
   end: 356
 },{
   id: 35,
-  first: '- ...with one a half of sugar.',
-  second: '- Two large coffees with one and a half of sugar.',
+  first: '- ...with one a half sugars.',
+  second: '- Two large coffees with one and a half sugars.',
   start: 356,
   end: 359
 },{
@@ -204,18 +205,18 @@ let subtitles = [{
   end: 364
 },{
   id: 39,
-  first: '- Nine fifty',
+  first: '- Nine fifty.',
   start: 370,
   end: 373
 },{
   id: 40,
-  first: '- Can you give a coffee, please?',
+  first: '- Can I have a cup of coffee?',
   start: 393,
   end: 395
 },{
   id: 41,
   first: '- Milk and sugar?',
-  second: '- Yea, no. One sugar, but they put a lot of sugar in it.',
+  second: '- Yeah. One sugar. They put a lot of sugar.',
   start: 396,
   end: 400
 },{
@@ -225,8 +226,9 @@ let subtitles = [{
   end: 403
 },{
   id: 43,
-  first: '- [inaudible]',
-  start: 407,
+  first: 'Regular.',
+  second: '- [inaudible]',
+  start: 406,
   end: 409
 },{
   id: 44,
@@ -236,7 +238,7 @@ let subtitles = [{
   end: 428
 },{
   id: 45,
-  first: "- I mean it's not ready yet. Just this, and my bagel toasted with butter, and a small oatmeal.",
+  first: "- And the stuff right here. Just this, and my bagel toasted with butter, and a small oatmeal.",
   start: 428,
   end: 435
 },{
@@ -246,7 +248,7 @@ let subtitles = [{
   end: 440
 },{
   id: 47,
-  first: '- Excuse me. Ehm...',
+  first: '- Excuse me. Um...',
   start: 442,
   end: 444
 },{
@@ -269,7 +271,7 @@ let subtitles = [{
 },{
   id: 51,
   first: '- Turkey and cheese.',
-  second: '- Yea.',
+  second: '- Yeah.',
   start: 492,
   end: 494
 },{
