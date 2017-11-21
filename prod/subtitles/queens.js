@@ -287,4 +287,4 @@ let subtitles = [{
   end: 500
 }];
 
-export { subtitles }
+export default subtitles;

@@ -127,4 +127,4 @@ let models = [{
   buffer: false
 }]
 
-export { models };
+export default models;

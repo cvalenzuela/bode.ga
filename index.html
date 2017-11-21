@@ -7,25 +7,6 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Bodega - 24 hours Documentary</title>
 
-  <link rel="apple-touch-icon" sizes="57x57" href="dist/images/favicon/apple-icon-57x57.png">
-  <link rel="apple-touch-icon" sizes="60x60" href="dist/images/favicon/apple-icon-60x60.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="dist/images/favicon/apple-icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="dist/images/favicon/apple-icon-76x76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="dist/images/favicon/apple-icon-114x114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="dist/images/favicon/apple-icon-120x120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="dist/images/favicon/apple-icon-144x144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="dist/images/favicon/apple-icon-152x152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="dist/images/favicon/apple-icon-180x180.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="dist/images/favicon/android-icon-192x192.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="dist/images/favicon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="96x96" href="dist/images/favicon/favicon-96x96.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="dist/images/favicon/favicon-16x16.png">
-  <link rel="manifest" href="./images/favicon/manifest.json">
-  <meta name="msapplication-TileColor" content="#ffffff">
-  <meta name="msapplication-TileImage" content="./images/favicon/ms-icon-144x144.png">
-  <meta name="theme-color" content="#ffffff">
-
-
   <link href="https://fonts.googleapis.com/css?family=Mukta|PT+Sans+Narrow" rel="stylesheet">
   <link rel="stylesheet" href="dist/css/style.css">
 </head>
@@ -33,32 +14,18 @@
 <body id="body">
   <div id="overlay"></div>
   <div id="cover">
-    <img src="dist/images/front.png" alt="bodega image" id="bodegaFront">
-    <p id="description">An experimental documentary that follows a series of bodegas around NYC. Based on your location you will be paired with a particular bodega. Each bodega is represented by a looping 24-hour audio recording that was taken at the same time of day.
+    <h1 id="title">BODEGA</h1>
+    <p id="description">An experimental documentary that follows a bodega in Queens for 24 hours. Based on your location you will be paired with a particular bodega. Each bodega is represented by a looping 24-hour audio recording that was taken at the same time of day.
       <br>
     </p>
-    <!-- <div id="options">
-      <div id="usertime" class="useroptions">
-          <h6>Your Current Time</h6>
-          <p><img src="./images/clock.png"class="icon">23:12:55</p>
-      </div>
-      <div id="userlocation" class="useroptions">
-          <h6>Your Location</h6>
-          <p><img src="./images/marker.gif"class="icon">NY, New York</p>
-      </div>   
-    </div> -->
-    <!-- <img src="./images/open.png" alt="start" id="watchBtnImage"> -->
-    <button id="watchBtn">Watch</button>
-    <img src="dist/images/sound.png" alt="start" id="sound">
-    <p id="turnon">Please turn on your volume</p>
-
-    <p id="credits">Made by Jenny Lim, Scott Reitherman and Cristóbal Valenzuela
-      <br> New York, 2017</p>
+    <button id="watchBtn" class="btn">Watch</button>
+    <button id="creditsBtn" class="btn">Credits</button>
   </div>
 
   <div id="loader">
     <img src="dist/images/bananaloading.gif" alt="loading" style="width: 100px;">
     <p>Loading...</p>
+     <p id="turnon">Please turn on your volume</p>
   </div>
 
   <div id="app">
@@ -70,29 +37,12 @@
       <p id="currentBodega">Bodega in Long Island City, Queens</p>
     </div>
 
-    <div id="switchToQueens" class="bodega">
-        <img src="dist/images/bag.gif" id="queensAvailable" class="newItemAvailable">
-        <img src="dist/images/open.png" class="bodegasImgs">
-        <p class="bodegaName">Bodega in Long Island City, Queens</p>
-    </div>
-
-    <div id="switchToParkSlope" class="bodega">
-        <img src="dist/images/bag.gif" id="parkSlopeAvailable" class="newItemAvailable">
-        <img src="dist/images/open2.png" class="bodegasImgs">
-        <p class="bodegaName">Bodega in South Park Slope, Brooklyn</p>
-    </div>
-
-    <div class="subtitles" id="queens">
+    <div class="subtitles" id="subtitles">
       <h4 class="runningSubtitles"></h4>
       <br>
       <h4 class="runningSubtitles"></h4>
     </div>
 
-    <div class="subtitles" id="parkSlope" style="display:none;">
-        <h4 class="runningSubtitles"></h4>
-        <br>
-        <h4 class="runningSubtitles"></h4>
-      </div>
   </div>
 
   <script src="dist/bundle.js"></script>

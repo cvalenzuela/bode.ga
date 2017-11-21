@@ -37,14 +37,10 @@ Fonts
 
 body {
     background: #2d2d2d;
-    /* -webkit-transition: background-color 1s ease-out;
-    -moz-transition: background-color 1s ease-out;
-    -o-transition: background-color 1s ease-out;
-    transition: background-color 1s ease-out; */
 }
 
 h1 {
-    font-size: 8vh;
+    font-size: 4.5vw;
 }
 
 h3 {
@@ -61,17 +57,22 @@ button:hover {
     outline: none;
 }
 
-#cover {
-    position: absolute;
-    z-index: 9;
-    padding: 0vh 3vw;
-    height: 100%;
-    text-align: center;
-    /* display: none; */
+@media all and (min-width: 400px) {
+    #title {
+        font-size: 9vh;
+    }
+}
+
+@media all and (min-width: 401px) {
+    #title {
+        font-size: 10vh;
+    }
 }
 
 #overlay {
-    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAJElEQVQYV2NkYGD4z8DAwAilGUAAmQNno6iAKUIXBOvGJsgAAPOuCAJ6KVAfAAAAAElFTkSuQmCC) repeat;
+    background: url(../images/background.png);
+    background-size: cover;
+    background-repeat: no-repeat;
     position: absolute;
     left: 0px;
     top: 0px;
@@ -80,16 +81,69 @@ button:hover {
     z-index: 8;
 }
 
+#cover {
+    opacity: 0.9;
+    position: absolute;
+    z-index: 9;
+    padding: 32vh 5vw;
+    height: 100%;
+    width: 100%;
+    text-align: left;
+    /* display: none; */
+    background: #000000;
+    background: -webkit-linear-gradient(to left, #434343, #000000);
+    background: linear-gradient(to left, #434343, #000000);
+}
+
+
+
+/* #credits {
+    font-family: 'PT Sans Narrow', sans-serif;
+    color: #fffefe;
+    font-size: 13px;
+    width: 100%;
+    position: absolute;
+    bottom: 30%;    
+} */
+
+#title {
+    font-family: 'benton-bold', 'Helvetica', Arial, sans-serif;
+}
+
+#description {
+    font-family: 'benton', 'Helvetica', Arial, sans-serif;
+    color: #f7f7f7;
+    width: 40%;
+    font-size: 13px;
+    line-height: 23px;
+    z-index: 10;
+    min-width: 300px;
+    max-width: 360px;
+}
+
+#sound {
+    width: 50px;
+    opacity: 1;
+    display: block;
+}
+
+
+
+/* #turnon {
+    color: ##ffffff;
+    font-size: 12px;
+} */
+
 #bodegaFront {
     width: 60%;
     opacity: 0.8;
 }
 
-#parkSlopeAvailable{
+#parkSlopeAvailable {
     display: none;
 }
 
-#queensAvailable{
+#queensAvailable {
     display: none;
 }
 
@@ -131,24 +185,6 @@ button:hover {
     display: none;
 }
 
-#description {
-    font-family: 'benton', 'Helvetica', Arial, sans-serif;
-    margin: 3vw auto 3vh auto;
-    color: #cecece;
-    width: 40vw;
-    font-size: 14px;
-    line-height: 23px;
-    z-index: 10;
-}
-
-#credits {
-    font-family: 'PT Sans Narrow', sans-serif;
-    color: #c1c1c1;
-    margin: 5vh auto;
-    font-size: 13px;
-    width: 210px;
-}
-
 #current_time {
     color: #8a8a8a;
 }
@@ -161,13 +197,31 @@ button:hover {
     margin: 10vh;
 }
 
-#watchBtn {
-    padding: 15px 22px;
+::selection {
+    background: #000000;
+}
+
+ ::-moz-selection {
+    background: #000000;
+}
+
+button:focus {outline:0;}
+
+
+.btn {
+    font-family: 'benton', 'Helvetica', Arial, sans-serif;
+    padding: 12px 22px;
     cursor: pointer;
+    border-radius: 0px;
     font-size: 13px;
-    margin: 10vh;
+    margin: 3vh 10px 10px 0px;
+    color: #fff9f9;
     border: 1px solid white;
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(226, 224, 224, 0);
+}
+
+.btn:hover {
+    color: black;
 }
 
 #loader {
@@ -224,18 +278,6 @@ button:hover {
     text-align: right;
     top: 12vh;
     color: #b9b9b9;
-}
-
-#sound {
-    width: 50px;
-    opacity: 0.7;
-    display: block;
-    margin: auto;
-}
-
-#turnon {
-    color: #c1c1c1;
-    font-size: 12px;
 }
 
 .useroptions {
