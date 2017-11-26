@@ -25,7 +25,7 @@
   <div id="loader">
     <img src="dist/images/bananaloading.gif" alt="loading" style="width: 100px;">
     <p>Loading...</p>
-     <p id="turnon">Please turn on your volume</p>
+    <p id="turnon">Please turn on your volume</p>
   </div>
 
   <div id="app">
@@ -42,8 +42,30 @@
       <br>
       <h4 class="runningSubtitles"></h4>
     </div>
+  </div>
+
+  <!-- timeline -->
+  <div id="editor">
+    <div id="play" class="audioBtn">Play</div>
+    <div id="stop" class="audioBtn">Stop</div>
+    <div id="save" class="audioBtn">Save</div>
+    <div id="load" class="audioBtn">Load</div>
+    <div id="addSubtitle" class="audioBtn">Add Subtitle</div>
+    <div id="removeSubtitle" class="audioBtn">Remove Subtitle</div>
+    <div id="addModel" class="audioBtn">Add Model</div>
+    <div id="removeModel" class="audioBtn">Remove Model</div>
+    <div id="close" class="audioBtn" style="float:right;padding:2px;">X</div>
+    <div id="move" class="audioBtn" style="float:right;padding:2px;">M</div>
+    <div id="waveform"></div>
+    <div id="modelsKeys"></div>
+    <div id="subtitlesKeys"></div>
+    <div id="subtitleTimeTooltip" contenteditable="true"></div>
+    <div id="subtitleTooltip" contenteditable="true"></div>
+    <div id="currentTime">00:00:00</div>
+    <div id="subtitlesTracks"></div>
 
   </div>
+  <!-- timeline -->
 
   <script src="dist/bundle.js"></script>
 </body>

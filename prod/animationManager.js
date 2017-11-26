@@ -5,17 +5,18 @@
 import * as THREE from 'three';
 import * as utils from './utils/utils';
 import { loadModels } from './loadModels';
-import { loadSubtitles } from './loadSubtitles';
+import { initSubtitles, loadSubtitles } from './subtitlesManager';
 import { startAudio } from './audioManger';
 import { updateClock } from './timeManager';
 import { currentMeshes } from './meshManager';
+import { initEditMode, updateCurrentAudioTimePosition } from './editor';
 
 const app = document.getElementById('app');
 const loading = document.getElementById('loader');
 
 let container, camera, renderer, scene;
 
-let init = (debugMode, audioSrc, models, subtitles, subtitlesElt) => {
+let init = (editMode, audioSrc, models, subtitles, subtitlesElt) => {
   // Append to DOM
   container = document.createElement('div');
   document.body.appendChild(container);
@@ -37,18 +38,29 @@ let init = (debugMode, audioSrc, models, subtitles, subtitlesElt) => {
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
+  renderer.domElement.style.position = 'absolute';
+  renderer.domElement.style.left = '0px';
+  renderer.domElement.style.top = '0px';
 
   // Event Listeners
   window.addEventListener('resize', e => { utils.onWindowResize(e, renderer, camera) }, false);
 
-  // Load and start the sound, once loaded, load the animations and the subtitles.
-  startAudio(camera, audioSrc, () => {
+  let loadSubtitlesAndModels = () => {
     loading.style.display = 'none';
     app.style.display = 'block';
-    loadSubtitles(debugMode, subtitles, subtitlesElt);
-    loadModels(debugMode, scene, models);
+    loadSubtitles(subtitles, subtitlesElt, 0);
+    loadModels(scene, models);
     animate();
-  });
+  }
+
+  // Load and start the sound, once loaded, load the animations and the subtitles.
+  if(editMode){
+    initSubtitles(subtitles);
+    initEditMode(audioSrc, subtitlesElt, scene, models);
+    animate();
+  } else {
+    startAudio(camera, audioSrc, loadSubtitlesAndModels);
+  }
 }
 
 // Render
@@ -84,6 +96,7 @@ let animate = () => {
     current++;
   }
 
+  updateCurrentAudioTimePosition();
   updateClock();
   render();
   window.requestAnimationFrame(animate);

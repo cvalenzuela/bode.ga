@@ -4,11 +4,13 @@
 
 import * as THREE from 'three';
 
+let audioListener, audio, loader;
+
 let startAudio = (camera, audioSrc, callback) =>  {
   // Create the Audio Listener
-  let audioListener = new THREE.AudioListener();
-  let audio = new THREE.Audio(audioListener);
-  let loader = new THREE.AudioLoader();
+  audioListener = new THREE.AudioListener();
+  audio = new THREE.Audio(audioListener);
+  loader = new THREE.AudioLoader();
 
   // Add the Audio Listener to the camera
   camera.add(audioListener);

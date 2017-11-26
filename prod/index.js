@@ -6,10 +6,14 @@ import init from './animationManager';
 
 // OPTIONS
 import models from './models/queens';
-import subtitles from './subtitles/queens';
+import subtitles from './subtitles/demo';
 const audioSrc = 'dist/sounds/queens.mp3';
-const debugMode = false;
+const editMode = true;
 // OPTIONS
+
+// Edit Mode
+import './editor/index';
+// Edit Mode
 
 window.onload = () => {
   const body = document.getElementById('body');
@@ -21,13 +25,14 @@ window.onload = () => {
   const subtitlesElt = document.getElementById('subtitles');
 
   // Start the Film
-  watchBtn.addEventListener('click', () => {
+  const start = () => {
     body.style.background = '#000000';
     cover.style.display = 'none';
     overlay.style.display = 'none';
     loader.style.display = 'block';
-    init(debugMode, audioSrc, models, subtitles, subtitlesElt);
-  });
-};
+    init(editMode, audioSrc, models, subtitles, subtitlesElt);
+  }
 
-export { debugMode };
+  // Begin on click or in debug mode
+  editMode ? start() : watchBtn.addEventListener('click', start);
+};

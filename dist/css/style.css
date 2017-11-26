@@ -97,6 +97,9 @@ button:hover {
 
 
 
+
+
+
 /* #credits {
     font-family: 'PT Sans Narrow', sans-serif;
     color: #fffefe;
@@ -126,6 +129,9 @@ button:hover {
     opacity: 1;
     display: block;
 }
+
+
+
 
 
 
@@ -198,14 +204,16 @@ button:hover {
 }
 
 ::selection {
-    background: #000000;
+    background: #5efffb;
 }
 
  ::-moz-selection {
-    background: #000000;
+    background: #5efffb;
 }
 
-button:focus {outline:0;}
+button:focus {
+    outline: 0;
+}
 
 
 .btn {
@@ -304,4 +312,137 @@ h6 {
 .icon {
     width: 15px;
     padding: 0 2px;
+}
+
+.audioBtn {
+    display: inline-block;
+    padding: 2px 25px;
+    font-size: 12px;
+    margin: 5px 10px 0px 2px;
+    cursor: pointer;
+    position: relative;
+    z-index: 30;
+    background: #2b2b2b;
+    border-bottom:1px solid #2b2b2b;
+}
+
+.audioBtn:hover{
+    background: black;
+    border-bottom: 1px solid #43aad4;
+}
+
+#currentTime {
+    z-index: 100;
+    position: absolute;
+    padding: 0.5px 5px;
+    color: #43aad4;
+    background: #2f2f2f;
+    font-size: 10px;
+    top: 140px;
+}
+
+wave {
+    background: #262626;
+    z-index: 99;
+}
+
+#subtitlesKeys {
+    position: absolute;
+    z-index: 100;
+    height: 50px;
+    top: 118px;
+    display: inline-block;
+}
+
+.subtitleKey {
+    width: 1px;
+    height: 15px;
+    background: #fbf032;
+    display: inline-block;
+    position: absolute;
+    opacity: 0.8;
+    top: 2px;
+    cursor: pointer;
+}
+
+#subtitleTooltip{
+    position: absolute;
+    z-index: 200;
+    font-size: 11px;
+    background: #ffffff;
+    color: black;
+    top: 50px;
+    padding: 1px;
+}
+
+#subtitleTimeTooltip{
+    position: absolute;
+    z-index: 200;
+    font-size: 11px;
+    background: #2f2f2f;
+    color: #43aad4;
+    top: 35px;
+    padding: 1px;
+}
+
+#editor{
+    background: #333333;
+    position: absolute;
+    z-index: 400;
+}
+
+#move{
+    cursor: move;
+    z-index: 400;
+}
+
+#subtitlesTracks{
+    height: 150px;
+    width: 50%;
+    background: #353535;
+    z-index: 900;
+    overflow-y: scroll;
+}
+
+.subtitleTrack{
+    background: #564f4f;
+    font-size: 12px;
+    cursor: text;
+    border: 0.4px solid #585858;
+}
+
+.subId{
+    background: #478b94;
+    padding: 2px;
+    display: inline-block;
+}
+
+.subStart{
+    background: #2f2f2f;
+    color: #43aad4;
+    padding: 2px;
+    display: inline-block;
+    margin: 0px 2px;
+}
+
+.subEnd{
+    background: #2f2f2f;
+    color: #43aad4;
+    padding: 2px;
+    display: inline-block;
+    margin: 0px 2px;
+}
+
+.subFirst{
+    background: #6b6b6b;
+    padding: 2px;
+    margin: 0px 2px;
+    display: inline-block;
+}
+
+.subSecond{
+    background: #828282;
+    padding: 2px;
+    display: inline-block;
+    margin: 0px 2px;
 }

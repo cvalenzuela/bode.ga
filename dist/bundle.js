@@ -44240,6 +44240,14 @@
 })));
 
 },{}],2:[function(require,module,exports){
+/*!
+ * wavesurfer.js 2.0.0-beta02 (Fri Sep 22 2017 11:28:06 GMT+0200 (CEST))
+ * https://github.com/katspaugh/wavesurfer.js
+ * @license BSD-3-Clause
+ */
+!function(e,t){"object"==typeof exports&&"object"==typeof module?module.exports=t():"function"==typeof define&&define.amd?define("WaveSurfer",[],t):"object"==typeof exports?exports.WaveSurfer=t():e.WaveSurfer=t()}(this,function(){return function(e){function t(r){if(n[r])return n[r].exports;var a=n[r]={i:r,l:!1,exports:{}};return e[r].call(a.exports,a,a.exports,t),a.l=!0,a.exports}var n={};return t.m=e,t.c=n,t.i=function(e){return e},t.d=function(e,n,r){t.o(e,n)||Object.defineProperty(e,n,{configurable:!1,enumerable:!0,get:r})},t.n=function(e){var n=e&&e.__esModule?function(){return e.default}:function(){return e};return t.d(n,"a",n),n},t.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},t.p="localhost:8080/dist/",t(t.s=15)}([function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}Object.defineProperty(t,"__esModule",{value:!0});var a=n(8);Object.defineProperty(t,"ajax",{enumerable:!0,get:function(){return r(a).default}});var i=n(11);Object.defineProperty(t,"getId",{enumerable:!0,get:function(){return r(i).default}});var s=n(12);Object.defineProperty(t,"max",{enumerable:!0,get:function(){return r(s).default}});var o=n(13);Object.defineProperty(t,"min",{enumerable:!0,get:function(){return r(o).default}});var u=n(2);Object.defineProperty(t,"Observer",{enumerable:!0,get:function(){return r(u).default}});var l=n(9);Object.defineProperty(t,"extend",{enumerable:!0,get:function(){return r(l).default}});var c=n(14);Object.defineProperty(t,"style",{enumerable:!0,get:function(){return r(c).default}});var h=n(3);Object.defineProperty(t,"requestAnimationFrame",{enumerable:!0,get:function(){return r(h).default}});var f=n(10);Object.defineProperty(t,"frame",{enumerable:!0,get:function(){return r(f).default}});var d=n(16);Object.defineProperty(t,"debounce",{enumerable:!0,get:function(){return r(d).default}})},function(e,t,n){"use strict";function r(e,t,n){return t in e?Object.defineProperty(e,t,{value:n,enumerable:!0,configurable:!0,writable:!0}):e[t]=n,e}function a(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function i(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function s(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(t,"__esModule",{value:!0});var o=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),u=n(0),l=function(e){if(e&&e.__esModule)return e;var t={};if(null!=e)for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&(t[n]=e[n]);return t.default=e,t}(u),c="playing",h="paused",f="finished",d=function(e){function t(e){var n,s;a(this,t);var o=i(this,(t.__proto__||Object.getPrototypeOf(t)).call(this));return o.audioContext=null,o.offlineAudioContext=null,o.stateBehaviors=(n={},r(n,c,{init:function(){this.addOnAudioProcess()},getPlayedPercents:function(){var e=this.getDuration();return this.getCurrentTime()/e||0},getCurrentTime:function(){return this.startPosition+this.getPlayedTime()}}),r(n,h,{init:function(){this.removeOnAudioProcess()},getPlayedPercents:function(){var e=this.getDuration();return this.getCurrentTime()/e||0},getCurrentTime:function(){return this.startPosition}}),r(n,f,{init:function(){this.removeOnAudioProcess(),this.fireEvent("finish")},getPlayedPercents:function(){return 1},getCurrentTime:function(){return this.getDuration()}}),n),o.params=e,o.ac=e.audioContext||o.getAudioContext(),o.lastPlay=o.ac.currentTime,o.startPosition=0,o.scheduledPause=null,o.states=(s={},r(s,c,Object.create(o.stateBehaviors[c])),r(s,h,Object.create(o.stateBehaviors[h])),r(s,f,Object.create(o.stateBehaviors[f])),s),o.analyser=null,o.buffer=null,o.filters=[],o.gainNode=null,o.mergedPeaks=null,o.offlineAc=null,o.peaks=null,o.playbackRate=1,o.analyser=null,o.scriptNode=null,o.source=null,o.splitPeaks=[],o.state=null,o}return s(t,e),o(t,[{key:"supportsWebAudio",value:function(){return!(!window.AudioContext&&!window.webkitAudioContext)}},{key:"getAudioContext",value:function(){return window.WaveSurferAudioContext||(window.WaveSurferAudioContext=new(window.AudioContext||window.webkitAudioContext)),window.WaveSurferAudioContext}},{key:"getOfflineAudioContext",value:function(e){return window.WaveSurferOfflineAudioContext||(window.WaveSurferOfflineAudioContext=new(window.OfflineAudioContext||window.webkitOfflineAudioContext)(1,2,e)),window.WaveSurferOfflineAudioContext}}]),o(t,[{key:"init",value:function(){this.createVolumeNode(),this.createScriptNode(),this.createAnalyserNode(),this.setState(h),this.setPlaybackRate(this.params.audioRate),this.setLength(0)}},{key:"disconnectFilters",value:function(){this.filters&&(this.filters.forEach(function(e){e&&e.disconnect()}),this.filters=null,this.analyser.connect(this.gainNode))}},{key:"setState",value:function(e){this.state!==this.states[e]&&(this.state=this.states[e],this.state.init.call(this))}},{key:"setFilter",value:function(){for(var e=arguments.length,t=Array(e),n=0;n<e;n++)t[n]=arguments[n];this.setFilters(t)}},{key:"setFilters",value:function(e){this.disconnectFilters(),e&&e.length&&(this.filters=e,this.analyser.disconnect(),e.reduce(function(e,t){return e.connect(t),t},this.analyser).connect(this.gainNode))}},{key:"createScriptNode",value:function(){this.ac.createScriptProcessor?this.scriptNode=this.ac.createScriptProcessor(t.scriptBufferSize):this.scriptNode=this.ac.createJavaScriptNode(t.scriptBufferSize),this.scriptNode.connect(this.ac.destination)}},{key:"addOnAudioProcess",value:function(){var e=this;this.scriptNode.onaudioprocess=function(){var t=e.getCurrentTime();t>=e.getDuration()?(e.setState(f),e.fireEvent("pause")):t>=e.scheduledPause?e.pause():e.state===e.states[c]&&e.fireEvent("audioprocess",t)}}},{key:"removeOnAudioProcess",value:function(){this.scriptNode.onaudioprocess=null}},{key:"createAnalyserNode",value:function(){this.analyser=this.ac.createAnalyser(),this.analyser.connect(this.gainNode)}},{key:"createVolumeNode",value:function(){this.ac.createGain?this.gainNode=this.ac.createGain():this.gainNode=this.ac.createGainNode(),this.gainNode.connect(this.ac.destination)}},{key:"setVolume",value:function(e){this.gainNode.gain.value=e}},{key:"getVolume",value:function(){return this.gainNode.gain.value}},{key:"decodeArrayBuffer",value:function(e,t,n){this.offlineAc||(this.offlineAc=this.getOfflineAudioContext(this.ac?this.ac.sampleRate:44100)),this.offlineAc.decodeAudioData(e,function(e){return t(e)},n)}},{key:"setPeaks",value:function(e){this.peaks=e}},{key:"setLength",value:function(e){if(!this.mergedPeaks||e!=2*this.mergedPeaks.length-1+2){this.splitPeaks=[],this.mergedPeaks=[];var t=this.buffer?this.buffer.numberOfChannels:1,n=void 0;for(n=0;n<t;n++)this.splitPeaks[n]=[],this.splitPeaks[n][2*(e-1)]=0,this.splitPeaks[n][2*(e-1)+1]=0;this.mergedPeaks[2*(e-1)]=0,this.mergedPeaks[2*(e-1)+1]=0}}},{key:"getPeaks",value:function(e,t,n){if(this.peaks)return this.peaks;if(t=t||0,n=n||e-1,this.setLength(e),!this.buffer.length){var r=this.createBuffer(1,4096,this.sampleRate);this.buffer=r.buffer}var a=this.buffer.length/e,i=~~(a/10)||1,s=this.buffer.numberOfChannels,o=void 0;for(o=0;o<s;o++){var u=this.splitPeaks[o],l=this.buffer.getChannelData(o),c=void 0;for(c=t;c<=n;c++){var h=~~(c*a),f=~~(h+a),d=0,p=0,v=void 0;for(v=h;v<f;v+=i){var y=l[v];y>p&&(p=y),y<d&&(d=y)}u[2*c]=p,u[2*c+1]=d,(0==o||p>this.mergedPeaks[2*c])&&(this.mergedPeaks[2*c]=p),(0==o||d<this.mergedPeaks[2*c+1])&&(this.mergedPeaks[2*c+1]=d)}}return this.params.splitChannels?this.splitPeaks:this.mergedPeaks}},{key:"getPlayedPercents",value:function(){return this.state.getPlayedPercents.call(this)}},{key:"disconnectSource",value:function(){this.source&&this.source.disconnect()}},{key:"destroy",value:function(){this.isPaused()||this.pause(),this.unAll(),this.buffer=null,this.disconnectFilters(),this.disconnectSource(),this.gainNode.disconnect(),this.scriptNode.disconnect(),this.analyser.disconnect(),this.params.closeAudioContext&&("function"==typeof this.ac.close&&"closed"!=this.ac.state&&this.ac.close(),this.ac=null,this.params.audioContext?this.params.audioContext=null:window.WaveSurferAudioContext=null,window.WaveSurferOfflineAudioContext=null)}},{key:"load",value:function(e){this.startPosition=0,this.lastPlay=this.ac.currentTime,this.buffer=e,this.createSource()}},{key:"createSource",value:function(){this.disconnectSource(),this.source=this.ac.createBufferSource(),this.source.start=this.source.start||this.source.noteGrainOn,this.source.stop=this.source.stop||this.source.noteOff,this.source.playbackRate.value=this.playbackRate,this.source.buffer=this.buffer,this.source.connect(this.analyser)}},{key:"isPaused",value:function(){return this.state!==this.states[c]}},{key:"getDuration",value:function(){return this.buffer?this.buffer.duration:0}},{key:"seekTo",value:function(e,t){if(this.buffer)return this.scheduledPause=null,null==e&&(e=this.getCurrentTime())>=this.getDuration()&&(e=0),null==t&&(t=this.getDuration()),this.startPosition=e,this.lastPlay=this.ac.currentTime,this.state===this.states[f]&&this.setState(h),{start:e,end:t}}},{key:"getPlayedTime",value:function(){return(this.ac.currentTime-this.lastPlay)*this.playbackRate}},{key:"play",value:function(e,t){if(this.buffer){this.createSource();var n=this.seekTo(e,t);e=n.start,t=n.end,this.scheduledPause=t,this.source.start(0,e,t-e),"suspended"==this.ac.state&&this.ac.resume&&this.ac.resume(),this.setState(c),this.fireEvent("play")}}},{key:"pause",value:function(){this.scheduledPause=null,this.startPosition+=this.getPlayedTime(),this.source&&this.source.stop(0),this.setState(h),this.fireEvent("pause")}},{key:"getCurrentTime",value:function(){return this.state.getCurrentTime.call(this)}},{key:"getPlaybackRate",value:function(){return this.playbackRate}},{key:"setPlaybackRate",value:function(e){e=e||1,this.isPaused()?this.playbackRate=e:(this.pause(),this.playbackRate=e,this.play())}}]),t}(l.Observer);d.scriptBufferSize=256,t.default=d,e.exports=t.default},function(e,t,n){"use strict";function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}Object.defineProperty(t,"__esModule",{value:!0});var a=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),i=function(){function e(){r(this,e),this.handlers=null}return a(e,[{key:"on",value:function(e,t){var n=this;this.handlers||(this.handlers={});var r=this.handlers[e];return r||(r=this.handlers[e]=[]),r.push(t),{name:e,callback:t,un:function(e,t){return n.un(e,t)}}}},{key:"un",value:function(e,t){if(this.handlers){var n=this.handlers[e],r=void 0;if(n)if(t)for(r=n.length-1;r>=0;r--)n[r]==t&&n.splice(r,1);else n.length=0}}},{key:"unAll",value:function(){this.handlers=null}},{key:"once",value:function(e,t){var n=this,r=function r(){for(var a=arguments.length,i=Array(a),s=0;s<a;s++)i[s]=arguments[s];t.apply(n,i),setTimeout(function(){n.un(e,r)},0)};return this.on(e,r)}},{key:"fireEvent",value:function(e){for(var t=arguments.length,n=Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];if(this.handlers){var a=this.handlers[e];a&&a.forEach(function(e){e.apply(void 0,n)})}}}]),e}();t.default=i,e.exports=t.default},function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.default=(window.requestAnimationFrame||window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||window.oRequestAnimationFrame||window.msRequestAnimationFrame||function(e,t){return setTimeout(e,1e3/60)}).bind(window),e.exports=t.default},function(e,t,n){"use strict";function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function a(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function i(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(t,"__esModule",{value:!0});var s=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),o=n(7),u=function(e){return e&&e.__esModule?e:{default:e}}(o),l=n(0),c=function(e){if(e&&e.__esModule)return e;var t={};if(null!=e)for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&(t[n]=e[n]);return t.default=e,t}(l),h=function(e){function t(e,n){r(this,t);var i=a(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e,n));return i.maxCanvasWidth=n.maxCanvasWidth,i.maxCanvasElementWidth=Math.round(n.maxCanvasWidth/n.pixelRatio),i.hasProgressCanvas=n.waveColor!=n.progressColor,i.halfPixel=.5/n.pixelRatio,i.canvases=[],i.progressWave=null,i}return i(t,e),s(t,[{key:"init",value:function(){this.createWrapper(),this.createElements()}},{key:"createElements",value:function(){this.progressWave=this.wrapper.appendChild(this.style(document.createElement("wave"),{position:"absolute",zIndex:3,left:0,top:0,bottom:0,overflow:"hidden",width:"0",display:"none",boxSizing:"border-box",borderRightStyle:"solid",borderRightWidth:this.params.cursorWidth+"px",borderRightColor:this.params.cursorColor,pointerEvents:"none"})),this.addCanvas()}},{key:"updateSize",value:function(){for(var e=this,t=Math.round(this.width/this.params.pixelRatio),n=Math.ceil(t/this.maxCanvasElementWidth);this.canvases.length<n;)this.addCanvas();for(;this.canvases.length>n;)this.removeCanvas();this.canvases.forEach(function(t,n){var r=e.maxCanvasWidth+2*Math.ceil(e.params.pixelRatio/2);n==e.canvases.length-1&&(r=e.width-e.maxCanvasWidth*(e.canvases.length-1)),e.updateDimensions(t,r,e.height),e.clearWaveForEntry(t)})}},{key:"addCanvas",value:function(){var e={},t=this.maxCanvasElementWidth*this.canvases.length;e.wave=this.wrapper.appendChild(this.style(document.createElement("canvas"),{position:"absolute",zIndex:2,left:t+"px",top:0,bottom:0,height:"100%",pointerEvents:"none"})),e.waveCtx=e.wave.getContext("2d"),this.hasProgressCanvas&&(e.progress=this.progressWave.appendChild(this.style(document.createElement("canvas"),{position:"absolute",left:t+"px",top:0,bottom:0,height:"100%"})),e.progressCtx=e.progress.getContext("2d")),this.canvases.push(e)}},{key:"removeCanvas",value:function(){var e=this.canvases.pop();e.wave.parentElement.removeChild(e.wave),this.hasProgressCanvas&&e.progress.parentElement.removeChild(e.progress)}},{key:"updateDimensions",value:function(e,t,n){var r=Math.round(t/this.params.pixelRatio),a=Math.round(this.width/this.params.pixelRatio);e.start=e.waveCtx.canvas.offsetLeft/a||0,e.end=e.start+r/a,e.waveCtx.canvas.width=t,e.waveCtx.canvas.height=n,this.style(e.waveCtx.canvas,{width:r+"px"}),this.style(this.progressWave,{display:"block"}),this.hasProgressCanvas&&(e.progressCtx.canvas.width=t,e.progressCtx.canvas.height=n,this.style(e.progressCtx.canvas,{width:r+"px"}))}},{key:"clearWave",value:function(){var e=this;this.canvases.forEach(function(t){return e.clearWaveForEntry(t)})}},{key:"clearWaveForEntry",value:function(e){e.waveCtx.clearRect(0,0,e.waveCtx.canvas.width,e.waveCtx.canvas.height),this.hasProgressCanvas&&e.progressCtx.clearRect(0,0,e.progressCtx.canvas.width,e.progressCtx.canvas.height)}},{key:"drawBars",value:function(e,t,n,r){var a=this;return this.prepareDraw(e,t,n,r,function(t){var i=t.absmax,s=t.hasMinVals,o=(t.height,t.offsetY),u=t.halfH;if(void 0!==n){var l=s?2:1,c=e.length/l,h=a.params.barWidth*a.params.pixelRatio,f=Math.max(a.params.pixelRatio,~~(h/2)),d=h+f,p=c/a.width,v=n,y=r,m=void 0;for(m=v;m<y;m+=d){var k=e[Math.floor(m*p*l)]||0,g=Math.round(k/i*u);a.fillRect(m+a.halfPixel,u-g+o,h+a.halfPixel,2*g)}}})}},{key:"drawWave",value:function(e,t,n,r){var a=this;return this.prepareDraw(e,t,n,r,function(t){var i=t.absmax,s=t.hasMinVals,o=(t.height,t.offsetY),u=t.halfH;if(!s){var l=[],c=e.length,h=void 0;for(h=0;h<c;h++)l[2*h]=e[h],l[2*h+1]=-e[h];e=l}void 0!==n&&a.drawLine(e,i,u,o,n,r),a.fillRect(0,u+o-a.halfPixel,a.width,a.halfPixel)})}},{key:"drawLine",value:function(e,t,n,r,a,i){var s=this;this.canvases.forEach(function(o){s.setFillStyles(o),s.drawLineToContext(o,o.waveCtx,e,t,n,r,a,i),s.drawLineToContext(o,o.progressCtx,e,t,n,r,a,i)})}},{key:"drawLineToContext",value:function(e,t,n,r,a,i,s,o){if(t){var u=n.length/2,l=this.params.fillParent&&this.width!=u?this.width/u:1,c=Math.round(u*e.start),h=Math.round(u*e.end)+1;if(!(c>o||h<s)){var f=Math.min(c,s),d=Math.max(h,o),p=void 0,v=void 0;for(t.beginPath(),t.moveTo((f-c)*l+this.halfPixel,a+i),p=f;p<d;p++){var y=n[2*p]||0,m=Math.round(y/r*a);t.lineTo((p-c)*l+this.halfPixel,a-m+i)}for(v=d-1;v>=f;v--){var k=n[2*v+1]||0,g=Math.round(k/r*a);t.lineTo((v-c)*l+this.halfPixel,a-g+i)}t.closePath(),t.fill()}}}},{key:"fillRect",value:function(e,t,n,r){var a=Math.floor(e/this.maxCanvasWidth),i=Math.min(Math.ceil((e+n)/this.maxCanvasWidth)+1,this.canvases.length),s=void 0;for(s=a;s<i;s++){var o=this.canvases[s],u=s*this.maxCanvasWidth,l={x1:Math.max(e,s*this.maxCanvasWidth),y1:t,x2:Math.min(e+n,s*this.maxCanvasWidth+o.waveCtx.canvas.width),y2:t+r};l.x1<l.x2&&(this.setFillStyles(o),this.fillRectToContext(o.waveCtx,l.x1-u,l.y1,l.x2-l.x1,l.y2-l.y1),this.fillRectToContext(o.progressCtx,l.x1-u,l.y1,l.x2-l.x1,l.y2-l.y1))}}},{key:"prepareDraw",value:function(e,t,n,r,a){var i=this;return c.frame(function(){if(e[0]instanceof Array){var s=e;if(i.params.splitChannels)return i.setHeight(s.length*i.params.height*i.params.pixelRatio),void s.forEach(function(e,t){return i.prepareDraw(e,t,n,r,a)});e=s[0]}var o=1/i.params.barHeight;if(i.params.normalize){var u=c.max(e),l=c.min(e);o=-l>u?-l:u}var h=[].some.call(e,function(e){return e<0}),f=i.params.height*i.params.pixelRatio;return a({absmax:o,hasMinVals:h,height:f,offsetY:f*t||0,halfH:f/2})})()}},{key:"fillRectToContext",value:function(e,t,n,r,a){e&&e.fillRect(t,n,r,a)}},{key:"setFillStyles",value:function(e){e.waveCtx.fillStyle=this.params.waveColor,this.hasProgressCanvas&&(e.progressCtx.fillStyle=this.params.progressColor)}},{key:"getImage",value:function(e,t){var n=this.canvases.map(function(n){return n.wave.toDataURL(e,t)});return n.length>1?n:n[0]}},{key:"updateProgress",value:function(e){this.style(this.progressWave,{width:e+"px"})}}]),t}(u.default);t.default=h,e.exports=t.default},function(e,t,n){"use strict";function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function a(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function i(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(t,"__esModule",{value:!0});var s=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),o=function e(t,n,r){null===t&&(t=Function.prototype);var a=Object.getOwnPropertyDescriptor(t,n);if(void 0===a){var i=Object.getPrototypeOf(t);return null===i?void 0:e(i,n,r)}if("value"in a)return a.value;var s=a.get;if(void 0!==s)return s.call(r)},u=n(1),l=function(e){return e&&e.__esModule?e:{default:e}}(u),c=n(0),h=(function(e){if(e&&e.__esModule)return e;var t={};if(null!=e)for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&(t[n]=e[n]);t.default=e}(c),function(e){function t(e){r(this,t);var n=a(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e));return n.params=e,n.media={currentTime:0,duration:0,paused:!0,playbackRate:1,play:function(){},pause:function(){}},n.mediaType=e.mediaType.toLowerCase(),n.elementPosition=e.elementPosition,n.peaks=null,n.playbackRate=1,n.buffer=null,n.onPlayEnd=null,n}return i(t,e),s(t,[{key:"init",value:function(){this.setPlaybackRate(this.params.audioRate),this.createTimer()}},{key:"createTimer",value:function(){var e=this,t=function t(){if(!e.isPaused()){e.fireEvent("audioprocess",e.getCurrentTime());(window.requestAnimationFrame||window.webkitRequestAnimationFrame)(t)}};this.on("play",t)}},{key:"load",value:function(e,t,n,r){var a=document.createElement(this.mediaType);a.controls=this.params.mediaControls,a.autoplay=this.params.autoplay||!1,a.preload=null==r?"auto":r,a.src=e,a.style.width="100%";var i=t.querySelector(this.mediaType);i&&t.removeChild(i),t.appendChild(a),this._load(a,n)}},{key:"loadElt",value:function(e,t){e.controls=this.params.mediaControls,e.autoplay=this.params.autoplay||!1,this._load(e,t)}},{key:"_load",value:function(e,t){var n=this;"function"==typeof e.load&&e.load(),e.addEventListener("error",function(){n.fireEvent("error","Error loading media element")}),e.addEventListener("canplay",function(){n.fireEvent("canplay")}),e.addEventListener("ended",function(){n.fireEvent("finish")}),e.addEventListener("play",function(){n.fireEvent("play")}),e.addEventListener("pause",function(){n.fireEvent("pause")}),this.media=e,this.peaks=t,this.onPlayEnd=null,this.buffer=null,this.setPlaybackRate(this.playbackRate)}},{key:"isPaused",value:function(){return!this.media||this.media.paused}},{key:"getDuration",value:function(){var e=(this.buffer||this.media).duration;return e>=1/0&&(e=this.media.seekable.end(0)),e}},{key:"getCurrentTime",value:function(){return this.media&&this.media.currentTime}},{key:"getPlayedPercents",value:function(){return this.getCurrentTime()/this.getDuration()||0}},{key:"getPlaybackRate",value:function(){return this.playbackRate||this.media.playbackRate}},{key:"setPlaybackRate",value:function(e){this.playbackRate=e||1,this.media.playbackRate=this.playbackRate}},{key:"seekTo",value:function(e){null!=e&&(this.media.currentTime=e),this.clearPlayEnd()}},{key:"play",value:function(e,t){this.seekTo(e),this.media.play(),t&&this.setPlayEnd(t)}},{key:"pause",value:function(){this.media&&this.media.pause(),this.clearPlayEnd()}},{key:"setPlayEnd",value:function(e){var t=this;this._onPlayEnd=function(n){n>=e&&(t.pause(),t.seekTo(e))},this.on("audioprocess",this._onPlayEnd)}},{key:"clearPlayEnd",value:function(){this._onPlayEnd&&(this.un("audioprocess",this._onPlayEnd),this._onPlayEnd=null)}},{key:"getPeaks",value:function(e,n,r){return this.buffer?o(t.prototype.__proto__||Object.getPrototypeOf(t.prototype),"getPeaks",this).call(this,e,n,r):this.peaks||[]}},{key:"getVolume",value:function(){return this.media.volume}},{key:"setVolume",value:function(e){this.media.volume=e}},{key:"destroy",value:function(){this.pause(),this.unAll(),this.media&&this.media.parentNode&&this.media.parentNode.removeChild(this.media),this.media=null}}]),t}(l.default));t.default=h,e.exports=t.default},function(e,t,n){"use strict";function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}Object.defineProperty(t,"__esModule",{value:!0});var a=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),i=function(){function e(){r(this,e),this.clearPeakCache()}return a(e,[{key:"clearPeakCache",value:function(){this.peakCacheRanges=[],this.peakCacheLength=-1}},{key:"addRangeToPeakCache",value:function(e,t,n){e!=this.peakCacheLength&&(this.clearPeakCache(),this.peakCacheLength=e);for(var r=[],a=0;a<this.peakCacheRanges.length&&this.peakCacheRanges[a]<t;)a++;for(a%2==0&&r.push(t);a<this.peakCacheRanges.length&&this.peakCacheRanges[a]<=n;)r.push(this.peakCacheRanges[a]),a++;a%2==0&&r.push(n),r=r.filter(function(e,t,n){return 0==t?e!=n[t+1]:t==n.length-1?e!=n[t-1]:e!=n[t-1]&&e!=n[t+1]}),this.peakCacheRanges=this.peakCacheRanges.concat(r),this.peakCacheRanges=this.peakCacheRanges.sort(function(e,t){return e-t}).filter(function(e,t,n){return 0==t?e!=n[t+1]:t==n.length-1?e!=n[t-1]:e!=n[t-1]&&e!=n[t+1]});var i=[];for(a=0;a<r.length;a+=2)i.push([r[a],r[a+1]]);return i}},{key:"getCacheRanges",value:function(){var e=[],t=void 0;for(t=0;t<this.peakCacheRanges.length;t+=2)e.push([this.peakCacheRanges[t],this.peakCacheRanges[t+1]]);return e}}]),e}();t.default=i,e.exports=t.default},function(e,t,n){"use strict";function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function a(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function i(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(t,"__esModule",{value:!0});var s=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),o=n(0),u=function(e){if(e&&e.__esModule)return e;var t={};if(null!=e)for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&(t[n]=e[n]);return t.default=e,t}(o),l=function(e){function t(e,n){r(this,t);var i=a(this,(t.__proto__||Object.getPrototypeOf(t)).call(this));return i.container=e,i.params=n,i.width=0,i.height=n.height*i.params.pixelRatio,i.lastPos=0,i.wrapper=null,i}return i(t,e),s(t,[{key:"style",value:function(e,t){return u.style(e,t)}},{key:"createWrapper",value:function(){this.wrapper=this.container.appendChild(document.createElement("wave")),this.style(this.wrapper,{display:"block",position:"relative",userSelect:"none",webkitUserSelect:"none",height:this.params.height+"px"}),(this.params.fillParent||this.params.scrollParent)&&this.style(this.wrapper,{width:"100%",overflowX:this.params.hideScrollbar?"hidden":"auto",overflowY:"hidden"}),this.setupWrapperEvents()}},{key:"handleEvent",value:function(e,t){!t&&e.preventDefault();var n=e.targetTouches?e.targetTouches[0].clientX:e.clientX,r=this.wrapper.getBoundingClientRect(),a=this.width,i=this.getWidth(),s=void 0;return!this.params.fillParent&&a<i?(s=(n-r.left)*this.params.pixelRatio/a||0)>1&&(s=1):s=(n-r.left+this.wrapper.scrollLeft)/this.wrapper.scrollWidth||0,s}},{key:"setupWrapperEvents",value:function(){var e=this;this.wrapper.addEventListener("click",function(t){var n=e.wrapper.offsetHeight-e.wrapper.clientHeight;if(0!=n){var r=e.wrapper.getBoundingClientRect();if(t.clientY>=r.bottom-n)return}e.params.interact&&e.fireEvent("click",t,e.handleEvent(t))}),this.wrapper.addEventListener("scroll",function(t){return e.fireEvent("scroll",t)})}},{key:"drawPeaks",value:function(e,t,n,r){this.setWidth(t)||this.clearWave(),this.params.barWidth?this.drawBars(e,0,n,r):this.drawWave(e,0,n,r)}},{key:"resetScroll",value:function(){null!==this.wrapper&&(this.wrapper.scrollLeft=0)}},{key:"recenter",value:function(e){var t=this.wrapper.scrollWidth*e;this.recenterOnPosition(t,!0)}},{key:"recenterOnPosition",value:function(e,t){var n=this.wrapper.scrollLeft,r=~~(this.wrapper.clientWidth/2),a=this.wrapper.scrollWidth-this.wrapper.clientWidth,i=e-r,s=i-n;if(0!=a){if(!t&&-r<=s&&s<r){s=Math.max(-5,Math.min(5,s)),i=n+s}i=Math.max(0,Math.min(a,i)),i!=n&&(this.wrapper.scrollLeft=i)}}},{key:"getScrollX",value:function(){return Math.round(this.wrapper.scrollLeft*this.params.pixelRatio)}},{key:"getWidth",value:function(){return Math.round(this.container.clientWidth*this.params.pixelRatio)}},{key:"setWidth",value:function(e){return this.width!=e&&(this.width=e,this.params.fillParent||this.params.scrollParent?this.style(this.wrapper,{width:""}):this.style(this.wrapper,{width:~~(this.width/this.params.pixelRatio)+"px"}),this.updateSize(),!0)}},{key:"setHeight",value:function(e){return e!=this.height&&(this.height=e,this.style(this.wrapper,{height:~~(this.height/this.params.pixelRatio)+"px"}),this.updateSize(),!0)}},{key:"progress",value:function(e){var t=1/this.params.pixelRatio,n=Math.round(e*this.width)*t;if(n<this.lastPos||n-this.lastPos>=t){if(this.lastPos=n,this.params.scrollParent&&this.params.autoCenter){var r=~~(this.wrapper.scrollWidth*e);this.recenterOnPosition(r)}this.updateProgress(n)}}},{key:"destroy",value:function(){this.unAll(),this.wrapper&&(this.wrapper.parentNode==this.container&&this.container.removeChild(this.wrapper),this.wrapper=null)}},{key:"updateSize",value:function(){}},{key:"drawBars",value:function(e,t,n,r){}},{key:"drawWave",value:function(e,t,n,r){}},{key:"clearWave",value:function(){}},{key:"updateProgress",value:function(e){}}]),t}(u.Observer);t.default=l,e.exports=t.default},function(e,t,n){"use strict";function r(e){var t=new i.default,n=new XMLHttpRequest,r=!1;return n.open(e.method||"GET",e.url,!0),n.responseType=e.responseType||"json",n.addEventListener("progress",function(e){t.fireEvent("progress",e),e.lengthComputable&&e.loaded==e.total&&(r=!0)}),n.addEventListener("load",function(e){r||t.fireEvent("progress",e),t.fireEvent("load",e),200==n.status||206==n.status?t.fireEvent("success",n.response,e):t.fireEvent("error",e)}),n.addEventListener("error",function(e){return t.fireEvent("error",e)}),n.send(),t.xhr=n,t}Object.defineProperty(t,"__esModule",{value:!0}),t.default=r;var a=n(2),i=function(e){return e&&e.__esModule?e:{default:e}}(a);e.exports=t.default},function(e,t,n){"use strict";function r(e){for(var t=arguments.length,n=Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];return n.forEach(function(t){Object.keys(t).forEach(function(n){e[n]=t[n]})}),e}Object.defineProperty(t,"__esModule",{value:!0}),t.default=r,e.exports=t.default},function(e,t,n){"use strict";function r(e){return function(){for(var t=arguments.length,n=Array(t),r=0;r<t;r++)n[r]=arguments[r];return(0,i.default)(function(){return e.apply(void 0,n)})}}Object.defineProperty(t,"__esModule",{value:!0}),t.default=r;var a=n(3),i=function(e){return e&&e.__esModule?e:{default:e}}(a);e.exports=t.default},function(e,t,n){"use strict";function r(){return"wavesurfer_"+Math.random().toString(32).substring(2)}Object.defineProperty(t,"__esModule",{value:!0}),t.default=r,e.exports=t.default},function(e,t,n){"use strict";function r(e){var t=-1/0;return Object.keys(e).forEach(function(n){e[n]>t&&(t=e[n])}),t}Object.defineProperty(t,"__esModule",{value:!0}),t.default=r,e.exports=t.default},function(e,t,n){"use strict";function r(e){var t=Number(1/0);return Object.keys(e).forEach(function(n){e[n]<t&&(t=e[n])}),t}Object.defineProperty(t,"__esModule",{value:!0}),t.default=r,e.exports=t.default},function(e,t,n){"use strict";function r(e,t){return Object.keys(t).forEach(function(n){e.style[n]!==t[n]&&(e.style[n]=t[n])}),e}Object.defineProperty(t,"__esModule",{value:!0}),t.default=r,e.exports=t.default},function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}function a(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function i(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function s(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}Object.defineProperty(t,"__esModule",{value:!0});var o=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),u=n(0),l=function(e){if(e&&e.__esModule)return e;var t={};if(null!=e)for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&(t[n]=e[n]);return t.default=e,t}(u),c=n(4),h=r(c),f=n(1),d=r(f),p=n(5),v=r(p),y=n(6),m=r(y),k=(function(){function e(t,n){s(this,e)}o(e,[{key:"create",value:function(e){}}]),o(e,[{key:"init",value:function(){}},{key:"destroy",value:function(){}}])}(),function(e){function t(e){var n;s(this,t);var r=a(this,(t.__proto__||Object.getPrototypeOf(t)).call(this));if(r.defaultParams={audioContext:null,audioRate:1,autoCenter:!0,backend:"WebAudio",barHeight:1,container:null,cursorColor:"#333",cursorWidth:1,dragSelection:!0,fillParent:!0,forceDecode:!1,height:128,hideScrollbar:!1,interact:!0,loopSelection:!0,maxCanvasWidth:4e3,mediaContainer:null,mediaControls:!1,mediaType:"audio",minPxPerSec:20,normalize:!1,partialRender:!1,pixelRatio:window.devicePixelRatio||screen.deviceXDPI/screen.logicalXDPI,plugins:[],progressColor:"#555",renderer:h.default,responsive:!1,scrollParent:!1,skipLength:2,splitChannels:!1,waveColor:"#999"},r.backends={MediaElement:v.default,WebAudio:d.default},r.util=l,r.params=l.extend({},r.defaultParams,e),r.container="string"==typeof e.container?document.querySelector(r.params.container):r.params.container,!r.container)throw new Error("Container element not found");if(null==r.params.mediaContainer?r.mediaContainer=r.container:"string"==typeof r.params.mediaContainer?r.mediaContainer=document.querySelector(r.params.mediaContainer):r.mediaContainer=r.params.mediaContainer,!r.mediaContainer)throw new Error("Media Container element not found");if(r.params.maxCanvasWidth<=1)throw new Error("maxCanvasWidth must be greater than 1");if(r.params.maxCanvasWidth%2==1)throw new Error("maxCanvasWidth must be an even number");if(r.savedVolume=0,r.isMuted=!1,r.tmpEvents=[],r.currentAjax=null,r.arraybuffer=null,r.drawer=null,r.backend=null,r.peakCache=null,"function"!=typeof r.params.renderer)throw new Error("Renderer parameter is invalid");r.Drawer=r.params.renderer,r.Backend=r.backends[r.params.backend],r.initialisedPluginList={},r.isDestroyed=!1,r.isReady=!1;var i=0;return r._onResize=l.debounce(function(){i!=r.drawer.wrapper.clientWidth&&(i=r.drawer.wrapper.clientWidth,r.drawBuffer())},"number"==typeof r.params.responsive?r.params.responsive:100),n=r,a(r,n)}return i(t,e),o(t,null,[{key:"create",value:function(e){return new t(e).init()}}]),o(t,[{key:"init",value:function(){return this.registerPlugins(this.params.plugins),this.createDrawer(),this.createBackend(),this.createPeakCache(),this}},{key:"registerPlugins",value:function(e){var t=this;return e.forEach(function(e){return t.addPlugin(e)}),e.forEach(function(e){e.deferInit||t.initPlugin(e.name)}),this.fireEvent("plugins-registered",e),this}},{key:"addPlugin",value:function(e){var t=this;if(!e.name)throw new Error("Plugin does not have a name!");if(!e.instance)throw new Error("Plugin "+e.name+" does not have an instance property!");e.staticProps&&Object.keys(e.staticProps).forEach(function(n){t[n]=e.staticProps[n]});var n=e.instance;return Object.getOwnPropertyNames(l.Observer.prototype).forEach(function(e){n.prototype[e]=l.Observer.prototype[e]}),this[e.name]=new n(e.params||{},this),this.fireEvent("plugin-added",e.name),this}},{key:"initPlugin",value:function(e){if(!this[e])throw new Error("Plugin "+e+" has not been added yet!");return this.initialisedPluginList[e]&&this.destroyPlugin(e),this[e].init(),this.initialisedPluginList[e]=!0,this.fireEvent("plugin-initialised",e),this}},{key:"destroyPlugin",value:function(e){if(!this[e])throw new Error("Plugin "+e+" has not been added yet and cannot be destroyed!");if(!this.initialisedPluginList[e])throw new Error("Plugin "+e+" is not active and cannot be destroyed!");if("function"!=typeof this[e].destroy)throw new Error("Plugin "+e+" does not have a destroy function!");return this[e].destroy(),delete this.initialisedPluginList[e],this.fireEvent("plugin-destroyed",e),this}},{key:"destroyAllPlugins",value:function(){var e=this;Object.keys(this.initialisedPluginList).forEach(function(t){return e.destroyPlugin(t)})}},{key:"createDrawer",value:function(){var e=this;this.drawer=new this.Drawer(this.container,this.params),this.drawer.init(),this.fireEvent("drawer-created",this.drawer),this.params.responsive&&window.addEventListener("resize",this._onResize,!0),this.drawer.on("redraw",function(){e.drawBuffer(),e.drawer.progress(e.backend.getPlayedPercents())}),this.drawer.on("click",function(t,n){setTimeout(function(){return e.seekTo(n)},0)}),this.drawer.on("scroll",function(t){e.params.partialRender&&e.drawBuffer(),e.fireEvent("scroll",t)})}},{key:"createBackend",value:function(){var e=this;this.backend&&this.backend.destroy(),"AudioElement"==this.params.backend&&(this.params.backend="MediaElement"),"WebAudio"!=this.params.backend||this.Backend.prototype.supportsWebAudio.call(null)||(this.params.backend="MediaElement"),this.backend=new this.Backend(this.params),this.backend.init(),this.fireEvent("backend-created",this.backend),this.backend.on("finish",function(){return e.fireEvent("finish")}),this.backend.on("play",function(){return e.fireEvent("play")}),this.backend.on("pause",function(){return e.fireEvent("pause")}),this.backend.on("audioprocess",function(t){e.drawer.progress(e.backend.getPlayedPercents()),e.fireEvent("audioprocess",t)})}},{key:"createPeakCache",value:function(){this.params.partialRender&&(this.peakCache=new m.default)}},{key:"getDuration",value:function(){return this.backend.getDuration()}},{key:"getCurrentTime",value:function(){return this.backend.getCurrentTime()}},{key:"setCurrentTime",value:function(e){this.getDuration()>=e?this.seekTo(1):this.seekTo(e/this.getDuration())}},{key:"play",value:function(e,t){var n=this;this.fireEvent("interaction",function(){return n.play(e,t)}),this.backend.play(e,t)}},{key:"pause",value:function(){this.backend.isPaused()||this.backend.pause()}},{key:"playPause",value:function(){this.backend.isPaused()?this.play():this.pause()}},{key:"isPlaying",value:function(){return!this.backend.isPaused()}},{key:"skipBackward",value:function(e){this.skip(-e||-this.params.skipLength)}},{key:"skipForward",value:function(e){this.skip(e||this.params.skipLength)}},{key:"skip",value:function(e){var t=this.getDuration()||1,n=this.getCurrentTime()||0;n=Math.max(0,Math.min(t,n+(e||0))),this.seekAndCenter(n/t)}},{key:"seekAndCenter",value:function(e){this.seekTo(e),this.drawer.recenter(e)}},{key:"seekTo",value:function(e){var t=this;this.fireEvent("interaction",function(){return t.seekTo(e)});var n=this.backend.isPaused();n||this.backend.pause();var r=this.params.scrollParent;this.params.scrollParent=!1,this.backend.seekTo(e*this.getDuration()),this.drawer.progress(this.backend.getPlayedPercents()),n||this.backend.play(),this.params.scrollParent=r,this.fireEvent("seek",e)}},{key:"stop",value:function(){this.pause(),this.seekTo(0),this.drawer.progress(0)}},{key:"setVolume",value:function(e){this.backend.setVolume(e)}},{key:"getVolume",value:function(){return this.backend.getVolume()}},{key:"setPlaybackRate",value:function(e){this.backend.setPlaybackRate(e)}},{key:"getPlaybackRate",value:function(){return this.backend.getPlaybackRate()}},{key:"toggleMute",value:function(){this.setMute(!this.isMuted)}},{key:"setMute",value:function(e){e!==this.isMuted&&(e?(this.savedVolume=this.backend.getVolume(),this.backend.setVolume(0),this.isMuted=!0):(this.backend.setVolume(this.savedVolume),this.isMuted=!1))}},{key:"getMute",value:function(){return this.isMuted}},{key:"getFilters",value:function(){return this.backend.filters||[]}},{key:"toggleScroll",value:function(){this.params.scrollParent=!this.params.scrollParent,this.drawBuffer()}},{key:"toggleInteraction",value:function(){this.params.interact=!this.params.interact}},{key:"drawBuffer",value:function(){var e=Math.round(this.getDuration()*this.params.minPxPerSec*this.params.pixelRatio),t=this.drawer.getWidth(),n=e,r=this.drawer.getScrollX(),a=Math.max(r+t,n);this.params.fillParent&&(!this.params.scrollParent||e<t)&&(n=t,r=0,a=n);var i=void 0;if(this.params.partialRender){var s=this.peakCache.addRangeToPeakCache(n,r,a),o=void 0;for(o=0;o<s.length;o++)i=this.backend.getPeaks(n,s[o][0],s[o][1]),this.drawer.drawPeaks(i,n,s[o][0],s[o][1])}else i=this.backend.getPeaks(n,r,a),this.drawer.drawPeaks(i,n,r,a);this.fireEvent("redraw",i,n)}},{key:"zoom",value:function(e){e?(this.params.minPxPerSec=e,this.params.scrollParent=!0):(this.params.minPxPerSec=this.defaultParams.minPxPerSec,this.params.scrollParent=!1),this.drawBuffer(),this.drawer.progress(this.backend.getPlayedPercents()),this.drawer.recenter(this.getCurrentTime()/this.getDuration()),this.fireEvent("zoom",e)}},{key:"loadArrayBuffer",value:function(e){var t=this;this.decodeArrayBuffer(e,function(e){t.isDestroyed||t.loadDecodedBuffer(e)})}},{key:"loadDecodedBuffer",value:function(e){this.backend.load(e),this.drawBuffer(),this.fireEvent("ready"),this.isReady=!0}},{key:"loadBlob",value:function(e){var t=this,n=new FileReader;n.addEventListener("progress",function(e){return t.onProgress(e)}),n.addEventListener("load",function(e){return t.loadArrayBuffer(e.target.result)}),n.addEventListener("error",function(){return t.fireEvent("error","Error reading file")}),n.readAsArrayBuffer(e),this.empty()}},{key:"load",value:function(e,t,n){switch(this.empty(),this.isMuted=!1,this.params.backend){case"WebAudio":return this.loadBuffer(e,t);case"MediaElement":return this.loadMediaElement(e,t,n)}}},{key:"loadBuffer",value:function(e,t){var n=this,r=function(t){return t&&n.tmpEvents.push(n.once("ready",t)),n.getArrayBuffer(e,function(e){return n.loadArrayBuffer(e)})};if(!t)return r();this.backend.setPeaks(t),this.drawBuffer(),this.tmpEvents.push(this.once("interaction",r))}},{key:"loadMediaElement",value:function(e,t,n){var r=this,a=e;if("string"==typeof e)this.backend.load(a,this.mediaContainer,t,n);else{var i=e;this.backend.loadElt(i,t),a=i.src}this.tmpEvents.push(this.backend.once("canplay",function(){r.drawBuffer(),r.fireEvent("ready"),r.isReady=!0}),this.backend.once("error",function(e){return r.fireEvent("error",e)})),t&&this.backend.setPeaks(t),t&&!this.params.forceDecode||!this.backend.supportsWebAudio()||this.getArrayBuffer(a,function(e){r.decodeArrayBuffer(e,function(e){r.backend.buffer=e,r.backend.setPeaks(null),r.drawBuffer(),r.fireEvent("waveform-ready")})})}},{key:"decodeArrayBuffer",value:function(e,t){var n=this;this.arraybuffer=e,this.backend.decodeArrayBuffer(e,function(r){n.isDestroyed||n.arraybuffer!=e||(t(r),n.arraybuffer=null)},function(){return n.fireEvent("error","Error decoding audiobuffer")})}},{key:"getArrayBuffer",value:function(e,t){var n=this,r=l.ajax({url:e,responseType:"arraybuffer"});return this.currentAjax=r,this.tmpEvents.push(r.on("progress",function(e){n.onProgress(e)}),r.on("success",function(e,r){t(e),n.currentAjax=null}),r.on("error",function(e){n.fireEvent("error","XHR error: "+e.target.statusText),n.currentAjax=null})),r}},{key:"onProgress",value:function(e){var t=void 0;t=e.lengthComputable?e.loaded/e.total:e.loaded/(e.loaded+1e6),this.fireEvent("loading",Math.round(100*t),e.target)}},{key:"exportPCM",value:function(e,t,n,r){e=e||1024,r=r||0,t=t||1e4,n=n||!1;var a=this.backend.getPeaks(e,r),i=[].map.call(a,function(e){return Math.round(e*t)/t}),s=JSON.stringify(i);return n||window.open("data:application/json;charset=utf-8,"+encodeURIComponent(s)),s}},{key:"exportImage",value:function(e,t){return e||(e="image/png"),t||(t=1),this.drawer.getImage(e,t)}},{key:"cancelAjax",value:function(){this.currentAjax&&(this.currentAjax.xhr.abort(),this.currentAjax=null)}},{key:"clearTmpEvents",value:function(){this.tmpEvents.forEach(function(e){return e.un()})}},{key:"empty",value:function(){this.backend.isPaused()||(this.stop(),this.backend.disconnectSource()),this.cancelAjax(),this.clearTmpEvents(),this.drawer.progress(0),this.drawer.setWidth(0),this.drawer.drawPeaks({length:this.drawer.getWidth()},0)}},{key:"destroy",value:function(){this.destroyAllPlugins(),this.fireEvent("destroy"),this.cancelAjax(),this.clearTmpEvents(),this.unAll(),this.params.responsive&&window.removeEventListener("resize",this._onResize,!0),this.backend.destroy(),this.drawer.destroy(),this.isDestroyed=!0,this.arraybuffer=null}}]),t}(l.Observer));k.util=l,t.default=k,e.exports=t.default},function(e,t){e.exports=function(e,t,n){function r(){var l=Date.now()-o;l<t&&l>=0?a=setTimeout(r,t-l):(a=null,n||(u=e.apply(s,i),s=i=null))}var a,i,s,o,u;null==t&&(t=100);var l=function(){s=this,i=arguments,o=Date.now();var l=n&&!a;return a||(a=setTimeout(r,t)),l&&(u=e.apply(s,i),s=i=null),u};return l.clear=function(){a&&(clearTimeout(a),a=null)},l}}])});
+
+},{}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44256,7 +44264,7 @@ var utils = _interopRequireWildcard(_utils);
 
 var _loadModels = require('./loadModels');
 
-var _loadSubtitles = require('./loadSubtitles');
+var _subtitlesManager = require('./subtitlesManager');
 
 var _audioManger = require('./audioManger');
 
@@ -44264,12 +44272,15 @@ var _timeManager = require('./timeManager');
 
 var _meshManager = require('./meshManager');
 
+var _editor = require('./editor');
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-var app = document.getElementById('app'); // ========
+// ========
 // Animation Manager
 // ========
 
+var app = document.getElementById('app');
 var loading = document.getElementById('loader');
 
 var container = void 0,
@@ -44277,7 +44288,7 @@ var container = void 0,
     renderer = void 0,
     scene = void 0;
 
-var init = function init(debugMode, audioSrc, models, subtitles, subtitlesElt) {
+var init = function init(editMode, audioSrc, models, subtitles, subtitlesElt) {
   // Append to DOM
   container = document.createElement('div');
   document.body.appendChild(container);
@@ -44299,20 +44310,31 @@ var init = function init(debugMode, audioSrc, models, subtitles, subtitlesElt) {
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
+  renderer.domElement.style.position = 'absolute';
+  renderer.domElement.style.left = '0px';
+  renderer.domElement.style.top = '0px';
 
   // Event Listeners
   window.addEventListener('resize', function (e) {
     utils.onWindowResize(e, renderer, camera);
   }, false);
 
-  // Load and start the sound, once loaded, load the animations and the subtitles.
-  (0, _audioManger.startAudio)(camera, audioSrc, function () {
+  var loadSubtitlesAndModels = function loadSubtitlesAndModels() {
     loading.style.display = 'none';
     app.style.display = 'block';
-    (0, _loadSubtitles.loadSubtitles)(debugMode, subtitles, subtitlesElt);
-    (0, _loadModels.loadModels)(debugMode, scene, models);
+    (0, _subtitlesManager.loadSubtitles)(subtitles, subtitlesElt, 0);
+    (0, _loadModels.loadModels)(scene, models);
     animate();
-  });
+  };
+
+  // Load and start the sound, once loaded, load the animations and the subtitles.
+  if (editMode) {
+    (0, _subtitlesManager.initSubtitles)(subtitles);
+    (0, _editor.initEditMode)(audioSrc, subtitlesElt, scene, models);
+    animate();
+  } else {
+    (0, _audioManger.startAudio)(camera, audioSrc, loadSubtitlesAndModels);
+  }
 };
 
 // Render
@@ -44348,6 +44370,7 @@ var animate = function animate() {
     current++;
   }
 
+  (0, _editor.updateCurrentAudioTimePosition)();
   (0, _timeManager.updateClock)();
   render();
   window.requestAnimationFrame(animate);
@@ -44355,7 +44378,7 @@ var animate = function animate() {
 
 exports.default = init;
 
-},{"./audioManger":3,"./loadModels":7,"./loadSubtitles":8,"./meshManager":9,"./timeManager":12,"./utils/utils":13,"three":1}],3:[function(require,module,exports){
+},{"./audioManger":4,"./editor":5,"./loadModels":8,"./meshManager":9,"./subtitlesManager":12,"./timeManager":13,"./utils/utils":14,"three":1}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44369,11 +44392,17 @@ var THREE = _interopRequireWildcard(_three);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+var audioListener = void 0,
+    audio = void 0,
+    loader = void 0; // ========
+// Add an audio source to the scene
+// ========
+
 var startAudio = function startAudio(camera, audioSrc, callback) {
   // Create the Audio Listener
-  var audioListener = new THREE.AudioListener();
-  var audio = new THREE.Audio(audioListener);
-  var loader = new THREE.AudioLoader();
+  audioListener = new THREE.AudioListener();
+  audio = new THREE.Audio(audioListener);
+  loader = new THREE.AudioLoader();
 
   // Add the Audio Listener to the camera
   camera.add(audioListener);
@@ -44390,69 +44419,419 @@ var startAudio = function startAudio(camera, audioSrc, callback) {
     audio.play();
     callback();
   }, onProgress, onError);
-}; // ========
-// Add an audio source to the scene
-// ========
+};
 
 exports.startAudio = startAudio;
 
-},{"three":1}],4:[function(require,module,exports){
+},{"three":1}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-// DEBUG MODE
-// Objects to load
+exports.updateCurrentAudioTimePosition = exports.initEditMode = undefined;
 
-var models = [{
-  id_sub: 1,
-  name: 'croissant',
-  startTime: 1,
-  endTime: 10000,
-  buffer: false
-}, {
-  id_sub: 4,
-  name: 'banana',
-  startTime: 5,
-  endTime: 7,
-  buffer: false
-}, {
-  id_sub: 6,
-  name: 'coffee01',
-  startTime: 91,
-  endTime: 105,
-  buffer: false
-}];
+var _wavesurfer = require('wavesurfer.js');
 
-exports.models = models;
+var _wavesurfer2 = _interopRequireDefault(_wavesurfer);
 
-},{}],5:[function(require,module,exports){
-'use strict';
+var _move = require('./move');
+
+var _utils = require('./../utils/utils');
+
+var _subtitlesManager = require('./../subtitlesManager');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// ========
+// Editor Main
+// ========
+
+var waveform = document.getElementById('waveform');
+
+var playBtn = document.getElementById('play');
+var stopBtn = document.getElementById('stop');
+var saveBtn = document.getElementById('save');
+var addSubtitleBtn = document.getElementById('addSubtitle');
+var removeSubtitleBtn = document.getElementById('removeSubtitle');
+var addModelBtn = document.getElementById('addModel');
+var removeModelBtn = document.getElementById('removeModel');
+var editor = document.getElementById('editor');
+var moveBtn = document.getElementById('move');
+var currentTime = document.getElementById('currentTime');
+var modelsKeys = document.getElementById('modelsKeys');
+var subtitleTooltip = document.getElementById('subtitleTooltip');
+var subtitlesKeys = document.getElementById('subtitlesKeys');
+var subtitleTimeTooltip = document.getElementById('subtitleTimeTooltip');
+var subtitlesTracks = document.getElementById('subtitlesTracks');
+var app = document.getElementById('app');
+var loading = document.getElementById('loader');
+
+var WIDTH = 1000;
+var currentSubtitleSelected = void 0;
+var isASubtitleSelected = false;
+
+var firstTimeLoadingSubtitles = true;
+var audio = void 0,
+    subtitlesElt = void 0;
+var keys = [];
+waveform.style.width = WIDTH + 'px';
+modelsKeys.style.width = WIDTH + 'px';
+subtitlesKeys.style.width = WIDTH + 'px';
+
+// Manage Keyboard
+document.body.onkeydown = function (e) {
+  var isShiftPressed = keys.indexOf(16) != -1;
+  // Spacebar
+  if (e.keyCode == 32) {
+    if (!isASubtitleSelected) {
+      playAudio();
+    }
+  }
+  // Enter
+  if (e.keyCode == 13) {
+    if (!isShiftPressed) {
+      e.preventDefault();
+      var time = subtitleTimeTooltip.innerText.split('-');
+      var txt = subtitleTooltip.innerText.split(/\n/);
+      var data = {
+        id: currentSubtitleSelected,
+        start: time[0],
+        end: time[1],
+        first: txt[0],
+        second: txt[1]
+      };
+      (0, _subtitlesManager.updateSubtitles)(data);
+      redrawSubtitle(true);
+    }
+  }
+  // Esc
+  if (e.keyCode == 27) {
+    currentSubtitleSelected = '';
+    isASubtitleSelected = false;
+    subtitleTooltip.innerText = '';
+    subtitleTimeTooltip.innerText = '';
+  }
+  // Shift
+  if (e.keyCode == 16) {
+    keys.push(e.keyCode);
+  }
+  // S: add a subtitle
+  if (e.keyCode == 83) {
+    if (isShiftPressed) {
+      addSubtitle();
+    }
+  }
+  // D: delete a subtitle 
+  if (e.keyCode == 68) {
+    if (isShiftPressed) {
+      removeSub();
+    }
+  }
+  // M: add a model 
+  if (e.keyCode == 77) {
+    if (isShiftPressed) {}
+  }
+  // R: remove a model 
+  if (e.keyCode == 82) {
+    if (isShiftPressed) {}
+  }
+};
+
+document.body.onkeyup = function (e) {
+  if (e.keyCode == 16) {
+    keys = [];
+  }
+};
+
+// Update a subtitle when it has moved in the timeline
+window.onmouseup = function (e) {
+  if (isASubtitleSelected) {
+    redrawSubtitle(false);
+  }
+};
+
+// Add a subtitle
+var addSubtitle = function addSubtitle() {
+  var data = {
+    id: (0, _utils.UUIID)(),
+    start: (0, _utils.secondstoHHMMSS)(audio.getCurrentTime()),
+    end: (0, _utils.secondstoHHMMSS)(audio.getCurrentTime() + 2),
+    first: '- Sample Text',
+    second: undefined
+  };
+  var startPos = (0, _utils.mapRange)(audio.getCurrentTime(), 0, audio.getDuration(), 0, WIDTH);
+  createSubKey(data, startPos);
+  (0, _subtitlesManager.updateSubtitles)(data);
+};
+
+// Remove a subtitle 
+var removeSub = function removeSub() {
+  var currentPos = (0, _utils.secondstoHHMMSS)(audio.getCurrentTime());
+  var id = (0, _subtitlesManager.removeSubtitle)(currentPos);
+  var elt = document.getElementById(id);
+  elt.remove();
+};
+
+// Redraw a subtitle
+var redrawSubtitle = function redrawSubtitle(manualEdit) {
+  var key = document.getElementById(currentSubtitleSelected);
+  var subtitleEdit = document.getElementById(currentSubtitleSelected + 'Edit');
+
+  var offset = void 0,
+      first = void 0,
+      second = void 0,
+      left = void 0,
+      start = void 0,
+      end = void 0;
+  if (manualEdit) {
+    var time = subtitleTimeTooltip.innerText.split('-');
+    var txt = subtitleTooltip.innerText.split(/\n/);
+    start = time[0];
+    end = time[1];
+    offset = (0, _utils.HHMMSStoSeconds)(time[0]);
+    first = txt[0];
+    second = txt[1];
+    left = (0, _utils.mapRange)(offset, 0, audio.getDuration(), 0, WIDTH);
+  } else {
+    first = key.dataset.first;
+    second = key.dataset.second;
+    offset = parseFloat(key.style.left.split('px')[0]).toFixed(100);
+    left = offset;
+    var newStart = (0, _utils.mapRange)(offset, 0, WIDTH, 0, audio.getDuration());
+    var newEnd = newStart + ((0, _utils.HHMMSStoSeconds)(key.dataset.end) - (0, _utils.HHMMSStoSeconds)(key.dataset.start));
+    start = (0, _utils.secondstoHHMMSS)(newStart);
+    end = (0, _utils.secondstoHHMMSS)(newEnd);
+  }
+
+  // Update the Key part
+  key.style.left = left + 'px';
+  key.dataset.left = left;
+  key.dataset.first = first;
+  key.dataset.second = second;
+  key.dataset.start = start;
+  key.dataset.end = end;
+
+  // Update the Edit part
+  subtitleEdit.children[1].innerText = start;
+  subtitleEdit.children[2].innerText = end;
+  subtitleEdit.children[3].innerText = first;
+  subtitleEdit.children[4].innerText = second;
+
+  // Move the tooltip
+  subtitleTooltip.style.left = left + 'px';
+  subtitleTimeTooltip.style.left = left + 'px';
+  subtitleTimeTooltip.innerHTML = start + '-' + end;
+
+  var data = {
+    id: key.id,
+    start: start,
+    end: end,
+    first: first,
+    second: second
+  };
+  (0, _subtitlesManager.updateSubtitles)(data);
+};
+
+// Play the audio
+var playAudio = function playAudio() {
+  if (audio.isPlaying()) {
+    (0, _subtitlesManager.clearSubtitlesQueue)(subtitlesElt);
+    audio.pause();
+    playBtn.innerText = 'Play';
+  } else {
+    if (firstTimeLoadingSubtitles) {
+      loading.style.display = 'none';
+      app.style.display = 'block';
+      firstTimeLoadingSubtitles = false;
+    }
+    (0, _subtitlesManager.loadSubtitles)(subtitlesElt, audio.getCurrentTime());
+    audio.play();
+    playBtn.innerText = 'Pause';
+  }
+};
+
+// Play Button
+playBtn.addEventListener('click', function () {
+  playAudio();
+});
+
+// Stop Button
+stopBtn.addEventListener('click', function () {
+  audio.stop();
+  playBtn.innerText = 'Play';
+});
+
+// Save Button
+saveBtn.addEventListener('click', function () {
+  (0, _subtitlesManager.saveSubtitlesToFile)();
+});
+
+// Add a Subtitle
+addSubtitleBtn.addEventListener('click', function () {
+  addSubtitle();
+});
+
+// Remove a Subtitle 
+removeSubtitleBtn.addEventListener('click', function () {
+  removeSub();
+});
+
+// Append a new subtitle track
+var newSubTrack = function newSubTrack(sub) {
+  var newElements = ['subtitleTrack', 'subId', 'subStart', 'subEnd', 'subFirst', 'subSecond'];
+  var domElements = [];
+  newElements.forEach(function (e, i) {
+    var elt = document.createElement('div');
+    elt.className = e;
+    i > 0 && (elt.contentEditable = 'true');
+    domElements.push(elt);
+  });
+  domElements[0].id = sub.id + 'Edit';
+  domElements[1].innerText = sub.id.substring(0, 5);
+  domElements[2].innerText = sub.start;
+  domElements[3].innerText = sub.end;
+  domElements[4].innerText = sub.first;
+  domElements[5].innerText = sub.second;
+  domElements.forEach(function (e, i) {
+    i > 0 && domElements[0].appendChild(e);
+  });
+  subtitlesTracks.appendChild(domElements[0]);
+};
+
+// Create a subtitle Key (the yellow things)
+var createSubKey = function createSubKey(data, startPos) {
+  var key = document.createElement('div');
+  key.className = 'subtitleKey';
+  key.style.left = startPos + 'px';
+  key.draggable = 'true';
+  key.dataset.start = data.start;
+  key.dataset.end = data.end;
+  key.dataset.first = data.first;
+  key.dataset.second = data.second;
+  key.dataset.left = startPos;
+  key.id = data.id;
+
+  newSubTrack(data);
+  (0, _move.moveElt)(key, key, true, false);
+  var showSubtitleAndTime = function showSubtitleAndTime() {
+    !data.second ? subtitleTooltip.innerHTML = data.first : subtitleTooltip.innerHTML = data.first + '<br>' + data.second;
+    subtitleTimeTooltip.innerHTML = data.start + '-' + data.end;
+    subtitleTooltip.style.left = key.dataset.left + 'px';
+    subtitleTimeTooltip.style.left = key.dataset.left + 'px';
+  };
+  key.addEventListener('mouseover', function () {
+    if (!isASubtitleSelected) {
+      showSubtitleAndTime();
+      subtitleTooltip.style.left = key.dataset.left + 'px';
+      subtitleTimeTooltip.style.left = key.dataset.left + 'px';
+    }
+  });
+  key.addEventListener('mouseleave', function () {
+    if (!isASubtitleSelected) {
+      subtitleTooltip.innerText = '';
+      subtitleTimeTooltip.innerText = '';
+    }
+  });
+  key.addEventListener('mousedown', function () {
+    isASubtitleSelected = true;
+    currentSubtitleSelected = data.id;
+    showSubtitleAndTime();
+  });
+  subtitlesKeys.appendChild(key);
+};
+
+// Subtitles Keys and Tracks
+var renderSubtitles = function renderSubtitles() {
+  _subtitlesManager.subtitles.forEach(function (sub) {
+    var startPos = (0, _utils.mapRange)((0, _utils.HHMMSStoSeconds)(sub.start), 0, audio.getDuration(), 0, WIDTH);
+    createSubKey(sub, startPos);
+  });
+};
+
+// Init the edit mode
+var initEditMode = function initEditMode(audioSrc, _subtitlesElt, scene, models) {
+  subtitlesElt = _subtitlesElt;
+
+  (0, _move.moveElt)(editor, moveBtn, true, true);
+
+  audio = _wavesurfer2.default.create({
+    container: '#waveform',
+    scrollParent: false,
+    cursorColor: '#399ACA',
+    barHeight: 7
+  });
+  audio.load(audioSrc);
+
+  // When the audio is loaded, load the subtitles
+  audio.on('ready', function () {
+    renderSubtitles(_subtitlesManager.subtitles);
+  });
+
+  // When the audio bar is moved, reload the subtitles
+  audio.on('seek', function (e) {
+    (0, _subtitlesManager.clearSubtitlesQueue)(subtitlesElt);
+    audio.isPlaying() && (0, _subtitlesManager.loadSubtitles)(subtitlesElt, audio.getCurrentTime());
+  });
+};
+
+// Update the position of the div showing the audio time
+var updateCurrentAudioTimePosition = function updateCurrentAudioTimePosition() {
+  var pos = (0, _utils.mapRange)(audio.getCurrentTime(), 0, audio.getDuration(), 0, WIDTH);
+  currentTime.innerText = (0, _utils.secondstoHHMMSS)(audio.getCurrentTime());
+  currentTime.style.left = pos + 'px';
+};
+
+exports.initEditMode = initEditMode;
+exports.updateCurrentAudioTimePosition = updateCurrentAudioTimePosition;
+
+},{"./../subtitlesManager":12,"./../utils/utils":14,"./move":6,"wavesurfer.js":2}],6:[function(require,module,exports){
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-// DEBUG MODE
-// Subtitles 
+// ========
+// Move the Editor
+// ========
 
-var subtitles = [{
-  id: 1,
-  first: '- Can I pay now? I just ordered bacon, egg and chesse croissant.',
-  second: '- Give me a regular coffee...',
-  start: 1,
-  end: 5000000
-}];
 
-exports.subtitles = subtitles;
+var moveElt = function moveElt(elementToMove, trigger, x, y) {
+  var pos1 = 0,
+      pos2 = 0,
+      pos3 = 0,
+      pos4 = 0;
 
-},{}],6:[function(require,module,exports){
+  var dragMouseDown = function dragMouseDown(e) {
+    e = e || window.event;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    document.onmousemove = elementDrag;
+  };
+
+  var elementDrag = function elementDrag(e) {
+    e = e || window.event;
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    y && (elementToMove.style.top = elementToMove.offsetTop - pos2 + "px");
+    x && (elementToMove.style.left = elementToMove.offsetLeft - pos1 + "px");
+  };
+
+  var closeDragElement = function closeDragElement() {
+    document.onmouseup = null;
+    document.onmousemove = null;
+  };
+
+  trigger.onmousedown = dragMouseDown;
+};
+
+exports.moveElt = moveElt;
+
+},{}],7:[function(require,module,exports){
 'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.debugMode = undefined;
 
 var _animationManager = require('./animationManager');
 
@@ -44462,9 +44841,11 @@ var _queens = require('./models/queens');
 
 var _queens2 = _interopRequireDefault(_queens);
 
-var _queens3 = require('./subtitles/queens');
+var _demo = require('./subtitles/demo');
 
-var _queens4 = _interopRequireDefault(_queens3);
+var _demo2 = _interopRequireDefault(_demo);
+
+require('./editor/index');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -44473,8 +44854,12 @@ var audioSrc = 'dist/sounds/queens.mp3'; /*
                                          Bodegas Doc
                                          */
 
-var debugMode = false;
+var editMode = true;
 // OPTIONS
+
+// Edit Mode
+
+// Edit Mode
 
 window.onload = function () {
   var body = document.getElementById('body');
@@ -44486,18 +44871,19 @@ window.onload = function () {
   var subtitlesElt = document.getElementById('subtitles');
 
   // Start the Film
-  watchBtn.addEventListener('click', function () {
+  var start = function start() {
     body.style.background = '#000000';
     cover.style.display = 'none';
     overlay.style.display = 'none';
     loader.style.display = 'block';
-    (0, _animationManager2.default)(debugMode, audioSrc, _queens2.default, _queens4.default, subtitlesElt);
-  });
+    (0, _animationManager2.default)(editMode, audioSrc, _queens2.default, _demo2.default, subtitlesElt);
+  };
+
+  // Begin on click or in debug mode
+  editMode ? start() : watchBtn.addEventListener('click', start);
 };
 
-exports.debugMode = debugMode;
-
-},{"./animationManager":2,"./models/queens":10,"./subtitles/queens":11}],7:[function(require,module,exports){
+},{"./animationManager":3,"./editor/index":5,"./models/queens":10,"./subtitles/demo":11}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44507,68 +44893,23 @@ exports.loadModels = undefined;
 
 var _meshManager = require('./meshManager');
 
-var _models = require('./debug/models');
-
-// ========
-// Load and remove a mesh at a specific time using setTimeout.
-// ========
-
-var loadModels = function loadModels(debugMode, scene, models) {
-  var modelsToLoad = models;
-  debugMode && (modelsToLoad = _models.models);
-
-  modelsToLoad.forEach(function (model, index) {
+var loadModels = function loadModels(scene, models) {
+  models.forEach(function (model, index) {
     var id = Date.now() + Math.random();
     setTimeout(function () {
       (0, _meshManager.addMesh)(scene, model, id);
-    }, model.startTime * 1000);
+    }, model.start * 1000);
     setTimeout(function () {
       (0, _meshManager.removeMesh)(scene, model, id);
-    }, model.endTime * 1000);
+    }, model.end * 1000);
   });
-};
+}; // ========
+// Load and remove a mesh at a specific time using setTimeout.
+// ========
 
 exports.loadModels = loadModels;
 
-},{"./debug/models":4,"./meshManager":9}],8:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.loadSubtitles = undefined;
-
-var _subtitles = require('./debug/subtitles');
-
-var loadSubtitles = function loadSubtitles(debugMode, subtitles, subtitlesElt) {
-  var subtitlesToLoad = subtitles;
-  debugMode && (subtitlesToLoad = _subtitles.subtitles);
-
-  subtitlesToLoad.forEach(function (sub, i) {
-    setTimeout(function () {
-      subtitlesElt.children[0].style.background = '#1d1d1d';
-      subtitlesElt.children[0].innerText = sub.first;
-      if (sub.second) {
-        subtitlesElt.children[2].style.background = '#1d1d1d';
-        subtitlesElt.children[2].innerText = sub.second;
-      }
-    }, sub.start * 1000);
-    setTimeout(function () {
-      subtitlesElt.children[0].style.background = '#000000';
-      subtitlesElt.children[0].innerText = '';
-      if (sub.second) {
-        subtitlesElt.children[2].style.background = '#000000';
-        subtitlesElt.children[2].innerText = '';
-      }
-    }, sub.end * 1000);
-  });
-}; // ========
-// Load and remove subtitles at a specific time using setTimeout.
-// ========
-
-exports.loadSubtitles = loadSubtitles;
-
-},{"./debug/subtitles":5}],9:[function(require,module,exports){
+},{"./meshManager":9}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44617,8 +44958,8 @@ exports.addMesh = addMesh;
 exports.removeMesh = removeMesh;
 exports.currentMeshes = currentMeshes;
 
-},{"./utils/utils":13,"three":1}],10:[function(require,module,exports){
-'use strict';
+},{"./utils/utils":14,"three":1}],10:[function(require,module,exports){
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -44626,434 +44967,264 @@ Object.defineProperty(exports, "__esModule", {
 // Objects to load
 
 var models = [{
-  id_sub: 1,
-  name: 'croissant02',
-  startTime: 12,
-  endTime: 54,
-  buffer: false
+  "id_sub": 1,
+  "name": "croissant02",
+  "start": "00:00:12",
+  "end": "00:00:54",
+  "buffer": false
 }, {
-  name: 'napkins',
-  startTime: 44,
-  endTime: 54,
-  buffer: false
+  "name": "napkins",
+  "start": "00:00:44",
+  "end": "00:00:54",
+  "buffer": false
 }, {
-  id_sub: 6,
-  name: 'coffee01',
-  startTime: 90,
-  endTime: 127,
-  buffer: false
+  "id_sub": 6,
+  "name": "coffee01",
+  "start": "00:01:30",
+  "end": "00:02:07",
+  "buffer": false
 }, {
-  id_sub: 7,
-  name: 'empanada',
-  startTime: 120,
-  endTime: 127,
-  buffer: false
+  "id_sub": 7,
+  "name": "empanada",
+  "start": "00:02:00",
+  "end": "00:02:07",
+  "buffer": false
 }, {
-  id_sub: 7,
-  name: 'empanada',
-  startTime: 121,
-  endTime: 127,
-  buffer: false
+  "id_sub": 7,
+  "name": "empanada",
+  "start": "00:02:01",
+  "end": "00:02:07",
+  "buffer": false
 }, {
-  id_sub: 10,
-  name: 'coffee01',
-  startTime: 136,
-  endTime: 142,
-  buffer: false
+  "id_sub": 10,
+  "name": "coffee01",
+  "start": "00:02:16",
+  "end": "00:02:22",
+  "buffer": false
 }, {
-  id_sub: 16,
-  name: 'banana', //add tylenol too
-  startTime: 158,
-  endTime: 175,
-  buffer: false
+  "id_sub": 16,
+  "name": "banana",
+  "start": "00:02:38",
+  "end": "00:02:55",
+  "buffer": false
 }, {
-  id_sub: 18,
-  name: 'coffee01', //should be OJ
-  startTime: 180,
-  endTime: 190,
-  buffer: false
+  "id_sub": 18,
+  "name": "coffee01",
+  "start": "00:03:00",
+  "end": "00:03:10",
+  "buffer": false
 }, {
-  id_sub: 18,
-  name: 'bagelButter',
-  startTime: 181,
-  endTime: 190,
-  buffer: false
+  "id_sub": 18,
+  "name": "bagelButter",
+  "start": "00:03:01",
+  "end": "00:03:10",
+  "buffer": false
 }, {
-  id_sub: 22,
-  name: 'bagelButter', //he also got a water here
-  startTime: 272,
-  endTime: 282,
-  buffer: false
+  "id_sub": 22,
+  "name": "bagelButter",
+  "start": "00:04:32",
+  "end": "00:04:42",
+  "buffer": false
 }, {
-  id_sub: 22,
-  name: 'coffee01', //tea, actually. also add dayquil in a bit.
-  startTime: 275,
-  endTime: 282,
-  buffer: false
+  "id_sub": 22,
+  "name": "coffee01",
+  "start": "00:04:35",
+  "end": "00:04:42",
+  "buffer": false
 }, {
-  id_sub: 27,
-  name: 'brownBag',
-  startTime: 283,
-  endTime: 313,
-  buffer: false
+  "id_sub": 27,
+  "name": "brownBag",
+  "start": "00:04:43",
+  "end": "00:05:13",
+  "buffer": false
 }, {
-  id_sub: 27,
-  name: 'coffee01', //tea actually
-  startTime: 283,
-  endTime: 313,
-  buffer: false
+  "id_sub": 27,
+  "name": "coffee01",
+  "start": "00:04:43",
+  "end": "00:05:13",
+  "buffer": false
 }, {
-  id_sub: 34,
-  name: 'coffee02',
-  startTime: 354,
-  endTime: 364,
-  buffer: false
+  "id_sub": 34,
+  "name": "coffee02",
+  "start": "00:05:54",
+  "end": "00:06:04",
+  "buffer": false
 }, {
-  id_sub: 34,
-  name: 'coffee02',
-  startTime: 355,
-  endTime: 364,
-  buffer: false
+  "id_sub": 34,
+  "name": "coffee02",
+  "start": "00:05:55",
+  "end": "00:06:04",
+  "buffer": false
 }, {
-  id_sub: 40,
-  name: 'coffee01', //small coffee, not too much sugar
-  startTime: 393,
-  endTime: 410,
-  buffer: false
+  "id_sub": 40,
+  "name": "coffee01",
+  "start": "00:06:33",
+  "end": "00:06:50",
+  "buffer": false
 }, {
-  id_sub: 44,
-  name: 'brownBag', //
-  startTime: 420,
-  endTime: 440,
-  buffer: false
+  "id_sub": 44,
+  "name": "brownBag",
+  "start": "00:07:00",
+  "end": "00:07:20",
+  "buffer": false
 }, {
-  id_sub: 44,
-  name: 'bagelButter', //this customer also got OJ and water...TBScanned
-  startTime: 421,
-  endTime: 440,
-  buffer: false
+  "id_sub": 44,
+  "name": "bagelButter",
+  "start": "00:07:01",
+  "end": "00:07:20",
+  "buffer": false
 }, {
-  id_sub: 49,
-  name: 'coffee02', //lady asking for tea (he's got tea, but not that kind)
-  startTime: 452,
-  endTime: 460,
-  buffer: false
+  "id_sub": 49,
+  "name": "coffee02",
+  "start": "00:07:32",
+  "end": "00:07:40",
+  "buffer": false
 }, {
-  id_sub: 50,
-  name: 'hamTurkey',
-  startTime: 489,
-  endTime: 505,
-  buffer: false
+  "id_sub": 50,
+  "name": "hamTurkey",
+  "start": "00:08:09",
+  "end": "00:08:25",
+  "buffer": false
 }, {
-  id_sub: 50,
-  name: 'oatmeal', //he got snapple too.
-  startTime: 492,
-  endTime: 505,
-  buffer: false
+  "id_sub": 50,
+  "name": "oatmeal",
+  "start": "00:08:12",
+  "end": "00:08:25",
+  "buffer": false
 }];
 
 exports.default = models;
 
 },{}],11:[function(require,module,exports){
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _ref;
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-// Subtitles
-// Long Island City, Queens
-
 var subtitles = [{
-  id: 1,
-  first: '- Can I pay now? I just ordered. Bacon, egg and chesse croissant.',
-  start: 12,
-  end: 17
+  "id": "3a2bdeaa-069b-191f-07f6-1ce6ac640250",
+  "first": "- Can I pay now? I just ordered. Bacon, egg and chesse croissant.",
+  "start": "00:00:12",
+  "end": "00:00:17"
 }, {
-  id: 2,
-  first: '- Thanks buddy.',
-  start: 39,
-  end: 41
-}, {
-  id: 3,
-  first: '- Thank you man.',
-  second: '- No problem.',
-  start: 41,
-  end: 43
-}, {
-  id: 4,
-  first: '- You got a napkin or two, that’d be great, while you’re down there.',
-  start: 43,
-  end: 49
-}, {
-  id: 5,
-  first: '- Thank you man.',
-  start: 50,
-  end: 52
-}, {
-  id: 6,
-  first: '- Small coffee, milk, sugar.',
-  start: 91,
-  end: 94
-}, {
-  id: 7,
-  first: '- Two empanadas.',
-  start: 120,
-  end: 122
-}, {
-  id: 8,
-  first: '- Thank you bro.',
-  start: 122,
-  end: 124
-}, {
-  id: 9,
-  first: '- I don’t need a bag. Thank you.',
-  start: 124,
-  end: 127
-}, {
-  id: 10,
-  first: '- Give me a regular coffee...',
-  start: 137,
-  end: 140
-}, {
-  id: 11,
-  first: '...small.',
-  start: 141,
-  end: 143
-}, {
-  id: 12,
-  first: '- Thanks.',
-  start: 152,
-  end: 154
-}, {
-  id: 13,
-  first: '- It screwed up...',
-  start: 156,
-  end: 159
-}, {
-  id: 14,
-  first: '- Good day.',
-  second: '- Good day madam, how are you?',
-  start: 160,
-  end: 162
-}, {
-  id: 15,
-  first: '- Good, good and you?',
-  start: 162,
-  end: 163
-}, {
-  id: 16,
-  first: '- Give me a small Tylenol.',
-  start: 163,
-  end: 166
-}, {
-  id: 17,
-  first: '- OK, thank you.',
-  second: '- OK.',
-  start: 177,
-  end: 180
-}, {
-  id: 18,
-  first: '-Three dollars.',
-  start: 181,
-  end: 183
-}, {
-  id: 19,
-  first: '- What is it?',
-  start: 184,
-  end: 186
-}, {
-  id: 20,
-  first: '- Three.',
-  start: 186,
-  end: 189
-}, {
-  id: 21,
-  first: '- Have a good morning.',
-  second: '- Good morning.',
-  start: 195,
-  end: 198
-}, {
-  id: 22,
-  first: "- Let me get a tea...",
-  start: 275,
-  end: 277
-}, {
-  id: 23,
-  first: '...milk and sugar.',
-  second: '- Small?',
-  start: 277,
-  end: 278
-}, {
-  id: 24,
-  first: '- Yeah.',
-  start: 278,
-  end: 280
-}, {
-  id: 25,
-  first: '- And a DayQuil.',
-  second: '- And a what?',
-  start: 280,
-  end: 282
-}, {
-  id: 26,
-  first: '- Dayquil.',
-  start: 282,
-  end: 283
-}, {
-  id: 27,
-  first: '- Give me a small tea with milk and sugar.',
-  start: 283,
-  end: 285
-}, {
-  id: 28,
-  first: '- [man in the back] small?',
-  second: '- Yes.',
-  start: 285,
-  end: 288
-}, {
-  id: 29,
-  first: '- Here you go.',
-  second: '- Thank you.',
-  start: 305,
-  end: 307
-}, {
-  id: 30,
-  first: '- Six dollars.',
-  start: 311,
-  end: 313
-}, {
-  id: 31,
-  first: '- How are you man? Give me a pack of [inaudible]',
-  start: 329,
-  end: 333
-}, {
-  id: 32,
-  first: "- It's cool outside.",
-  second: '- Yes.',
-  start: 344,
-  end: 346
-}, {
-  id: 33,
-  first: "- It seems like it's going to rain too.",
-  start: 346,
-  end: 349
-}, {
-  id: 34,
-  first: '- Two large coffees, please...',
-  start: 354,
-  end: 356
-}, {
-  id: 35,
-  first: '- ...with one a half sugars.',
-  second: '- Two large coffees with one and a half sugars.',
-  start: 356,
-  end: 359
-}, {
-  id: 36,
-  first: '- [man in the back] Two?',
-  second: 'One and a half.',
-  start: 359,
-  end: 361
-}, {
-  id: 37,
-  first: '- [man in the back] Two or one?',
-  start: 361,
-  end: 362
-}, {
-  id: 38,
-  first: '- Thank you, see you soon.',
-  second: '- Two.',
-  start: 362,
-  end: 364
-}, {
-  id: 39,
-  first: '- Nine fifty.',
-  start: 370,
-  end: 373
-}, {
-  id: 40,
-  first: '- Can I have a cup of coffee?',
-  start: 393,
-  end: 395
-}, {
-  id: 41,
-  first: '- Milk and sugar?',
-  second: '- Yeah. One sugar. They put a lot of sugar.',
-  start: 396,
-  end: 400
-}, {
-  id: 42,
-  first: '- Give me a coffee with one small sugar.',
-  start: 400,
-  end: 403
-}, {
-  id: 43,
-  first: 'Regular.',
-  second: '- [inaudible]',
-  start: 406,
-  end: 409
-}, {
-  id: 44,
-  first: '- Good morning. I have a oatmeal, and I got a bagel toasted with butter...',
-  second: '- This?',
-  start: 421,
-  end: 428
-}, {
-  id: 45,
-  first: "- And the stuff right here. Just this, and my bagel toasted with butter, and a small oatmeal.",
-  start: 428,
-  end: 435
-}, {
-  id: 46,
-  first: '- Four eighty five.',
-  start: 438,
-  end: 440
-}, {
-  id: 47,
-  first: '- Excuse me. Um...',
-  start: 442,
-  end: 444
-}, {
-  id: 48,
-  first: '- Do you have this?',
-  start: 448,
-  end: 450
-}, {
-  id: 49,
-  first: '- Tea.',
-  second: '- I got tea but not that kind. I got a different kind of tea. Like...',
-  start: 452,
-  end: 460
-}, {
-  id: 50,
-  first: '- Turkey and cheese.',
-  second: '- Turkey and what?',
-  start: 489,
-  end: 492
-}, {
-  id: 51,
-  first: '- Turkey and cheese.',
-  second: '- Yeah.',
-  start: 492,
-  end: 494
-}, (_ref = {
-  id: 52,
-  first: '- This one?'
-}, _defineProperty(_ref, 'first', '- Yeah.'), _defineProperty(_ref, 'start', 494), _defineProperty(_ref, 'end', 496), _ref), {
-  id: 53,
-  first: '- Six seventy five.',
-  start: 496,
-  end: 500
+  "id": "5397dc3c-914b-f62b-5d61-89347f3f325d",
+  "first": "- Thanks buddy.",
+  "start": "00:00:39",
+  "end": "00:00:41"
 }];
 
 exports.default = subtitles;
 
 },{}],12:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.saveSubtitlesToFile = exports.updateSubtitles = exports.removeSubtitle = exports.clearSubtitlesQueue = exports.loadSubtitles = exports.initSubtitles = exports.subtitles = undefined;
+
+var _utils = require('./utils/utils');
+
+var subtitlesQueue = []; // ========
+// Load, remove and update subtitles.
+// ========
+
+var subtitles = void 0;
+
+// Init: this is just called by the editor
+var initSubtitles = function initSubtitles(_subtitles) {
+  exports.subtitles = subtitles = _subtitles;
+};
+
+// Load the Subtitles in time
+var loadSubtitles = function loadSubtitles(subtitlesElt, currentTime) {
+  subtitles.forEach(function (sub, i) {
+    var start = (0, _utils.HHMMSStoSeconds)(sub.start);
+    var end = (0, _utils.HHMMSStoSeconds)(sub.end);
+    if (start > currentTime) {
+      start = start - currentTime;
+      end = end - currentTime;
+      subtitlesQueue.push(setTimeout(function () {
+        subtitlesElt.children[0].style.background = '#1d1d1d';
+        subtitlesElt.children[0].innerText = sub.first;
+        if (sub.second) {
+          subtitlesElt.children[2].style.background = '#1d1d1d';
+          subtitlesElt.children[2].innerText = sub.second;
+        }
+      }, start * 1000));
+      subtitlesQueue.push(setTimeout(function () {
+        subtitlesElt.children[0].style.background = '#000000';
+        subtitlesElt.children[0].innerText = '';
+        if (sub.second) {
+          subtitlesElt.children[2].style.background = '#000000';
+          subtitlesElt.children[2].innerText = '';
+        }
+      }, end * 1000));
+    }
+  });
+};
+
+// Clear the queue of subtitles to render
+var clearSubtitlesQueue = function clearSubtitlesQueue(subtitlesElt) {
+  subtitlesQueue.forEach(function (sub) {
+    clearTimeout(sub);
+  });
+  subtitlesElt.children[0].style.background = '#000000';
+  subtitlesElt.children[0].innerText = '';
+  subtitlesElt.children[2].style.background = '#000000';
+  subtitlesElt.children[2].innerText = '';
+  subtitlesQueue = [];
+};
+
+// Update the values in the subtitles JSON. Can modify an existing or add a new.
+var updateSubtitles = function updateSubtitles(input) {
+  var updatedExisting = false;
+  subtitles.forEach(function (sub) {
+    if (sub.id == input.id) {
+      input.start && (sub.start = input.start);
+      input.end && (sub.end = input.end);
+      input.first && input.first != 'undefined' && (sub.first = input.first);
+      input.second && input.second != 'undefined' && (sub.second = input.second);
+      updatedExisting = true;
+    }
+  });
+  if (!updatedExisting) {
+    subtitles.push(input);
+  }
+  console.log(subtitles);
+};
+
+// Remove an Existing subtitle
+var removeSubtitle = function removeSubtitle(input) {
+  var id = void 0;
+  subtitles.forEach(function (sub) {
+    if (sub.start == input) {
+      id = sub.id;
+      subtitles.splice(subtitles.indexOf(sub), 1);
+    }
+  });
+  return id;
+};
+
+// Save the JSON file
+var saveSubtitlesToFile = function saveSubtitlesToFile() {
+  var date = new Date();
+  var a = document.createElement("a");
+  var file = new Blob([JSON.stringify(subtitles)], { type: 'text/plain' });
+  a.href = URL.createObjectURL(file);
+  a.download = date.getTime() + '.json';
+  a.click();
+};
+
+exports.subtitles = subtitles;
+exports.initSubtitles = initSubtitles;
+exports.loadSubtitles = loadSubtitles;
+exports.clearSubtitlesQueue = clearSubtitlesQueue;
+exports.removeSubtitle = removeSubtitle;
+exports.updateSubtitles = updateSubtitles;
+exports.saveSubtitlesToFile = saveSubtitlesToFile;
+
+},{"./utils/utils":14}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45076,7 +45247,7 @@ var updateClock = function updateClock() {
 
 exports.updateClock = updateClock;
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 var _three = require('three');
@@ -45152,13 +45323,63 @@ var shuffleArray = function shuffleArray(arr) {
   });
 };
 
+// ----
+// Map a value between a range
+// ----
+var mapRange = function mapRange(value, low1, high1, low2, high2) {
+  return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
+};
+
+// ----
+// Transform an int of seconds into HH:MM:SS
+// ----
+var secondstoHHMMSS = function secondstoHHMMSS(input) {
+  var sec_num = parseInt(input);
+  var hours = Math.floor(sec_num / 3600);
+  var minutes = Math.floor((sec_num - hours * 3600) / 60);
+  var seconds = sec_num - hours * 3600 - minutes * 60;
+
+  if (hours < 10) {
+    hours = "0" + hours;
+  }
+  if (minutes < 10) {
+    minutes = "0" + minutes;
+  }
+  if (seconds < 10) {
+    seconds = "0" + seconds;
+  }
+  return hours + ':' + minutes + ':' + seconds;
+};
+
+// ----
+// Transform HH:MM:SS into an int of seconds
+// ----
+var HHMMSStoSeconds = function HHMMSStoSeconds(input) {
+  var a = input.split(':');
+  return +a[0] * 60 * 60 + +a[1] * 60 + +a[2];
+};
+
+// ----
+// Create a UUIID
+// ----
+var UUIID = function UUIID() {
+  var s4 = function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  };
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+};
+
 module.exports = {
   onScroll: onScroll,
   onDocumentMouseMove: onDocumentMouseMove,
   onWindowResize: onWindowResize,
   toRadians: toRadians,
   toDegrees: toDegrees,
-  shuffleArray: shuffleArray
+  shuffleArray: shuffleArray,
+  mapRange: mapRange,
+  secondstoHHMMSS: secondstoHHMMSS,
+  HHMMSStoSeconds: HHMMSStoSeconds,
+  UUIID: UUIID
 };
 
-},{"three":1}]},{},[6]);
+},{"three":1}]},{},[7]);
