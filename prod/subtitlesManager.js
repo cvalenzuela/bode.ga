@@ -25,7 +25,7 @@ const loadSubtitles = currentTime => {
       subtitlesQueue.push(setTimeout(() => {
         subtitlesElt.children[0].style.background = '#1d1d1d';
         subtitlesElt.children[0].innerText = sub.first;
-        if (sub.second) {
+        if (sub.second != undefined && sub.second != 'undefined') {
           subtitlesElt.children[2].style.background = '#1d1d1d';
           subtitlesElt.children[2].innerText = sub.second;
         }
@@ -33,7 +33,7 @@ const loadSubtitles = currentTime => {
       subtitlesQueue.push(setTimeout(() => {
         subtitlesElt.children[0].style.background = '#000000';
         subtitlesElt.children[0].innerText = '';
-        if (sub.second) {
+        if (sub.second != undefined && sub.second != 'undefined') {
           subtitlesElt.children[2].style.background = '#000000';
           subtitlesElt.children[2].innerText = '';
         }
@@ -61,15 +61,14 @@ const updateSubtitles = input => {
     if (sub.id == input.id) {
       input.start && (sub.start = input.start);
       input.end && (sub.end = input.end);
-      input.first && input.first != 'undefined' && (sub.first = input.first);
-      input.second && input.second != 'undefined' && (sub.second = input.second);
+      input.first && input.first != undefined && (sub.first = input.first);
+      input.second && input.second != undefined && (sub.second = input.second);
       updatedExisting = true;
     }
   });
   if (!updatedExisting) {
     subtitles.push(input)
   }
-  console.log(subtitles);
 }
 
 // Remove an Existing subtitle
@@ -95,17 +94,17 @@ const saveSubtitlesToFile = () => {
 }
 
 // Load Subtitles from File
-const loadSubtitlesFromFile = callback => {
+const loadSubtitlesFromFile = (removeCurrentSubtitles, renderNewSubtitles) => {
   const fileSelector = document.createElement('input');
   fileSelector.setAttribute('type', 'file');
   fileSelector.click();
   fileSelector.addEventListener('change', () => {
-    var file = fileSelector.files[0];
-    var reader = new FileReader();
-    var reader = new FileReader();
+    let file = fileSelector.files[0];
+    let reader = new FileReader();
     reader.onload = e => {
+      removeCurrentSubtitles()
       subtitles = JSON.parse(reader.result);
-      callback();
+      renderNewSubtitles();
     }
     reader.readAsText(file);
   }, false)

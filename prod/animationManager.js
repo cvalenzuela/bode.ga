@@ -7,7 +7,7 @@ import * as utils from './utils/utils';
 import { initSubtitles, loadSubtitles } from './subtitlesManager';
 import { startAudio } from './audioManger';
 import { updateClock } from './timeManager';
-import { loadMeshes, currentMeshes } from './meshManager';
+import { initModels, loadModels, currentModels } from './modelManager';
 import { initEditMode } from './editor';
 import { updateCurrentAudioTimePosition } from './editor/GUIManager';
 import { editMode } from './index';
@@ -49,6 +49,7 @@ let init = (audioSrc, models, subtitles, subtitlesElt) => {
 
   // Load and start the sound, once loaded, load the animations and the subtitles.
   initSubtitles(subtitles, subtitlesElt);
+  initModels(scene, models);
   if (editMode) {
     initEditMode(audioSrc, scene, models);
     animate();
@@ -57,7 +58,7 @@ let init = (audioSrc, models, subtitles, subtitlesElt) => {
       loading.style.display = 'none';
       app.style.display = 'block';
       loadSubtitles(0);
-      loadMeshes(scene, models);
+      loadModels(0);
       animate();
     });
   }
@@ -72,26 +73,26 @@ let render = () => {
 // Animate Loop
 let animate = () => {
   let current = 1;
-  let total = Object.keys(currentMeshes).length;
+  let total = Object.keys(currentModels).length;
   // Rotate the objects
-  for (let id in currentMeshes) {
-    currentMeshes[id].rotation.y += 0.005;
+  for (let id in currentModels) {
+    currentModels[id].rotation.y += 0.005;
     if (total == 2) {
       if (current == 1) {
-        currentMeshes[id].position.x = +0.1;
+        currentModels[id].position.x = +0.1;
       } else if (current == 2) {
-        currentMeshes[id].position.x = -0.1;
+        currentModels[id].position.x = -0.1;
       }
     } else if (total == 3) {
       if (current == 1) {
-        currentMeshes[id].position.x = +0.2;
+        currentModels[id].position.x = +0.2;
       } else if (current == 2) {
-        currentMeshes[id].position.x = 0;
+        currentModels[id].position.x = 0;
       } else if (current == 3) {
-        currentMeshes[id].position.x = -0.2;
+        currentModels[id].position.x = -0.2;
       }
     } else {
-      currentMeshes[id].position.x = 0;
+      currentModels[id].position.x = 0;
     }
     current++;
   }

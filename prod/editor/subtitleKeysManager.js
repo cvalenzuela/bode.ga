@@ -15,6 +15,12 @@ let subtitlesKeys;
 let currentSubtitleSelected;
 let isASubtitleKeySelected = false;
 
+// Show/Hide tooltips
+const showHideSubtitleTooltips = state => {
+  subtitleTooltip.style.display = state;
+  subtitleTimeTooltip.style.display = state;
+}
+
 // Create a subtitle Key (the yellow things)
 const createSubKey = (data, startPos) => {
   let key = document.createElement('div');
@@ -39,6 +45,7 @@ const createSubKey = (data, startPos) => {
   }
   key.addEventListener('mouseover', () => {
     if (!isASubtitleKeySelected) {
+      showHideSubtitleTooltips('inline-block');
       showSubtitleAndTime();
       subtitleTooltip.style.left = `${key.dataset.left}px`;
       subtitleTimeTooltip.style.left = `${key.dataset.left}px`;
@@ -46,11 +53,11 @@ const createSubKey = (data, startPos) => {
   });
   key.addEventListener('mouseleave', () => {
     if (!isASubtitleKeySelected) {
-      subtitleTooltip.innerText = '';
-      subtitleTimeTooltip.innerText = '';
+      showHideSubtitleTooltips('none');
     }
   });
   key.addEventListener('mousedown', () => {
+    showHideSubtitleTooltips('inline-block');
     isASubtitleKeySelected = true;
     currentSubtitleSelected = data.id;
     showSubtitleAndTime();
@@ -70,12 +77,11 @@ const renderSubtitlesKeys = () => {
 };
 
 // Remove all Subtitle Keys
-const removeSubtitles = callback => {
+const removeSubtitles = () => {
   subtitles.forEach(sub => {
     let elt = document.getElementById(sub.id);
     elt.remove();
   });
-  callback(renderSubtitlesKeys);
 }
 
 // Clear selected subtitle key
@@ -85,6 +91,7 @@ const clearSubtitleKeys = () => {
 }
 
 export { 
+  showHideSubtitleTooltips,
   clearSubtitleKeys,
   currentSubtitleSelected,
   subtitlesKeys,

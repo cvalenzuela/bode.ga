@@ -3,10 +3,13 @@
 // ========
 
 import { audio, playAudio } from './audioManager';
-import { saveSubtitlesToFile, removeSubtitle, loadSubtitlesFromFile } from './../subtitlesManager';
+import { saveSubtitlesToFile, loadSubtitlesFromFile } from './../subtitlesManager';
 import { renderSubtitlesKeys, removeSubtitles } from './subtitleKeysManager';
 import { addSub, removeSub } from './subtitlesMiddleManager';
 
+import { saveModelsToFile, loadModelsFromFile } from './../modelManager';
+import { renderModelsKeys, removeModels } from './modelKeysManager';
+import { addM, removeM } from './modelsMiddleManager';
 
 const playBtn = document.getElementById('play');
 const stopBtn = document.getElementById('stop');
@@ -32,17 +35,17 @@ stopBtn.addEventListener('click', () =>  {
 // Save Button
 saveBtn.addEventListener('click', () => {
   saveSubtitlesToFile();
-  // saveModelsToFile();
+  saveModelsToFile();
 });
 
 // Load Subtitles Button
 loadSubtitlesFileBtn.addEventListener('click', () => {
-  removeSubtitles(loadSubtitlesFromFile, renderSubtitlesKeys)
+  loadSubtitlesFromFile(removeSubtitles, renderSubtitlesKeys)
 })
 
 // Load Models Button
 loadModelsFileBtn.addEventListener('click', () => {
-  // removeModels(loadModelsFromFile, renderModelsKeys)
+  loadModelsFromFile(removeModels, renderModelsKeys);
 })
 
 // Add a Subtitle
@@ -53,6 +56,16 @@ addSubtitleBtn.addEventListener('click', () => {
 // Remove a Subtitle 
 removeSubtitleBtn.addEventListener('click', () => {
   removeSub();
+});
+
+// Add a Model
+addModelBtn.addEventListener('click', () => {
+  addM();
+});
+
+// Remove a Model 
+removeModelBtn.addEventListener('click', () => {
+  removeM();
 });
 
 export {

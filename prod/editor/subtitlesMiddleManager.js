@@ -72,14 +72,16 @@ const redrawSubtitle = manualEdit => {
   subtitleTimeTooltip.style.left = `${left}px`;
   subtitleTimeTooltip.innerHTML = `${start}-${end}`;
 
-  const data = {
-    id: key.id,
-    start,
-    end,
-    first,
-    second
-  };
-  updateSubtitles(data);
+  if(!manualEdit){
+    const data = {
+      id: key.id,
+      start,
+      end,
+      first,
+      second
+    }
+    updateSubtitles(data);
+  }
 }
 
 export {

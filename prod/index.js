@@ -8,7 +8,7 @@ import init from './animationManager';
 import models from './models/queens';
 import subtitles from './subtitles/1511661098592';
 const audioSrc = 'dist/sounds/queens.mp3';
-const editMode = false;
+const editMode = true;
 // OPTIONS
 
 // Edit Mode

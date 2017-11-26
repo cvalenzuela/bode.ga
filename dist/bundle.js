@@ -44268,7 +44268,7 @@ var _audioManger = require('./audioManger');
 
 var _timeManager = require('./timeManager');
 
-var _meshManager = require('./meshManager');
+var _modelManager = require('./modelManager');
 
 var _editor = require('./editor');
 
@@ -44323,6 +44323,7 @@ var init = function init(audioSrc, models, subtitles, subtitlesElt) {
 
   // Load and start the sound, once loaded, load the animations and the subtitles.
   (0, _subtitlesManager.initSubtitles)(subtitles, subtitlesElt);
+  (0, _modelManager.initModels)(scene, models);
   if (_index.editMode) {
     (0, _editor.initEditMode)(audioSrc, scene, models);
     animate();
@@ -44331,7 +44332,7 @@ var init = function init(audioSrc, models, subtitles, subtitlesElt) {
       loading.style.display = 'none';
       app.style.display = 'block';
       (0, _subtitlesManager.loadSubtitles)(0);
-      (0, _meshManager.loadMeshes)(scene, models);
+      (0, _modelManager.loadModels)(0);
       animate();
     });
   }
@@ -44346,26 +44347,26 @@ var render = function render() {
 // Animate Loop
 var animate = function animate() {
   var current = 1;
-  var total = Object.keys(_meshManager.currentMeshes).length;
+  var total = Object.keys(_modelManager.currentModels).length;
   // Rotate the objects
-  for (var id in _meshManager.currentMeshes) {
-    _meshManager.currentMeshes[id].rotation.y += 0.005;
+  for (var id in _modelManager.currentModels) {
+    _modelManager.currentModels[id].rotation.y += 0.005;
     if (total == 2) {
       if (current == 1) {
-        _meshManager.currentMeshes[id].position.x = +0.1;
+        _modelManager.currentModels[id].position.x = +0.1;
       } else if (current == 2) {
-        _meshManager.currentMeshes[id].position.x = -0.1;
+        _modelManager.currentModels[id].position.x = -0.1;
       }
     } else if (total == 3) {
       if (current == 1) {
-        _meshManager.currentMeshes[id].position.x = +0.2;
+        _modelManager.currentModels[id].position.x = +0.2;
       } else if (current == 2) {
-        _meshManager.currentMeshes[id].position.x = 0;
+        _modelManager.currentModels[id].position.x = 0;
       } else if (current == 3) {
-        _meshManager.currentMeshes[id].position.x = -0.2;
+        _modelManager.currentModels[id].position.x = -0.2;
       }
     } else {
-      _meshManager.currentMeshes[id].position.x = 0;
+      _modelManager.currentModels[id].position.x = 0;
     }
     current++;
   }
@@ -44378,7 +44379,7 @@ var animate = function animate() {
 
 exports.default = init;
 
-},{"./audioManger":4,"./editor":8,"./editor/GUIManager":5,"./index":13,"./meshManager":14,"./subtitlesManager":17,"./timeManager":18,"./utils/utils":19,"three":1}],4:[function(require,module,exports){
+},{"./audioManger":4,"./editor":8,"./editor/GUIManager":5,"./index":15,"./modelManager":16,"./subtitlesManager":19,"./timeManager":20,"./utils/utils":21,"three":1}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44455,7 +44456,7 @@ var updateCurrentAudioTimePosition = function updateCurrentAudioTimePosition() {
 exports.modelsKeys = modelsKeys;
 exports.updateCurrentAudioTimePosition = updateCurrentAudioTimePosition;
 
-},{"./../utils/utils":19,"./audioManager":6,"./index":8}],6:[function(require,module,exports){
+},{"./../utils/utils":21,"./audioManager":6,"./index":8}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44471,9 +44472,13 @@ var _index = require('./index');
 
 var _subtitlesManager = require('./../subtitlesManager');
 
+var _modelManager = require('./../modelManager');
+
 var _subtitlesMiddleManager = require('./subtitlesMiddleManager');
 
 var _subtitleKeysManager = require('./subtitleKeysManager');
+
+var _modelKeysManager = require('./modelKeysManager');
 
 var _buttonsManager = require('./buttonsManager');
 
@@ -44496,7 +44501,8 @@ var createAudio = function createAudio(audioSrc) {
     container: '#waveform',
     scrollParent: false,
     cursorColor: '#399ACA',
-    barHeight: 7
+    barHeight: 7,
+    skipLength: 1
   });
   audio.load(audioSrc);
 
@@ -44504,13 +44510,18 @@ var createAudio = function createAudio(audioSrc) {
   audio.on('ready', function () {
     document.getElementById('loader').style.display = 'none';
     document.getElementById('app').style.display = 'block';
-    (0, _subtitleKeysManager.renderSubtitlesKeys)(subtitles);
+    (0, _subtitleKeysManager.renderSubtitlesKeys)();
+    (0, _modelKeysManager.renderModelsKeys)();
   });
 
-  // When the audio bar is moved, reload the subtitles
+  // When the audio bar is moved, reload the subtitles and models
   audio.on('seek', function (e) {
     (0, _subtitlesManager.clearSubtitlesQueue)();
-    audio.isPlaying() && (0, _subtitlesManager.loadSubtitles)(audio.getCurrentTime());
+    (0, _modelManager.clearModelsQueue)();
+    if (audio.isPlaying()) {
+      (0, _subtitlesManager.loadSubtitles)(audio.getCurrentTime());
+      (0, _modelManager.loadModels)(audio.getCurrentTime());
+    }
   });
 };
 
@@ -44518,10 +44529,12 @@ var createAudio = function createAudio(audioSrc) {
 var playAudio = function playAudio() {
   if (audio.isPlaying()) {
     (0, _subtitlesManager.clearSubtitlesQueue)();
+    (0, _modelManager.clearModelsQueue)();
     audio.pause();
     _buttonsManager.playBtn.innerText = 'Play';
   } else {
     (0, _subtitlesManager.loadSubtitles)(audio.getCurrentTime());
+    (0, _modelManager.loadModels)(audio.getCurrentTime());
     audio.play();
     _buttonsManager.playBtn.innerText = 'Pause';
   }
@@ -44531,7 +44544,7 @@ exports.audio = audio;
 exports.createAudio = createAudio;
 exports.playAudio = playAudio;
 
-},{"./../subtitlesManager":17,"./buttonsManager":7,"./index":8,"./subtitleKeysManager":11,"./subtitlesMiddleManager":12,"wavesurfer.js":2}],7:[function(require,module,exports){
+},{"./../modelManager":16,"./../subtitlesManager":19,"./buttonsManager":7,"./index":8,"./modelKeysManager":10,"./subtitleKeysManager":13,"./subtitlesMiddleManager":14,"wavesurfer.js":2}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44547,11 +44560,16 @@ var _subtitleKeysManager = require('./subtitleKeysManager');
 
 var _subtitlesMiddleManager = require('./subtitlesMiddleManager');
 
-// ========
+var _modelManager = require('./../modelManager');
+
+var _modelKeysManager = require('./modelKeysManager');
+
+var _modelsMiddleManager = require('./modelsMiddleManager');
+
+var playBtn = document.getElementById('play'); // ========
 // Editor Buttons Manager
 // ========
 
-var playBtn = document.getElementById('play');
 var stopBtn = document.getElementById('stop');
 var saveBtn = document.getElementById('save');
 var loadSubtitlesFileBtn = document.getElementById('loadSubtitlesFile');
@@ -44575,17 +44593,17 @@ stopBtn.addEventListener('click', function () {
 // Save Button
 saveBtn.addEventListener('click', function () {
   (0, _subtitlesManager.saveSubtitlesToFile)();
-  // saveModelsToFile();
+  (0, _modelManager.saveModelsToFile)();
 });
 
 // Load Subtitles Button
 loadSubtitlesFileBtn.addEventListener('click', function () {
-  (0, _subtitleKeysManager.removeSubtitles)(_subtitlesManager.loadSubtitlesFromFile, _subtitleKeysManager.renderSubtitlesKeys);
+  (0, _subtitlesManager.loadSubtitlesFromFile)(_subtitleKeysManager.removeSubtitles, _subtitleKeysManager.renderSubtitlesKeys);
 });
 
 // Load Models Button
 loadModelsFileBtn.addEventListener('click', function () {
-  // removeModels(loadModelsFromFile, renderModelsKeys)
+  (0, _modelManager.loadModelsFromFile)(_modelKeysManager.removeModels, _modelKeysManager.renderModelsKeys);
 });
 
 // Add a Subtitle
@@ -44598,12 +44616,22 @@ removeSubtitleBtn.addEventListener('click', function () {
   (0, _subtitlesMiddleManager.removeSub)();
 });
 
+// Add a Model
+addModelBtn.addEventListener('click', function () {
+  (0, _modelsMiddleManager.addM)();
+});
+
+// Remove a Model 
+removeModelBtn.addEventListener('click', function () {
+  (0, _modelsMiddleManager.removeM)();
+});
+
 exports.playBtn = playBtn;
 exports.stopBtn = stopBtn;
 exports.saveBtn = saveBtn;
 exports.addSubtitleBtn = addSubtitleBtn;
 
-},{"./../subtitlesManager":17,"./audioManager":6,"./subtitleKeysManager":11,"./subtitlesMiddleManager":12}],8:[function(require,module,exports){
+},{"./../modelManager":16,"./../subtitlesManager":19,"./audioManager":6,"./modelKeysManager":10,"./modelsMiddleManager":11,"./subtitleKeysManager":13,"./subtitlesMiddleManager":14}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44633,24 +44661,30 @@ var initEditMode = function initEditMode(audioSrc, scene, models) {
 exports.initEditMode = initEditMode;
 exports.WIDTH = WIDTH;
 
-},{"./audioManager":6,"./keyboardManager":9,"./move":10}],9:[function(require,module,exports){
+},{"./audioManager":6,"./keyboardManager":9,"./move":12}],9:[function(require,module,exports){
 'use strict';
 
 var _audioManager = require('./audioManager');
 
 var _subtitlesManager = require('./../subtitlesManager');
 
+var _modelManager = require('./../modelManager');
+
 var _subtitlesMiddleManager = require('./subtitlesMiddleManager');
+
+var _modelsMiddleManager = require('./modelsMiddleManager');
 
 var _subtitleKeysManager = require('./subtitleKeysManager');
 
-// ========
+var _modelKeysManager = require('./modelKeysManager');
+
+var subtitleTimeTooltip = document.getElementById('subtitleTimeTooltip'); // ========
 // Editor Keyboard Manager
 // ========
 
-_subtitleKeysManager.isASubtitleKeySelected;
-var subtitleTimeTooltip = document.getElementById('subtitleTimeTooltip');
 var subtitleTooltip = document.getElementById('subtitleTooltip');
+var modelTimeTooltip = document.getElementById('modelTimeTooltip');
+var modelTooltip = document.getElementById('modelTooltip');
 
 var keys = [];
 
@@ -44659,7 +44693,7 @@ document.body.onkeydown = function (e) {
   var isShiftPressed = keys.indexOf(16) != -1;
   // Spacebar
   if (e.keyCode == 32) {
-    if (!_subtitleKeysManager.isASubtitleKeySelected) {
+    if (!_subtitleKeysManager.isASubtitleKeySelected && !_modelKeysManager.isAModelKeySelected) {
       (0, _audioManager.playAudio)();
     }
   }
@@ -44667,24 +44701,38 @@ document.body.onkeydown = function (e) {
   if (e.keyCode == 13) {
     if (!isShiftPressed) {
       e.preventDefault();
-      var time = subtitleTimeTooltip.innerText.split('-');
-      var txt = subtitleTooltip.innerText.split(/\n/);
-      var data = {
-        id: _subtitleKeysManager.currentSubtitleSelected,
-        start: time[0],
-        end: time[1],
-        first: txt[0],
-        second: txt[1]
-      };
-      (0, _subtitlesManager.updateSubtitles)(data);
-      (0, _subtitlesMiddleManager.redrawSubtitle)(true);
+      if (_subtitleKeysManager.isASubtitleKeySelected) {
+        var time = subtitleTimeTooltip.innerText.split('-');
+        var txt = subtitleTooltip.innerText.split(/\n/);
+        var data = {
+          id: _subtitleKeysManager.currentSubtitleSelected,
+          start: time[0],
+          end: time[1],
+          first: txt[0],
+          second: txt[1]
+        };
+        (0, _subtitlesManager.updateSubtitles)(data);
+        (0, _subtitlesMiddleManager.redrawSubtitle)(true);
+      } else if (_modelKeysManager.isAModelKeySelected) {
+        var _time = modelTimeTooltip.innerText.split('-');
+        var name = modelTooltip.innerText;
+        var _data = {
+          id: _modelKeysManager.currentModelSelected,
+          start: _time[0],
+          end: _time[1],
+          name: name
+        };
+        (0, _modelManager.updateModels)(_data);
+        (0, _modelsMiddleManager.redrawModel)(true);
+      }
     }
   }
   // Esc
   if (e.keyCode == 27) {
     (0, _subtitleKeysManager.clearSubtitleKeys)();
-    subtitleTooltip.innerText = '';
-    subtitleTimeTooltip.innerText = '';
+    (0, _modelKeysManager.clearModelKeys)();
+    (0, _subtitleKeysManager.showHideSubtitleTooltips)('none');
+    (0, _modelKeysManager.showHideModelsTooltips)('none');
   }
   // Shift
   if (e.keyCode == 16) {
@@ -44704,11 +44752,27 @@ document.body.onkeydown = function (e) {
   }
   // M: add a model 
   if (e.keyCode == 77) {
-    if (isShiftPressed) {}
+    if (isShiftPressed) {
+      (0, _modelsMiddleManager.addM)();
+    }
   }
   // R: remove a model 
   if (e.keyCode == 82) {
-    if (isShiftPressed) {}
+    if (isShiftPressed) {
+      (0, _modelsMiddleManager.removeM)();
+    }
+  }
+  // Right: skip forward one second
+  if (e.keyCode == 39) {
+    if (!_modelKeysManager.isAModelKeySelected && !_subtitleKeysManager.isASubtitleKeySelected) {
+      _audioManager.audio.skipForward();
+    }
+  }
+  // Left: skip backward one second
+  if (e.keyCode == 37) {
+    if (!_modelKeysManager.isAModelKeySelected && !_subtitleKeysManager.isASubtitleKeySelected) {
+      _audioManager.audio.skipBackward();
+    }
   }
 };
 
@@ -44718,14 +44782,226 @@ document.body.onkeyup = function (e) {
   }
 };
 
-// Update a subtitle when it has moved in the timeline
+// Update a subtitle or model when it has moved in the timeline
 window.onmouseup = function (e) {
   if (_subtitleKeysManager.isASubtitleKeySelected) {
     (0, _subtitlesMiddleManager.redrawSubtitle)(false);
   }
+  if (_modelKeysManager.isAModelKeySelected) {
+    (0, _modelsMiddleManager.redrawModel)(false);
+  }
 };
 
-},{"./../subtitlesManager":17,"./audioManager":6,"./subtitleKeysManager":11,"./subtitlesMiddleManager":12}],10:[function(require,module,exports){
+},{"./../modelManager":16,"./../subtitlesManager":19,"./audioManager":6,"./modelKeysManager":10,"./modelsMiddleManager":11,"./subtitleKeysManager":13,"./subtitlesMiddleManager":14}],10:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.removeModels = exports.renderModelsKeys = exports.createModelKey = exports.isAModelKeySelected = exports.modelsKeys = exports.currentModelSelected = exports.clearModelKeys = exports.showHideModelsTooltips = undefined;
+
+var _index = require('./index');
+
+var _audioManager = require('./audioManager');
+
+var _move = require('./move');
+
+var _modelManager = require('./../modelManager');
+
+var _utils = require('./../utils/utils');
+
+var modelTimeTooltip = document.getElementById('modelTimeTooltip'); // ========
+// Editor Model Keys Manager
+// ========
+
+var modelTooltip = document.getElementById('modelTooltip');
+
+var modelsKeys = void 0;
+var currentModelSelected = void 0;
+var isAModelKeySelected = false;
+
+// Show/Hide tooltips
+var showHideModelsTooltips = function showHideModelsTooltips(state) {
+  modelTooltip.style.display = state;
+  modelTimeTooltip.style.display = state;
+};
+
+// Create a model Key (the green things)
+var createModelKey = function createModelKey(data, startPos) {
+  var key = document.createElement('div');
+  key.className = 'modelKey';
+  key.style.left = startPos + 'px';
+  key.draggable = 'true';
+  key.dataset.start = data.start;
+  key.dataset.end = data.end;
+  key.dataset.name = data.name;
+  key.dataset.left = startPos;
+  key.id = data.id;
+
+  // Make it movable
+  (0, _move.moveElt)(key, key, true, false);
+
+  var showModelAndTime = function showModelAndTime() {
+    modelTooltip.innerHTML = data.name;
+    modelTimeTooltip.innerHTML = data.start + '-' + data.end;
+    modelTooltip.style.left = key.dataset.left + 'px';
+    modelTimeTooltip.style.left = key.dataset.left + 'px';
+  };
+  key.addEventListener('mouseover', function () {
+    if (!isAModelKeySelected) {
+      showModelAndTime();
+      showHideModelsTooltips('inline-block');
+      modelTooltip.style.left = key.dataset.left + 'px';
+      modelTimeTooltip.style.left = key.dataset.left + 'px';
+    }
+  });
+  key.addEventListener('mouseleave', function () {
+    if (!isAModelKeySelected) {
+      showHideModelsTooltips('none');
+    }
+  });
+  key.addEventListener('mousedown', function () {
+    showHideModelsTooltips('inline-block');
+    exports.isAModelKeySelected = isAModelKeySelected = true;
+    exports.currentModelSelected = currentModelSelected = data.id;
+    showModelAndTime();
+  });
+  modelsKeys.appendChild(key);
+};
+
+// Render Subtitles Keys
+var renderModelsKeys = function renderModelsKeys() {
+  exports.modelsKeys = modelsKeys = document.getElementById('modelsKeys');
+  modelsKeys.style.width = _index.WIDTH + 'px';
+
+  _modelManager.models.forEach(function (model) {
+    var startPos = (0, _utils.mapRange)((0, _utils.HHMMSStoSeconds)(model.start), 0, _audioManager.audio.getDuration(), 0, _index.WIDTH);
+    createModelKey(model, startPos);
+  });
+};
+
+// Remove all Models Keys
+var removeModels = function removeModels(callback) {
+  _modelManager.models.forEach(function (model) {
+    var elt = document.getElementById(model.id);
+    elt.remove();
+  });
+};
+
+// Clear selected models key
+var clearModelKeys = function clearModelKeys() {
+  exports.currentModelSelected = currentModelSelected = '';
+  exports.isAModelKeySelected = isAModelKeySelected = false;
+};
+
+exports.showHideModelsTooltips = showHideModelsTooltips;
+exports.clearModelKeys = clearModelKeys;
+exports.currentModelSelected = currentModelSelected;
+exports.modelsKeys = modelsKeys;
+exports.isAModelKeySelected = isAModelKeySelected;
+exports.createModelKey = createModelKey;
+exports.renderModelsKeys = renderModelsKeys;
+exports.removeModels = removeModels;
+
+},{"./../modelManager":16,"./../utils/utils":21,"./audioManager":6,"./index":8,"./move":12}],11:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.redrawModel = exports.removeM = exports.addM = undefined;
+
+var _index = require('./index');
+
+var _audioManager = require('./audioManager');
+
+var _utils = require('./../utils/utils');
+
+var _modelKeysManager = require('./modelKeysManager');
+
+var _modelManager = require('./../modelManager');
+
+var modelTimeTooltip = document.getElementById('modelTimeTooltip'); // ========
+// Editor Models Middle Manager. Not to confuse with the global model Manager.
+// ========
+
+var modelTooltip = document.getElementById('modelTooltip');
+
+// Add a Model
+var addM = function addM() {
+  var data = {
+    id: (0, _utils.UUIID)(),
+    start: (0, _utils.secondstoHHMMSS)(_audioManager.audio.getCurrentTime()),
+    end: (0, _utils.secondstoHHMMSS)(_audioManager.audio.getCurrentTime() + 2),
+    name: 'banana'
+  };
+  var startPos = (0, _utils.mapRange)(_audioManager.audio.getCurrentTime(), 0, _audioManager.audio.getDuration(), 0, _index.WIDTH);
+  (0, _modelKeysManager.createModelKey)(data, startPos);
+  (0, _modelManager.updateModels)(data);
+};
+
+// Remove a model 
+var removeM = function removeM() {
+  var currentPos = (0, _utils.secondstoHHMMSS)(_audioManager.audio.getCurrentTime());
+  var id = (0, _modelManager.removeModelKey)(currentPos);
+  var elt = document.getElementById(id);
+  elt && elt.remove();
+};
+
+// Redraw a model key
+var redrawModel = function redrawModel(manualEdit) {
+  var key = document.getElementById(_modelKeysManager.currentModelSelected);
+
+  var offset = void 0,
+      name = void 0,
+      left = void 0,
+      start = void 0,
+      end = void 0;
+  if (manualEdit) {
+    var time = modelTimeTooltip.innerText.split('-');
+    name = modelTooltip.innerText;
+    start = time[0];
+    end = time[1];
+    offset = (0, _utils.HHMMSStoSeconds)(time[0]);
+    left = (0, _utils.mapRange)(offset, 0, _audioManager.audio.getDuration(), 0, _index.WIDTH);
+  } else {
+    name = key.dataset.name;
+    offset = parseFloat(key.style.left.split('px')[0]).toFixed(100);
+    left = offset;
+    var newStart = (0, _utils.mapRange)(offset, 0, _index.WIDTH, 0, _audioManager.audio.getDuration());
+    var newEnd = newStart + ((0, _utils.HHMMSStoSeconds)(key.dataset.end) - (0, _utils.HHMMSStoSeconds)(key.dataset.start));
+    start = (0, _utils.secondstoHHMMSS)(newStart);
+    end = (0, _utils.secondstoHHMMSS)(newEnd);
+  }
+
+  // Update the Key
+  key.style.left = left + 'px';
+  key.dataset.left = left;
+  key.dataset.name = name;
+  key.dataset.start = start;
+  key.dataset.end = end;
+
+  // Move the tooltip
+  modelTooltip.style.left = left + 'px';
+  modelTimeTooltip.style.left = left + 'px';
+  modelTimeTooltip.innerHTML = start + '-' + end;
+
+  if (!manualEdit) {
+    var data = {
+      id: key.id,
+      start: start,
+      end: end,
+      name: name
+    };
+    (0, _modelManager.updateModels)(data);
+  }
+};
+
+exports.addM = addM;
+exports.removeM = removeM;
+exports.redrawModel = redrawModel;
+
+},{"./../modelManager":16,"./../utils/utils":21,"./audioManager":6,"./index":8,"./modelKeysManager":10}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -44769,13 +45045,13 @@ var moveElt = function moveElt(elementToMove, trigger, x, y) {
 
 exports.moveElt = moveElt;
 
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.removeSubtitles = exports.renderSubtitlesKeys = exports.createSubKey = exports.isASubtitleKeySelected = exports.subtitlesKeys = exports.currentSubtitleSelected = exports.clearSubtitleKeys = undefined;
+exports.removeSubtitles = exports.renderSubtitlesKeys = exports.createSubKey = exports.isASubtitleKeySelected = exports.subtitlesKeys = exports.currentSubtitleSelected = exports.clearSubtitleKeys = exports.showHideSubtitleTooltips = undefined;
 
 var _index = require('./index');
 
@@ -44796,6 +45072,12 @@ var subtitleTooltip = document.getElementById('subtitleTooltip');
 var subtitlesKeys = void 0;
 var currentSubtitleSelected = void 0;
 var isASubtitleKeySelected = false;
+
+// Show/Hide tooltips
+var showHideSubtitleTooltips = function showHideSubtitleTooltips(state) {
+  subtitleTooltip.style.display = state;
+  subtitleTimeTooltip.style.display = state;
+};
 
 // Create a subtitle Key (the yellow things)
 var createSubKey = function createSubKey(data, startPos) {
@@ -44821,6 +45103,7 @@ var createSubKey = function createSubKey(data, startPos) {
   };
   key.addEventListener('mouseover', function () {
     if (!isASubtitleKeySelected) {
+      showHideSubtitleTooltips('inline-block');
       showSubtitleAndTime();
       subtitleTooltip.style.left = key.dataset.left + 'px';
       subtitleTimeTooltip.style.left = key.dataset.left + 'px';
@@ -44828,11 +45111,11 @@ var createSubKey = function createSubKey(data, startPos) {
   });
   key.addEventListener('mouseleave', function () {
     if (!isASubtitleKeySelected) {
-      subtitleTooltip.innerText = '';
-      subtitleTimeTooltip.innerText = '';
+      showHideSubtitleTooltips('none');
     }
   });
   key.addEventListener('mousedown', function () {
+    showHideSubtitleTooltips('inline-block');
     exports.isASubtitleKeySelected = isASubtitleKeySelected = true;
     exports.currentSubtitleSelected = currentSubtitleSelected = data.id;
     showSubtitleAndTime();
@@ -44852,12 +45135,11 @@ var renderSubtitlesKeys = function renderSubtitlesKeys() {
 };
 
 // Remove all Subtitle Keys
-var removeSubtitles = function removeSubtitles(callback) {
+var removeSubtitles = function removeSubtitles() {
   _subtitlesManager.subtitles.forEach(function (sub) {
     var elt = document.getElementById(sub.id);
     elt.remove();
   });
-  callback(renderSubtitlesKeys);
 };
 
 // Clear selected subtitle key
@@ -44866,6 +45148,7 @@ var clearSubtitleKeys = function clearSubtitleKeys() {
   exports.isASubtitleKeySelected = isASubtitleKeySelected = false;
 };
 
+exports.showHideSubtitleTooltips = showHideSubtitleTooltips;
 exports.clearSubtitleKeys = clearSubtitleKeys;
 exports.currentSubtitleSelected = currentSubtitleSelected;
 exports.subtitlesKeys = subtitlesKeys;
@@ -44874,7 +45157,7 @@ exports.createSubKey = createSubKey;
 exports.renderSubtitlesKeys = renderSubtitlesKeys;
 exports.removeSubtitles = removeSubtitles;
 
-},{"./../subtitlesManager":17,"./../utils/utils":19,"./audioManager":6,"./index":8,"./move":10}],12:[function(require,module,exports){
+},{"./../subtitlesManager":19,"./../utils/utils":21,"./audioManager":6,"./index":8,"./move":12}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44964,21 +45247,23 @@ var redrawSubtitle = function redrawSubtitle(manualEdit) {
   subtitleTimeTooltip.style.left = left + 'px';
   subtitleTimeTooltip.innerHTML = start + '-' + end;
 
-  var data = {
-    id: key.id,
-    start: start,
-    end: end,
-    first: first,
-    second: second
-  };
-  (0, _subtitlesManager.updateSubtitles)(data);
+  if (!manualEdit) {
+    var data = {
+      id: key.id,
+      start: start,
+      end: end,
+      first: first,
+      second: second
+    };
+    (0, _subtitlesManager.updateSubtitles)(data);
+  }
 };
 
 exports.addSub = addSub;
 exports.removeSub = removeSub;
 exports.redrawSubtitle = redrawSubtitle;
 
-},{"./../subtitlesManager":17,"./../utils/utils":19,"./audioManager":6,"./index":8,"./subtitleKeysManager":11}],13:[function(require,module,exports){
+},{"./../subtitlesManager":19,"./../utils/utils":21,"./audioManager":6,"./index":8,"./subtitleKeysManager":13}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45007,7 +45292,7 @@ var audioSrc = 'dist/sounds/queens.mp3'; // ========
 // BODEGA MAIN
 // ========
 
-var editMode = false;
+var editMode = true;
 // OPTIONS
 
 // Edit Mode
@@ -45044,13 +45329,13 @@ window.onload = function () {
 
 exports.editMode = editMode;
 
-},{"./animationManager":3,"./editor/index":8,"./models/queens":15,"./subtitles/1511661098592":16}],14:[function(require,module,exports){
+},{"./animationManager":3,"./editor/index":8,"./models/queens":17,"./subtitles/1511661098592":18}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.currentMeshes = exports.removeMesh = exports.addMesh = exports.loadMeshes = undefined;
+exports.currentModels = exports.removeModelKey = exports.removeModel = exports.addModel = exports.updateModels = exports.clearModelsQueue = exports.deleteModel = exports.loadModels = exports.initModels = exports.models = exports.loadModelsFromFile = exports.saveModelsToFile = undefined;
 
 var _three = require('three');
 
@@ -45064,27 +45349,80 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 // Load an object and prepare it for the scene
 // ========
 
-var currentMeshes = {};
+var currentModels = {};
+var modelsQueue = [];
+var scene = void 0,
+    models = void 0;
+
+// Init the Meshes
+var initModels = function initModels(_scene, _models) {
+  scene = _scene;
+  exports.models = models = _models;
+};
 
 // Load all Models(meshes)
-var loadMeshes = function loadMeshes(scene, models) {
-  models.forEach(function (model, index) {
-    setTimeout(function () {
-      addMesh(scene, model);
-    }, (0, _utils.HHMMSStoSeconds)(model.start) * 1000);
-    setTimeout(function () {
-      removeMesh(scene, model);
-    }, (0, _utils.HHMMSStoSeconds)(model.end) * 1000);
+var loadModels = function loadModels(currentTime) {
+  models.forEach(function (model, i) {
+    var start = (0, _utils.HHMMSStoSeconds)(model.start);
+    var end = (0, _utils.HHMMSStoSeconds)(model.end);
+    if (start > currentTime) {
+      start = start - currentTime;
+      end = end - currentTime;
+      modelsQueue.push(setTimeout(function () {
+        addModel(model);
+      }, start * 1000));
+      modelsQueue.push(setTimeout(function () {
+        removeModel(model);
+      }, end * 1000));
+    }
   });
 };
 
-// Add a Mesh
-var addMesh = function addMesh(scene, model) {
+// Clear the queue of models to render
+var clearModelsQueue = function clearModelsQueue() {
+  removeAllModels();
+  modelsQueue.forEach(function (model) {
+    clearTimeout(model);
+  });
+  modelsQueue = [];
+  exports.currentModels = currentModels = {};
+};
+
+// Update the values in the models JSON. Can modify an existing or add a new.
+var updateModels = function updateModels(input) {
+  var updatedExisting = false;
+  models.forEach(function (model) {
+    if (model.id == input.id) {
+      input.start && (model.start = input.start);
+      input.end && (model.end = input.end);
+      input.name && (model.name = input.name);
+      updatedExisting = true;
+    }
+  });
+  if (!updatedExisting) {
+    models.push(input);
+  }
+};
+
+// Deletes an Existing model
+var deleteModel = function deleteModel(input) {
+  var id = void 0;
+  models.forEach(function (model) {
+    if (model.start == input) {
+      id = model.id;
+      models.splice(models.indexOf(model), 1);
+    }
+  });
+  return id;
+};
+
+// Add a Model
+var addModel = function addModel(model) {
   var loader = new THREE.JSONLoader().load('dist/models/' + model.name + '/' + model.name + '.js', function (geometry) {
     var material = new THREE.MeshBasicMaterial();
     var mesh = new THREE.Mesh(geometry, material);
     material.map = new THREE.TextureLoader().load('dist/models/' + model.name + '/' + model.name + '.jpg');
-    currentMeshes[model.id] = mesh;
+    currentModels[model.id] = mesh;
     scene.add(mesh);
   }, function (xhr) {
     console.log(xhr.loaded / xhr.total * 100 + '% loaded');
@@ -45093,137 +45431,203 @@ var addMesh = function addMesh(scene, model) {
   });
 };
 
-// Remove a Mesh
-var removeMesh = function removeMesh(scene, model) {
-  scene.remove(currentMeshes[model.id]);
-  delete currentMeshes[model.id];
+// Remove a Model
+var removeModel = function removeModel(model) {
+  scene.remove(currentModels[model.id]);
+  delete currentModels[model.id];
 };
 
-exports.loadMeshes = loadMeshes;
-exports.addMesh = addMesh;
-exports.removeMesh = removeMesh;
-exports.currentMeshes = currentMeshes;
+var removeModelKey = function removeModelKey(start) {
+  var id = void 0;
+  models.forEach(function (model) {
+    if (model.start == start) {
+      id = model.id;
+      models.splice(models.indexOf(model), 1);
+    }
+  });
+  return id;
+};
 
-},{"./utils/utils":19,"three":1}],15:[function(require,module,exports){
-"use strict";
+// Remove all models from the scene 
+var removeAllModels = function removeAllModels() {
+  for (var i = scene.children.length - 1; i >= 0; i--) {
+    var obj = scene.children[i];
+    scene.remove(obj);
+  }
+};
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-// Objects to load
+// Save the JSON file
+var saveModelsToFile = function saveModelsToFile() {
+  var date = new Date();
+  var a = document.createElement("a");
+  var file = new Blob([JSON.stringify(models)], { type: 'text/plain' });
+  a.href = URL.createObjectURL(file);
+  a.download = date.getTime() + '.json';
+  a.click();
+};
 
-var models = [{
-  "id": "197dac5d-0832-3213-94b0-77c1804a76b4",
-  "name": "croissant02",
-  "start": "00:00:12",
-  "end": "00:00:54"
-}, {
-  "id": "a5323ee9-2fec-6e87-d3a0-847395a3434a",
-  "name": "napkins",
-  "start": "00:00:44",
-  "end": "00:00:54"
-}, {
-  "id": "c8adb906-1f21-f2ac-a4a2-cc6b7b58dc74",
-  "name": "coffee01",
-  "start": "00:01:30",
-  "end": "00:02:07"
-}, {
-  "id": "5d8fa12f-bc63-fd33-dcf6-949fc2eb7669",
-  "name": "empanada",
-  "start": "00:02:00",
-  "end": "00:02:07"
-}, {
-  "id": "589b5d19-7e0b-2aab-deb3-9a0be3e3b3db",
-  "name": "empanada",
-  "start": "00:02:01",
-  "end": "00:02:07"
-}, {
-  "id": "bee9215a-4a0a-5c25-fe26-95a053dabaa5",
-  "name": "coffee01",
-  "start": "00:02:16",
-  "end": "00:02:22"
-}, {
-  "id": "007b8e1b-805c-5ec0-34a4-4f164d6106b7",
-  "name": "banana",
-  "start": "00:02:38",
-  "end": "00:02:55"
-}, {
-  "id": "709f7d29-f80a-3a21-ba81-d584f07653c6",
-  "name": "coffee01",
-  "start": "00:03:00",
-  "end": "00:03:10"
-}, {
-  "id": "0e430d4f-400f-3cc3-c3b2-655cd3901989",
-  "name": "bagelButter",
-  "start": "00:03:01",
-  "end": "00:03:10"
-}, {
-  "id": "8c24a6bd-a833-3d6b-d81c-e41d50ba3550",
-  "name": "bagelButter",
-  "start": "00:04:32",
-  "end": "00:04:42"
-}, {
-  "id": "741be71b-2b08-23f6-c09e-892102da3702",
-  "name": "coffee01",
-  "start": "00:04:35",
-  "end": "00:04:42"
-}, {
-  "id": "e332d914-6467-7d7b-a476-bfec2b7a6fd5",
-  "name": "brownBag",
-  "start": "00:04:43",
-  "end": "00:05:13"
-}, {
-  "id": "2534627e-d044-769c-1b1d-93502bc3db6b",
-  "name": "coffee01",
-  "start": "00:04:43",
-  "end": "00:05:13"
-}, {
-  "id": "e60ecc05-4504-e77b-e9a6-1bad712aa5a0",
-  "name": "coffee02",
-  "start": "00:05:54",
-  "end": "00:06:04"
-}, {
-  "id": "c059fca5-b580-79dc-c575-e02349dd1d48",
-  "name": "coffee02",
-  "start": "00:05:55",
-  "end": "00:06:04"
-}, {
-  "id": "e2b1f4ba-8e83-2ccf-f3da-9c9a0e33813f",
-  "name": "coffee01",
-  "start": "00:06:33",
-  "end": "00:06:50"
-}, {
-  "id": "50172818-ee28-bb7c-baef-0ee60fc7d234",
-  "name": "brownBag",
-  "start": "00:07:00",
-  "end": "00:07:20"
-}, {
-  "id": "150de888-a6be-8786-374a-f1c3532f9b73",
-  "name": "bagelButter",
-  "start": "00:07:01",
-  "end": "00:07:20"
-}, {
-  "id": "78500b54-3979-92b7-c93c-0642c928900a",
-  "name": "coffee02",
-  "start": "00:07:32",
-  "end": "00:07:40"
-}, {
-  "id": "601bf424-79e9-a5f4-4863-761162a38620",
-  "name": "hamTurkey",
-  "start": "00:08:09",
-  "end": "00:08:25"
-}, {
-  "id": "4e872fd4-c4e2-103d-2f37-a4e55ea85625",
-  "name": "oatmeal",
-  "start": "00:08:12",
-  "end": "00:08:25"
-}];
+// Load Models from File
+var loadModelsFromFile = function loadModelsFromFile(removeCurrentModel, renderNewModels) {
+  var fileSelector = document.createElement('input');
+  fileSelector.setAttribute('type', 'file');
+  fileSelector.click();
+  fileSelector.addEventListener('change', function () {
+    var file = fileSelector.files[0];
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      removeCurrentModel();
+      exports.models = models = JSON.parse(reader.result);
+      renderNewModels();
+    };
+    reader.readAsText(file);
+  }, false);
+};
 
-exports.default = models;
+exports.saveModelsToFile = saveModelsToFile;
+exports.loadModelsFromFile = loadModelsFromFile;
+exports.models = models;
+exports.initModels = initModels;
+exports.loadModels = loadModels;
+exports.deleteModel = deleteModel;
+exports.clearModelsQueue = clearModelsQueue;
+exports.updateModels = updateModels;
+exports.addModel = addModel;
+exports.removeModel = removeModel;
+exports.removeModelKey = removeModelKey;
+exports.currentModels = currentModels;
 
-},{}],16:[function(require,module,exports){
+},{"./utils/utils":21,"three":1}],17:[function(require,module,exports){
+module.exports=[
+  {
+    "id": "197dac5d-0832-3213-94b0-77c1804a76b4",
+    "name": "croissant02",
+    "start": "00:00:12",
+    "end": "00:00:54"
+  },
+  {
+    "id": "a5323ee9-2fec-6e87-d3a0-847395a3434a",
+    "name": "napkins",
+    "start": "00:00:44",
+    "end": "00:00:54"
+  },
+  {
+    "id": "c8adb906-1f21-f2ac-a4a2-cc6b7b58dc74",
+    "name": "coffee01",
+    "start": "00:01:30",
+    "end": "00:02:07"
+  },
+  {
+    "id": "5d8fa12f-bc63-fd33-dcf6-949fc2eb7669",
+    "name": "empanada",
+    "start": "00:02:00",
+    "end": "00:02:07"
+  },
+  {
+    "id": "589b5d19-7e0b-2aab-deb3-9a0be3e3b3db",
+    "name": "empanada",
+    "start": "00:02:01",
+    "end": "00:02:07"
+  },
+  {
+    "id": "bee9215a-4a0a-5c25-fe26-95a053dabaa5",
+    "name": "coffee01",
+    "start": "00:02:16",
+    "end": "00:02:22"
+  },
+  {
+    "id": "007b8e1b-805c-5ec0-34a4-4f164d6106b7",
+    "name": "banana",
+    "start": "00:02:38",
+    "end": "00:02:55"
+  },
+  {
+    "id": "709f7d29-f80a-3a21-ba81-d584f07653c6",
+    "name": "coffee01",
+    "start": "00:03:00",
+    "end": "00:03:10"
+  },
+  {
+    "id": "0e430d4f-400f-3cc3-c3b2-655cd3901989",
+    "name": "bagelButter",
+    "start": "00:03:01",
+    "end": "00:03:10"
+  },
+  {
+    "id": "8c24a6bd-a833-3d6b-d81c-e41d50ba3550",
+    "name": "bagelButter",
+    "start": "00:04:32",
+    "end": "00:04:42"
+  },
+  {
+    "id": "741be71b-2b08-23f6-c09e-892102da3702",
+    "name": "coffee01",
+    "start": "00:04:35",
+    "end": "00:04:42"
+  },
+  {
+    "id": "e332d914-6467-7d7b-a476-bfec2b7a6fd5",
+    "name": "brownBag",
+    "start": "00:04:43",
+    "end": "00:05:13"
+  },
+  {
+    "id": "2534627e-d044-769c-1b1d-93502bc3db6b",
+    "name": "coffee01",
+    "start": "00:04:43",
+    "end": "00:05:13"
+  },
+  {
+    "id": "e60ecc05-4504-e77b-e9a6-1bad712aa5a0",
+    "name": "coffee02",
+    "start": "00:05:54",
+    "end": "00:06:04"
+  },
+  {
+    "id": "c059fca5-b580-79dc-c575-e02349dd1d48",
+    "name": "coffee02",
+    "start": "00:05:55",
+    "end": "00:06:04"
+  },
+  {
+    "id": "e2b1f4ba-8e83-2ccf-f3da-9c9a0e33813f",
+    "name": "coffee01",
+    "start": "00:06:33",
+    "end": "00:06:50"
+  },
+  {
+    "id": "50172818-ee28-bb7c-baef-0ee60fc7d234",
+    "name": "brownBag",
+    "start": "00:07:00",
+    "end": "00:07:20"
+  },
+  {
+    "id": "150de888-a6be-8786-374a-f1c3532f9b73",
+    "name": "bagelButter",
+    "start": "00:07:01",
+    "end": "00:07:20"
+  },
+  {
+    "id": "78500b54-3979-92b7-c93c-0642c928900a",
+    "name": "coffee02",
+    "start": "00:07:32",
+    "end": "00:07:40"
+  },
+  {
+    "id": "601bf424-79e9-a5f4-4863-761162a38620",
+    "name": "hamTurkey",
+    "start": "00:08:09",
+    "end": "00:08:25"
+  },
+  {
+    "id": "4e872fd4-c4e2-103d-2f37-a4e55ea85625",
+    "name": "oatmeal",
+    "start": "00:08:12",
+    "end": "00:08:25"
+  }
+]
+},{}],18:[function(require,module,exports){
 module.exports=[{"id":"3a2bdeaa-069b-191f-07f6-1ce6ac640250","first":"- Can I pay now? I just ordered. Bacon, egg and chesse croissant.","start":"00:00:12","end":"00:00:17"},{"id":"5397dc3c-914b-f62b-5d61-89347f3f325d","first":"- Thanks buddy.","start":"00:00:03","end":"00:00:05"},{"id":"edab291c-182d-36f0-94c8-13b2fecd5273","start":"00:00:15","end":"00:00:17","first":"- Sample Text"},{"id":"bbf92ca0-ce36-29d0-3c6d-278fa39242f9","start":"00:04:39","end":"00:04:41","first":"- Sample Text"},{"id":"04841ff5-34a3-99a1-cec3-80d17d9e5a4e","start":"00:03:57","end":"00:03:59","first":"- Sample Text"},{"id":"942db1bc-a517-c9a2-65da-8cd0216f533e","start":"00:00:07","end":"00:00:09","first":"- La raja esto","second":"- o no=?"}]
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45257,7 +45661,7 @@ var loadSubtitles = function loadSubtitles(currentTime) {
       subtitlesQueue.push(setTimeout(function () {
         subtitlesElt.children[0].style.background = '#1d1d1d';
         subtitlesElt.children[0].innerText = sub.first;
-        if (sub.second) {
+        if (sub.second != undefined && sub.second != 'undefined') {
           subtitlesElt.children[2].style.background = '#1d1d1d';
           subtitlesElt.children[2].innerText = sub.second;
         }
@@ -45265,7 +45669,7 @@ var loadSubtitles = function loadSubtitles(currentTime) {
       subtitlesQueue.push(setTimeout(function () {
         subtitlesElt.children[0].style.background = '#000000';
         subtitlesElt.children[0].innerText = '';
-        if (sub.second) {
+        if (sub.second != undefined && sub.second != 'undefined') {
           subtitlesElt.children[2].style.background = '#000000';
           subtitlesElt.children[2].innerText = '';
         }
@@ -45293,15 +45697,14 @@ var updateSubtitles = function updateSubtitles(input) {
     if (sub.id == input.id) {
       input.start && (sub.start = input.start);
       input.end && (sub.end = input.end);
-      input.first && input.first != 'undefined' && (sub.first = input.first);
-      input.second && input.second != 'undefined' && (sub.second = input.second);
+      input.first && input.first != undefined && (sub.first = input.first);
+      input.second && input.second != undefined && (sub.second = input.second);
       updatedExisting = true;
     }
   });
   if (!updatedExisting) {
     subtitles.push(input);
   }
-  console.log(subtitles);
 };
 
 // Remove an Existing subtitle
@@ -45327,17 +45730,17 @@ var saveSubtitlesToFile = function saveSubtitlesToFile() {
 };
 
 // Load Subtitles from File
-var loadSubtitlesFromFile = function loadSubtitlesFromFile(callback) {
+var loadSubtitlesFromFile = function loadSubtitlesFromFile(removeCurrentSubtitles, renderNewSubtitles) {
   var fileSelector = document.createElement('input');
   fileSelector.setAttribute('type', 'file');
   fileSelector.click();
   fileSelector.addEventListener('change', function () {
     var file = fileSelector.files[0];
     var reader = new FileReader();
-    var reader = new FileReader();
     reader.onload = function (e) {
+      removeCurrentSubtitles();
       exports.subtitles = subtitles = JSON.parse(reader.result);
-      callback();
+      renderNewSubtitles();
     };
     reader.readAsText(file);
   }, false);
@@ -45352,7 +45755,7 @@ exports.updateSubtitles = updateSubtitles;
 exports.saveSubtitlesToFile = saveSubtitlesToFile;
 exports.loadSubtitlesFromFile = loadSubtitlesFromFile;
 
-},{"./utils/utils":19}],18:[function(require,module,exports){
+},{"./utils/utils":21}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45375,7 +45778,7 @@ var updateClock = function updateClock() {
 
 exports.updateClock = updateClock;
 
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 var _three = require('three');
@@ -45510,4 +45913,4 @@ module.exports = {
   UUIID: UUIID
 };
 
-},{"three":1}]},{},[13]);
+},{"three":1}]},{},[15]);

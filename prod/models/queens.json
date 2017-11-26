@@ -1,6 +1,4 @@
-// Objects to load
-
-let models = [
+[
   {
     "id": "197dac5d-0832-3213-94b0-77c1804a76b4",
     "name": "croissant02",
@@ -128,5 +126,3 @@ let models = [
     "end": "00:08:25"
   }
 ]
-
-export default models;
