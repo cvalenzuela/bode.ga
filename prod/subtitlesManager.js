@@ -4,14 +4,18 @@
 
 import { HHMMSStoSeconds } from './utils/utils';
 
-let subtitlesQueue = []; 
+let subtitlesQueue = [];
 let subtitles;
+let subtitlesElt;
 
 // Init: this is just called by the editor
-const initSubtitles = _subtitles => { subtitles = _subtitles };
+const initSubtitles = (_subtitles, _subtitlesElt) => { 
+  subtitles = _subtitles;
+  subtitlesElt = _subtitlesElt;
+ };
 
 // Load the Subtitles in time
-const loadSubtitles = (subtitlesElt, currentTime) => {
+const loadSubtitles = currentTime => {
   subtitles.forEach((sub, i) => {
     let start = HHMMSStoSeconds(sub.start);
     let end = HHMMSStoSeconds(sub.end);
@@ -39,7 +43,7 @@ const loadSubtitles = (subtitlesElt, currentTime) => {
 };
 
 // Clear the queue of subtitles to render
-const clearSubtitlesQueue = subtitlesElt =>{
+const clearSubtitlesQueue = () => {
   subtitlesQueue.forEach(sub => {
     clearTimeout(sub);
   });
@@ -54,15 +58,15 @@ const clearSubtitlesQueue = subtitlesElt =>{
 const updateSubtitles = input => {
   let updatedExisting = false;
   subtitles.forEach(sub => {
-    if(sub.id == input.id){
+    if (sub.id == input.id) {
       input.start && (sub.start = input.start);
       input.end && (sub.end = input.end);
-      input.first && input.first  != 'undefined' && (sub.first = input.first);
+      input.first && input.first != 'undefined' && (sub.first = input.first);
       input.second && input.second != 'undefined' && (sub.second = input.second);
       updatedExisting = true;
     }
   });
-  if(!updatedExisting){
+  if (!updatedExisting) {
     subtitles.push(input)
   }
   console.log(subtitles);
@@ -72,7 +76,7 @@ const updateSubtitles = input => {
 const removeSubtitle = input => {
   let id;
   subtitles.forEach(sub => {
-    if(sub.start == input){
+    if (sub.start == input) {
       id = sub.id;
       subtitles.splice(subtitles.indexOf(sub), 1);
     }
@@ -84,10 +88,36 @@ const removeSubtitle = input => {
 const saveSubtitlesToFile = () => {
   const date = new Date;
   const a = document.createElement("a");
-  const file = new Blob([JSON.stringify(subtitles)], {type: 'text/plain'});
+  const file = new Blob([JSON.stringify(subtitles)], { type: 'text/plain' });
   a.href = URL.createObjectURL(file);
   a.download = `${date.getTime()}.json`;
   a.click();
 }
 
-export { subtitles, initSubtitles, loadSubtitles, clearSubtitlesQueue, removeSubtitle, updateSubtitles, saveSubtitlesToFile };
+// Load Subtitles from File
+const loadSubtitlesFromFile = callback => {
+  const fileSelector = document.createElement('input');
+  fileSelector.setAttribute('type', 'file');
+  fileSelector.click();
+  fileSelector.addEventListener('change', () => {
+    var file = fileSelector.files[0];
+    var reader = new FileReader();
+    var reader = new FileReader();
+    reader.onload = e => {
+      subtitles = JSON.parse(reader.result);
+      callback();
+    }
+    reader.readAsText(file);
+  }, false)
+}
+
+export {
+  subtitles,
+  initSubtitles,
+  loadSubtitles,
+  clearSubtitlesQueue,
+  removeSubtitle,
+  updateSubtitles,
+  saveSubtitlesToFile,
+  loadSubtitlesFromFile
+};

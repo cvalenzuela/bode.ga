@@ -1,7 +1,4 @@
-// Subtitles
-// Long Island City, Queens
-
-let subtitles = [
+[
   {
     "id": "3a2bdeaa-069b-191f-07f6-1ce6ac640250",
     "first": "- Can I pay now? I just ordered. Bacon, egg and chesse croissant.",
@@ -339,5 +336,3 @@ let subtitles = [
     "end": "00:08:20"
   }
 ]
-
-export default subtitles;

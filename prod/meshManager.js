@@ -3,17 +3,29 @@
 // ========
 
 import * as THREE from 'three';
-import * as utils from './utils/utils';
+import { HHMMSStoSeconds } from './utils/utils';
 
 const currentMeshes = {};
 
+// Load all Models(meshes)
+const loadMeshes = (scene, models) => {
+  models.forEach((model, index) => {
+    setTimeout(() => {
+      addMesh(scene, model);
+    }, HHMMSStoSeconds(model.start) * 1000);
+    setTimeout(() => {
+      removeMesh(scene, model);
+    }, HHMMSStoSeconds(model.end) * 1000);
+  });
+};
+
 // Add a Mesh
-const addMesh = (scene, model, id) => {
+const addMesh = (scene, model) => {
   let loader = new THREE.JSONLoader().load('dist/models/' + model.name + '/' + model.name + '.js', geometry =>  {
       let material = new THREE.MeshBasicMaterial();
       let mesh = new THREE.Mesh(geometry, material);
       material.map = new THREE.TextureLoader().load('dist/models/' + model.name + '/' + model.name + '.jpg');
-      currentMeshes[id] = mesh;
+      currentMeshes[model.id] = mesh;
       scene.add(mesh);
     },
     xhr => {
@@ -25,9 +37,9 @@ const addMesh = (scene, model, id) => {
 };
 
 // Remove a Mesh
-const removeMesh = (scene, model, id) => {
-  scene.remove(currentMeshes[id]);
-  delete currentMeshes[id];
+const removeMesh = (scene, model) => {
+  scene.remove(currentMeshes[model.id]);
+  delete currentMeshes[model.id];
 }
 
-export { addMesh, removeMesh, currentMeshes }
+export { loadMeshes, addMesh, removeMesh, currentMeshes }

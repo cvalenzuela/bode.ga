@@ -1,7 +1,6 @@
 // ========
-// Move the Editor
+// Move the an Element
 // ========
-
 
 const moveElt = (elementToMove, trigger, x, y) => {
   let pos1 = 0,

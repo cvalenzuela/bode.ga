@@ -4,19 +4,21 @@
 
 import * as THREE from 'three';
 import * as utils from './utils/utils';
-import { loadModels } from './loadModels';
 import { initSubtitles, loadSubtitles } from './subtitlesManager';
 import { startAudio } from './audioManger';
 import { updateClock } from './timeManager';
-import { currentMeshes } from './meshManager';
-import { initEditMode, updateCurrentAudioTimePosition } from './editor';
+import { loadMeshes, currentMeshes } from './meshManager';
+import { initEditMode } from './editor';
+import { updateCurrentAudioTimePosition } from './editor/GUIManager';
+import { editMode } from './index';
 
 const app = document.getElementById('app');
 const loading = document.getElementById('loader');
 
 let container, camera, renderer, scene;
 
-let init = (editMode, audioSrc, models, subtitles, subtitlesElt) => {
+let init = (audioSrc, models, subtitles, subtitlesElt) => {
+
   // Append to DOM
   container = document.createElement('div');
   document.body.appendChild(container);
@@ -45,21 +47,19 @@ let init = (editMode, audioSrc, models, subtitles, subtitlesElt) => {
   // Event Listeners
   window.addEventListener('resize', e => { utils.onWindowResize(e, renderer, camera) }, false);
 
-  let loadSubtitlesAndModels = () => {
-    loading.style.display = 'none';
-    app.style.display = 'block';
-    loadSubtitles(subtitles, subtitlesElt, 0);
-    loadModels(scene, models);
-    animate();
-  }
-
   // Load and start the sound, once loaded, load the animations and the subtitles.
-  if(editMode){
-    initSubtitles(subtitles);
-    initEditMode(audioSrc, subtitlesElt, scene, models);
+  initSubtitles(subtitles, subtitlesElt);
+  if (editMode) {
+    initEditMode(audioSrc, scene, models);
     animate();
   } else {
-    startAudio(camera, audioSrc, loadSubtitlesAndModels);
+    startAudio(camera, audioSrc, () => {
+      loading.style.display = 'none';
+      app.style.display = 'block';
+      loadSubtitles(0);
+      loadMeshes(scene, models);
+      animate();
+    });
   }
 }
 
@@ -96,7 +96,7 @@ let animate = () => {
     current++;
   }
 
-  updateCurrentAudioTimePosition();
+  editMode && updateCurrentAudioTimePosition();
   updateClock();
   render();
   window.requestAnimationFrame(animate);

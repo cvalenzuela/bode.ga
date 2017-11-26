@@ -1,14 +1,14 @@
-/* 
-Bodegas Doc
-*/
+// ========
+// BODEGA MAIN
+// ========
 
 import init from './animationManager';
 
 // OPTIONS
 import models from './models/queens';
-import subtitles from './subtitles/demo';
+import subtitles from './subtitles/1511661098592';
 const audioSrc = 'dist/sounds/queens.mp3';
-const editMode = true;
+const editMode = false;
 // OPTIONS
 
 // Edit Mode
@@ -23,6 +23,7 @@ window.onload = () => {
   const creditsBtn = document.getElementById('creditsBtn'); // Not in use for now
   const loader = document.getElementById('loader');
   const subtitlesElt = document.getElementById('subtitles');
+  const editor = document.getElementById('editor');
 
   // Start the Film
   const start = () => {
@@ -30,9 +31,16 @@ window.onload = () => {
     cover.style.display = 'none';
     overlay.style.display = 'none';
     loader.style.display = 'block';
-    init(editMode, audioSrc, models, subtitles, subtitlesElt);
+    init(audioSrc, models, subtitles, subtitlesElt);
   }
 
   // Begin on click or in debug mode
-  editMode ? start() : watchBtn.addEventListener('click', start);
+  if (editMode) {
+    start();
+  } else {
+    editor.style.display = 'none';
+    watchBtn.addEventListener('click', start);
+  }
 };
+
+export { editMode }

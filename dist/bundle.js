@@ -44262,8 +44262,6 @@ var _utils = require('./utils/utils');
 
 var utils = _interopRequireWildcard(_utils);
 
-var _loadModels = require('./loadModels');
-
 var _subtitlesManager = require('./subtitlesManager');
 
 var _audioManger = require('./audioManger');
@@ -44274,13 +44272,16 @@ var _meshManager = require('./meshManager');
 
 var _editor = require('./editor');
 
+var _GUIManager = require('./editor/GUIManager');
+
+var _index = require('./index');
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-// ========
+var app = document.getElementById('app'); // ========
 // Animation Manager
 // ========
 
-var app = document.getElementById('app');
 var loading = document.getElementById('loader');
 
 var container = void 0,
@@ -44288,7 +44289,8 @@ var container = void 0,
     renderer = void 0,
     scene = void 0;
 
-var init = function init(editMode, audioSrc, models, subtitles, subtitlesElt) {
+var init = function init(audioSrc, models, subtitles, subtitlesElt) {
+
   // Append to DOM
   container = document.createElement('div');
   document.body.appendChild(container);
@@ -44319,21 +44321,19 @@ var init = function init(editMode, audioSrc, models, subtitles, subtitlesElt) {
     utils.onWindowResize(e, renderer, camera);
   }, false);
 
-  var loadSubtitlesAndModels = function loadSubtitlesAndModels() {
-    loading.style.display = 'none';
-    app.style.display = 'block';
-    (0, _subtitlesManager.loadSubtitles)(subtitles, subtitlesElt, 0);
-    (0, _loadModels.loadModels)(scene, models);
-    animate();
-  };
-
   // Load and start the sound, once loaded, load the animations and the subtitles.
-  if (editMode) {
-    (0, _subtitlesManager.initSubtitles)(subtitles);
-    (0, _editor.initEditMode)(audioSrc, subtitlesElt, scene, models);
+  (0, _subtitlesManager.initSubtitles)(subtitles, subtitlesElt);
+  if (_index.editMode) {
+    (0, _editor.initEditMode)(audioSrc, scene, models);
     animate();
   } else {
-    (0, _audioManger.startAudio)(camera, audioSrc, loadSubtitlesAndModels);
+    (0, _audioManger.startAudio)(camera, audioSrc, function () {
+      loading.style.display = 'none';
+      app.style.display = 'block';
+      (0, _subtitlesManager.loadSubtitles)(0);
+      (0, _meshManager.loadMeshes)(scene, models);
+      animate();
+    });
   }
 };
 
@@ -44370,7 +44370,7 @@ var animate = function animate() {
     current++;
   }
 
-  (0, _editor.updateCurrentAudioTimePosition)();
+  _index.editMode && (0, _GUIManager.updateCurrentAudioTimePosition)();
   (0, _timeManager.updateClock)();
   render();
   window.requestAnimationFrame(animate);
@@ -44378,7 +44378,7 @@ var animate = function animate() {
 
 exports.default = init;
 
-},{"./audioManger":4,"./editor":5,"./loadModels":8,"./meshManager":9,"./subtitlesManager":12,"./timeManager":13,"./utils/utils":14,"three":1}],4:[function(require,module,exports){
+},{"./audioManger":4,"./editor":8,"./editor/GUIManager":5,"./index":13,"./meshManager":14,"./subtitlesManager":17,"./timeManager":18,"./utils/utils":19,"three":1}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44429,63 +44429,238 @@ exports.startAudio = startAudio;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateCurrentAudioTimePosition = exports.initEditMode = undefined;
+exports.updateCurrentAudioTimePosition = exports.modelsKeys = undefined;
+
+var _index = require('./index');
+
+var _utils = require('./../utils/utils');
+
+var _audioManager = require('./audioManager');
+
+// DOM Elements
+var currentTime = document.getElementById('currentTime'); // ========
+// Editor GUI Manager
+// ========
+
+var modelsKeys = document.getElementById('modelsKeys');
+modelsKeys.style.width = _index.WIDTH + 'px';
+
+// Update the position of the div showing the audio time
+var updateCurrentAudioTimePosition = function updateCurrentAudioTimePosition() {
+  var pos = (0, _utils.mapRange)(_audioManager.audio.getCurrentTime(), 0, _audioManager.audio.getDuration(), 0, _index.WIDTH);
+  currentTime.innerText = (0, _utils.secondstoHHMMSS)(_audioManager.audio.getCurrentTime());
+  currentTime.style.left = pos + 'px';
+};
+
+exports.modelsKeys = modelsKeys;
+exports.updateCurrentAudioTimePosition = updateCurrentAudioTimePosition;
+
+},{"./../utils/utils":19,"./audioManager":6,"./index":8}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.playAudio = exports.createAudio = exports.audio = undefined;
 
 var _wavesurfer = require('wavesurfer.js');
 
 var _wavesurfer2 = _interopRequireDefault(_wavesurfer);
 
-var _move = require('./move');
-
-var _utils = require('./../utils/utils');
+var _index = require('./index');
 
 var _subtitlesManager = require('./../subtitlesManager');
+
+var _subtitlesMiddleManager = require('./subtitlesMiddleManager');
+
+var _subtitleKeysManager = require('./subtitleKeysManager');
+
+var _buttonsManager = require('./buttonsManager');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // ========
-// Editor Main
+// Editor Audio Manager
 // ========
 
-var waveform = document.getElementById('waveform');
+var audio = void 0;
+var waveform = void 0;
+
+// Create the Audio instance
+var createAudio = function createAudio(audioSrc) {
+  // Set the max width
+  waveform = document.getElementById('waveform');
+  waveform.style.width = _index.WIDTH + 'px';
+
+  exports.audio = audio = _wavesurfer2.default.create({
+    container: '#waveform',
+    scrollParent: false,
+    cursorColor: '#399ACA',
+    barHeight: 7
+  });
+  audio.load(audioSrc);
+
+  // When the audio is loaded, load the subtitles
+  audio.on('ready', function () {
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    (0, _subtitleKeysManager.renderSubtitlesKeys)(subtitles);
+  });
+
+  // When the audio bar is moved, reload the subtitles
+  audio.on('seek', function (e) {
+    (0, _subtitlesManager.clearSubtitlesQueue)();
+    audio.isPlaying() && (0, _subtitlesManager.loadSubtitles)(audio.getCurrentTime());
+  });
+};
+
+// Play the audio
+var playAudio = function playAudio() {
+  if (audio.isPlaying()) {
+    (0, _subtitlesManager.clearSubtitlesQueue)();
+    audio.pause();
+    _buttonsManager.playBtn.innerText = 'Play';
+  } else {
+    (0, _subtitlesManager.loadSubtitles)(audio.getCurrentTime());
+    audio.play();
+    _buttonsManager.playBtn.innerText = 'Pause';
+  }
+};
+
+exports.audio = audio;
+exports.createAudio = createAudio;
+exports.playAudio = playAudio;
+
+},{"./../subtitlesManager":17,"./buttonsManager":7,"./index":8,"./subtitleKeysManager":11,"./subtitlesMiddleManager":12,"wavesurfer.js":2}],7:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.addSubtitleBtn = exports.saveBtn = exports.stopBtn = exports.playBtn = undefined;
+
+var _audioManager = require('./audioManager');
+
+var _subtitlesManager = require('./../subtitlesManager');
+
+var _subtitleKeysManager = require('./subtitleKeysManager');
+
+var _subtitlesMiddleManager = require('./subtitlesMiddleManager');
+
+// ========
+// Editor Buttons Manager
+// ========
 
 var playBtn = document.getElementById('play');
 var stopBtn = document.getElementById('stop');
 var saveBtn = document.getElementById('save');
+var loadSubtitlesFileBtn = document.getElementById('loadSubtitlesFile');
+var loadModelsFileBtn = document.getElementById('loadModelsFile');
 var addSubtitleBtn = document.getElementById('addSubtitle');
 var removeSubtitleBtn = document.getElementById('removeSubtitle');
 var addModelBtn = document.getElementById('addModel');
 var removeModelBtn = document.getElementById('removeModel');
+
+// Play Button
+playBtn.addEventListener('click', function () {
+  (0, _audioManager.playAudio)();
+});
+
+// Stop Button
+stopBtn.addEventListener('click', function () {
+  _audioManager.audio.stop();
+  playBtn.innerText = 'Play';
+});
+
+// Save Button
+saveBtn.addEventListener('click', function () {
+  (0, _subtitlesManager.saveSubtitlesToFile)();
+  // saveModelsToFile();
+});
+
+// Load Subtitles Button
+loadSubtitlesFileBtn.addEventListener('click', function () {
+  (0, _subtitleKeysManager.removeSubtitles)(_subtitlesManager.loadSubtitlesFromFile, _subtitleKeysManager.renderSubtitlesKeys);
+});
+
+// Load Models Button
+loadModelsFileBtn.addEventListener('click', function () {
+  // removeModels(loadModelsFromFile, renderModelsKeys)
+});
+
+// Add a Subtitle
+addSubtitleBtn.addEventListener('click', function () {
+  (0, _subtitlesMiddleManager.addSub)();
+});
+
+// Remove a Subtitle 
+removeSubtitleBtn.addEventListener('click', function () {
+  (0, _subtitlesMiddleManager.removeSub)();
+});
+
+exports.playBtn = playBtn;
+exports.stopBtn = stopBtn;
+exports.saveBtn = saveBtn;
+exports.addSubtitleBtn = addSubtitleBtn;
+
+},{"./../subtitlesManager":17,"./audioManager":6,"./subtitleKeysManager":11,"./subtitlesMiddleManager":12}],8:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.WIDTH = exports.initEditMode = undefined;
+
+var _move = require('./move');
+
+var _audioManager = require('./audioManager');
+
+require('./keyboardManager');
+
+var WIDTH = 1000; // ========
+// Editor Main
+// ========
+
 var editor = document.getElementById('editor');
 var moveBtn = document.getElementById('move');
-var currentTime = document.getElementById('currentTime');
-var modelsKeys = document.getElementById('modelsKeys');
-var subtitleTooltip = document.getElementById('subtitleTooltip');
-var subtitlesKeys = document.getElementById('subtitlesKeys');
+
+// Init the edit mode
+var initEditMode = function initEditMode(audioSrc, scene, models) {
+  (0, _move.moveElt)(editor, moveBtn, true, true);
+  (0, _audioManager.createAudio)(audioSrc);
+};
+
+exports.initEditMode = initEditMode;
+exports.WIDTH = WIDTH;
+
+},{"./audioManager":6,"./keyboardManager":9,"./move":10}],9:[function(require,module,exports){
+'use strict';
+
+var _audioManager = require('./audioManager');
+
+var _subtitlesManager = require('./../subtitlesManager');
+
+var _subtitlesMiddleManager = require('./subtitlesMiddleManager');
+
+var _subtitleKeysManager = require('./subtitleKeysManager');
+
+// ========
+// Editor Keyboard Manager
+// ========
+
+_subtitleKeysManager.isASubtitleKeySelected;
 var subtitleTimeTooltip = document.getElementById('subtitleTimeTooltip');
-var subtitlesTracks = document.getElementById('subtitlesTracks');
-var app = document.getElementById('app');
-var loading = document.getElementById('loader');
+var subtitleTooltip = document.getElementById('subtitleTooltip');
 
-var WIDTH = 1000;
-var currentSubtitleSelected = void 0;
-var isASubtitleSelected = false;
-
-var firstTimeLoadingSubtitles = true;
-var audio = void 0,
-    subtitlesElt = void 0;
 var keys = [];
-waveform.style.width = WIDTH + 'px';
-modelsKeys.style.width = WIDTH + 'px';
-subtitlesKeys.style.width = WIDTH + 'px';
 
 // Manage Keyboard
 document.body.onkeydown = function (e) {
   var isShiftPressed = keys.indexOf(16) != -1;
   // Spacebar
   if (e.keyCode == 32) {
-    if (!isASubtitleSelected) {
-      playAudio();
+    if (!_subtitleKeysManager.isASubtitleKeySelected) {
+      (0, _audioManager.playAudio)();
     }
   }
   // Enter
@@ -44495,20 +44670,19 @@ document.body.onkeydown = function (e) {
       var time = subtitleTimeTooltip.innerText.split('-');
       var txt = subtitleTooltip.innerText.split(/\n/);
       var data = {
-        id: currentSubtitleSelected,
+        id: _subtitleKeysManager.currentSubtitleSelected,
         start: time[0],
         end: time[1],
         first: txt[0],
         second: txt[1]
       };
       (0, _subtitlesManager.updateSubtitles)(data);
-      redrawSubtitle(true);
+      (0, _subtitlesMiddleManager.redrawSubtitle)(true);
     }
   }
   // Esc
   if (e.keyCode == 27) {
-    currentSubtitleSelected = '';
-    isASubtitleSelected = false;
+    (0, _subtitleKeysManager.clearSubtitleKeys)();
     subtitleTooltip.innerText = '';
     subtitleTimeTooltip.innerText = '';
   }
@@ -44519,13 +44693,13 @@ document.body.onkeydown = function (e) {
   // S: add a subtitle
   if (e.keyCode == 83) {
     if (isShiftPressed) {
-      addSubtitle();
+      (0, _subtitlesMiddleManager.addSub)();
     }
   }
   // D: delete a subtitle 
   if (e.keyCode == 68) {
     if (isShiftPressed) {
-      removeSub();
+      (0, _subtitlesMiddleManager.removeSub)();
     }
   }
   // M: add a model 
@@ -44546,255 +44720,20 @@ document.body.onkeyup = function (e) {
 
 // Update a subtitle when it has moved in the timeline
 window.onmouseup = function (e) {
-  if (isASubtitleSelected) {
-    redrawSubtitle(false);
+  if (_subtitleKeysManager.isASubtitleKeySelected) {
+    (0, _subtitlesMiddleManager.redrawSubtitle)(false);
   }
 };
 
-// Add a subtitle
-var addSubtitle = function addSubtitle() {
-  var data = {
-    id: (0, _utils.UUIID)(),
-    start: (0, _utils.secondstoHHMMSS)(audio.getCurrentTime()),
-    end: (0, _utils.secondstoHHMMSS)(audio.getCurrentTime() + 2),
-    first: '- Sample Text',
-    second: undefined
-  };
-  var startPos = (0, _utils.mapRange)(audio.getCurrentTime(), 0, audio.getDuration(), 0, WIDTH);
-  createSubKey(data, startPos);
-  (0, _subtitlesManager.updateSubtitles)(data);
-};
-
-// Remove a subtitle 
-var removeSub = function removeSub() {
-  var currentPos = (0, _utils.secondstoHHMMSS)(audio.getCurrentTime());
-  var id = (0, _subtitlesManager.removeSubtitle)(currentPos);
-  var elt = document.getElementById(id);
-  elt.remove();
-};
-
-// Redraw a subtitle
-var redrawSubtitle = function redrawSubtitle(manualEdit) {
-  var key = document.getElementById(currentSubtitleSelected);
-  var subtitleEdit = document.getElementById(currentSubtitleSelected + 'Edit');
-
-  var offset = void 0,
-      first = void 0,
-      second = void 0,
-      left = void 0,
-      start = void 0,
-      end = void 0;
-  if (manualEdit) {
-    var time = subtitleTimeTooltip.innerText.split('-');
-    var txt = subtitleTooltip.innerText.split(/\n/);
-    start = time[0];
-    end = time[1];
-    offset = (0, _utils.HHMMSStoSeconds)(time[0]);
-    first = txt[0];
-    second = txt[1];
-    left = (0, _utils.mapRange)(offset, 0, audio.getDuration(), 0, WIDTH);
-  } else {
-    first = key.dataset.first;
-    second = key.dataset.second;
-    offset = parseFloat(key.style.left.split('px')[0]).toFixed(100);
-    left = offset;
-    var newStart = (0, _utils.mapRange)(offset, 0, WIDTH, 0, audio.getDuration());
-    var newEnd = newStart + ((0, _utils.HHMMSStoSeconds)(key.dataset.end) - (0, _utils.HHMMSStoSeconds)(key.dataset.start));
-    start = (0, _utils.secondstoHHMMSS)(newStart);
-    end = (0, _utils.secondstoHHMMSS)(newEnd);
-  }
-
-  // Update the Key part
-  key.style.left = left + 'px';
-  key.dataset.left = left;
-  key.dataset.first = first;
-  key.dataset.second = second;
-  key.dataset.start = start;
-  key.dataset.end = end;
-
-  // Update the Edit part
-  subtitleEdit.children[1].innerText = start;
-  subtitleEdit.children[2].innerText = end;
-  subtitleEdit.children[3].innerText = first;
-  subtitleEdit.children[4].innerText = second;
-
-  // Move the tooltip
-  subtitleTooltip.style.left = left + 'px';
-  subtitleTimeTooltip.style.left = left + 'px';
-  subtitleTimeTooltip.innerHTML = start + '-' + end;
-
-  var data = {
-    id: key.id,
-    start: start,
-    end: end,
-    first: first,
-    second: second
-  };
-  (0, _subtitlesManager.updateSubtitles)(data);
-};
-
-// Play the audio
-var playAudio = function playAudio() {
-  if (audio.isPlaying()) {
-    (0, _subtitlesManager.clearSubtitlesQueue)(subtitlesElt);
-    audio.pause();
-    playBtn.innerText = 'Play';
-  } else {
-    if (firstTimeLoadingSubtitles) {
-      loading.style.display = 'none';
-      app.style.display = 'block';
-      firstTimeLoadingSubtitles = false;
-    }
-    (0, _subtitlesManager.loadSubtitles)(subtitlesElt, audio.getCurrentTime());
-    audio.play();
-    playBtn.innerText = 'Pause';
-  }
-};
-
-// Play Button
-playBtn.addEventListener('click', function () {
-  playAudio();
-});
-
-// Stop Button
-stopBtn.addEventListener('click', function () {
-  audio.stop();
-  playBtn.innerText = 'Play';
-});
-
-// Save Button
-saveBtn.addEventListener('click', function () {
-  (0, _subtitlesManager.saveSubtitlesToFile)();
-});
-
-// Add a Subtitle
-addSubtitleBtn.addEventListener('click', function () {
-  addSubtitle();
-});
-
-// Remove a Subtitle 
-removeSubtitleBtn.addEventListener('click', function () {
-  removeSub();
-});
-
-// Append a new subtitle track
-var newSubTrack = function newSubTrack(sub) {
-  var newElements = ['subtitleTrack', 'subId', 'subStart', 'subEnd', 'subFirst', 'subSecond'];
-  var domElements = [];
-  newElements.forEach(function (e, i) {
-    var elt = document.createElement('div');
-    elt.className = e;
-    i > 0 && (elt.contentEditable = 'true');
-    domElements.push(elt);
-  });
-  domElements[0].id = sub.id + 'Edit';
-  domElements[1].innerText = sub.id.substring(0, 5);
-  domElements[2].innerText = sub.start;
-  domElements[3].innerText = sub.end;
-  domElements[4].innerText = sub.first;
-  domElements[5].innerText = sub.second;
-  domElements.forEach(function (e, i) {
-    i > 0 && domElements[0].appendChild(e);
-  });
-  subtitlesTracks.appendChild(domElements[0]);
-};
-
-// Create a subtitle Key (the yellow things)
-var createSubKey = function createSubKey(data, startPos) {
-  var key = document.createElement('div');
-  key.className = 'subtitleKey';
-  key.style.left = startPos + 'px';
-  key.draggable = 'true';
-  key.dataset.start = data.start;
-  key.dataset.end = data.end;
-  key.dataset.first = data.first;
-  key.dataset.second = data.second;
-  key.dataset.left = startPos;
-  key.id = data.id;
-
-  newSubTrack(data);
-  (0, _move.moveElt)(key, key, true, false);
-  var showSubtitleAndTime = function showSubtitleAndTime() {
-    !data.second ? subtitleTooltip.innerHTML = data.first : subtitleTooltip.innerHTML = data.first + '<br>' + data.second;
-    subtitleTimeTooltip.innerHTML = data.start + '-' + data.end;
-    subtitleTooltip.style.left = key.dataset.left + 'px';
-    subtitleTimeTooltip.style.left = key.dataset.left + 'px';
-  };
-  key.addEventListener('mouseover', function () {
-    if (!isASubtitleSelected) {
-      showSubtitleAndTime();
-      subtitleTooltip.style.left = key.dataset.left + 'px';
-      subtitleTimeTooltip.style.left = key.dataset.left + 'px';
-    }
-  });
-  key.addEventListener('mouseleave', function () {
-    if (!isASubtitleSelected) {
-      subtitleTooltip.innerText = '';
-      subtitleTimeTooltip.innerText = '';
-    }
-  });
-  key.addEventListener('mousedown', function () {
-    isASubtitleSelected = true;
-    currentSubtitleSelected = data.id;
-    showSubtitleAndTime();
-  });
-  subtitlesKeys.appendChild(key);
-};
-
-// Subtitles Keys and Tracks
-var renderSubtitles = function renderSubtitles() {
-  _subtitlesManager.subtitles.forEach(function (sub) {
-    var startPos = (0, _utils.mapRange)((0, _utils.HHMMSStoSeconds)(sub.start), 0, audio.getDuration(), 0, WIDTH);
-    createSubKey(sub, startPos);
-  });
-};
-
-// Init the edit mode
-var initEditMode = function initEditMode(audioSrc, _subtitlesElt, scene, models) {
-  subtitlesElt = _subtitlesElt;
-
-  (0, _move.moveElt)(editor, moveBtn, true, true);
-
-  audio = _wavesurfer2.default.create({
-    container: '#waveform',
-    scrollParent: false,
-    cursorColor: '#399ACA',
-    barHeight: 7
-  });
-  audio.load(audioSrc);
-
-  // When the audio is loaded, load the subtitles
-  audio.on('ready', function () {
-    renderSubtitles(_subtitlesManager.subtitles);
-  });
-
-  // When the audio bar is moved, reload the subtitles
-  audio.on('seek', function (e) {
-    (0, _subtitlesManager.clearSubtitlesQueue)(subtitlesElt);
-    audio.isPlaying() && (0, _subtitlesManager.loadSubtitles)(subtitlesElt, audio.getCurrentTime());
-  });
-};
-
-// Update the position of the div showing the audio time
-var updateCurrentAudioTimePosition = function updateCurrentAudioTimePosition() {
-  var pos = (0, _utils.mapRange)(audio.getCurrentTime(), 0, audio.getDuration(), 0, WIDTH);
-  currentTime.innerText = (0, _utils.secondstoHHMMSS)(audio.getCurrentTime());
-  currentTime.style.left = pos + 'px';
-};
-
-exports.initEditMode = initEditMode;
-exports.updateCurrentAudioTimePosition = updateCurrentAudioTimePosition;
-
-},{"./../subtitlesManager":12,"./../utils/utils":14,"./move":6,"wavesurfer.js":2}],6:[function(require,module,exports){
+},{"./../subtitlesManager":17,"./audioManager":6,"./subtitleKeysManager":11,"./subtitlesMiddleManager":12}],10:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 // ========
-// Move the Editor
+// Move the an Element
 // ========
-
 
 var moveElt = function moveElt(elementToMove, trigger, x, y) {
   var pos1 = 0,
@@ -44830,8 +44769,222 @@ var moveElt = function moveElt(elementToMove, trigger, x, y) {
 
 exports.moveElt = moveElt;
 
-},{}],7:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.removeSubtitles = exports.renderSubtitlesKeys = exports.createSubKey = exports.isASubtitleKeySelected = exports.subtitlesKeys = exports.currentSubtitleSelected = exports.clearSubtitleKeys = undefined;
+
+var _index = require('./index');
+
+var _audioManager = require('./audioManager');
+
+var _move = require('./move');
+
+var _subtitlesManager = require('./../subtitlesManager');
+
+var _utils = require('./../utils/utils');
+
+var subtitleTimeTooltip = document.getElementById('subtitleTimeTooltip'); // ========
+// Editor Subtitle Keys Manager
+// ========
+
+var subtitleTooltip = document.getElementById('subtitleTooltip');
+
+var subtitlesKeys = void 0;
+var currentSubtitleSelected = void 0;
+var isASubtitleKeySelected = false;
+
+// Create a subtitle Key (the yellow things)
+var createSubKey = function createSubKey(data, startPos) {
+  var key = document.createElement('div');
+  key.className = 'subtitleKey';
+  key.style.left = startPos + 'px';
+  key.draggable = 'true';
+  key.dataset.start = data.start;
+  key.dataset.end = data.end;
+  key.dataset.first = data.first;
+  key.dataset.second = data.second;
+  key.dataset.left = startPos;
+  key.id = data.id;
+
+  // Make it movable
+  (0, _move.moveElt)(key, key, true, false);
+
+  var showSubtitleAndTime = function showSubtitleAndTime() {
+    !data.second ? subtitleTooltip.innerHTML = data.first : subtitleTooltip.innerHTML = data.first + '<br>' + data.second;
+    subtitleTimeTooltip.innerHTML = data.start + '-' + data.end;
+    subtitleTooltip.style.left = key.dataset.left + 'px';
+    subtitleTimeTooltip.style.left = key.dataset.left + 'px';
+  };
+  key.addEventListener('mouseover', function () {
+    if (!isASubtitleKeySelected) {
+      showSubtitleAndTime();
+      subtitleTooltip.style.left = key.dataset.left + 'px';
+      subtitleTimeTooltip.style.left = key.dataset.left + 'px';
+    }
+  });
+  key.addEventListener('mouseleave', function () {
+    if (!isASubtitleKeySelected) {
+      subtitleTooltip.innerText = '';
+      subtitleTimeTooltip.innerText = '';
+    }
+  });
+  key.addEventListener('mousedown', function () {
+    exports.isASubtitleKeySelected = isASubtitleKeySelected = true;
+    exports.currentSubtitleSelected = currentSubtitleSelected = data.id;
+    showSubtitleAndTime();
+  });
+  subtitlesKeys.appendChild(key);
+};
+
+// Render Subtitles Keys
+var renderSubtitlesKeys = function renderSubtitlesKeys() {
+  exports.subtitlesKeys = subtitlesKeys = document.getElementById('subtitlesKeys');
+  subtitlesKeys.style.width = _index.WIDTH + 'px';
+
+  _subtitlesManager.subtitles.forEach(function (sub) {
+    var startPos = (0, _utils.mapRange)((0, _utils.HHMMSStoSeconds)(sub.start), 0, _audioManager.audio.getDuration(), 0, _index.WIDTH);
+    createSubKey(sub, startPos);
+  });
+};
+
+// Remove all Subtitle Keys
+var removeSubtitles = function removeSubtitles(callback) {
+  _subtitlesManager.subtitles.forEach(function (sub) {
+    var elt = document.getElementById(sub.id);
+    elt.remove();
+  });
+  callback(renderSubtitlesKeys);
+};
+
+// Clear selected subtitle key
+var clearSubtitleKeys = function clearSubtitleKeys() {
+  exports.currentSubtitleSelected = currentSubtitleSelected = '';
+  exports.isASubtitleKeySelected = isASubtitleKeySelected = false;
+};
+
+exports.clearSubtitleKeys = clearSubtitleKeys;
+exports.currentSubtitleSelected = currentSubtitleSelected;
+exports.subtitlesKeys = subtitlesKeys;
+exports.isASubtitleKeySelected = isASubtitleKeySelected;
+exports.createSubKey = createSubKey;
+exports.renderSubtitlesKeys = renderSubtitlesKeys;
+exports.removeSubtitles = removeSubtitles;
+
+},{"./../subtitlesManager":17,"./../utils/utils":19,"./audioManager":6,"./index":8,"./move":10}],12:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.redrawSubtitle = exports.removeSub = exports.addSub = undefined;
+
+var _index = require('./index');
+
+var _audioManager = require('./audioManager');
+
+var _utils = require('./../utils/utils');
+
+var _subtitleKeysManager = require('./subtitleKeysManager');
+
+var _subtitlesManager = require('./../subtitlesManager');
+
+var subtitleTimeTooltip = document.getElementById('subtitleTimeTooltip'); // ========
+// Editor Subtitles Middle Manager. Not to confuse with the global subtitles Manager.
+// ========
+
+
+var subtitleTooltip = document.getElementById('subtitleTooltip');
+
+// Add a subtitle
+var addSub = function addSub() {
+  var data = {
+    id: (0, _utils.UUIID)(),
+    start: (0, _utils.secondstoHHMMSS)(_audioManager.audio.getCurrentTime()),
+    end: (0, _utils.secondstoHHMMSS)(_audioManager.audio.getCurrentTime() + 2),
+    first: '- Sample Text',
+    second: undefined
+  };
+  var startPos = (0, _utils.mapRange)(_audioManager.audio.getCurrentTime(), 0, _audioManager.audio.getDuration(), 0, _index.WIDTH);
+  (0, _subtitleKeysManager.createSubKey)(data, startPos);
+  (0, _subtitlesManager.updateSubtitles)(data);
+};
+
+// Remove a subtitle 
+var removeSub = function removeSub() {
+  var currentPos = (0, _utils.secondstoHHMMSS)(_audioManager.audio.getCurrentTime());
+  var id = (0, _subtitlesManager.removeSubtitle)(currentPos);
+  var elt = document.getElementById(id);
+  elt.remove();
+};
+
+// Redraw a subtitle
+var redrawSubtitle = function redrawSubtitle(manualEdit) {
+  var key = document.getElementById(_subtitleKeysManager.currentSubtitleSelected);
+
+  var offset = void 0,
+      first = void 0,
+      second = void 0,
+      left = void 0,
+      start = void 0,
+      end = void 0;
+  if (manualEdit) {
+    var time = subtitleTimeTooltip.innerText.split('-');
+    var txt = subtitleTooltip.innerText.split(/\n/);
+    start = time[0];
+    end = time[1];
+    offset = (0, _utils.HHMMSStoSeconds)(time[0]);
+    first = txt[0];
+    second = txt[1];
+    left = (0, _utils.mapRange)(offset, 0, _audioManager.audio.getDuration(), 0, _index.WIDTH);
+  } else {
+    first = key.dataset.first;
+    second = key.dataset.second;
+    offset = parseFloat(key.style.left.split('px')[0]).toFixed(100);
+    left = offset;
+    var newStart = (0, _utils.mapRange)(offset, 0, _index.WIDTH, 0, _audioManager.audio.getDuration());
+    var newEnd = newStart + ((0, _utils.HHMMSStoSeconds)(key.dataset.end) - (0, _utils.HHMMSStoSeconds)(key.dataset.start));
+    start = (0, _utils.secondstoHHMMSS)(newStart);
+    end = (0, _utils.secondstoHHMMSS)(newEnd);
+  }
+
+  // Update the Key
+  key.style.left = left + 'px';
+  key.dataset.left = left;
+  key.dataset.first = first;
+  key.dataset.second = second;
+  key.dataset.start = start;
+  key.dataset.end = end;
+
+  // Move the tooltip
+  subtitleTooltip.style.left = left + 'px';
+  subtitleTimeTooltip.style.left = left + 'px';
+  subtitleTimeTooltip.innerHTML = start + '-' + end;
+
+  var data = {
+    id: key.id,
+    start: start,
+    end: end,
+    first: first,
+    second: second
+  };
+  (0, _subtitlesManager.updateSubtitles)(data);
+};
+
+exports.addSub = addSub;
+exports.removeSub = removeSub;
+exports.redrawSubtitle = redrawSubtitle;
+
+},{"./../subtitlesManager":17,"./../utils/utils":19,"./audioManager":6,"./index":8,"./subtitleKeysManager":11}],13:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.editMode = undefined;
 
 var _animationManager = require('./animationManager');
 
@@ -44841,20 +44994,20 @@ var _queens = require('./models/queens');
 
 var _queens2 = _interopRequireDefault(_queens);
 
-var _demo = require('./subtitles/demo');
+var _ = require('./subtitles/1511661098592');
 
-var _demo2 = _interopRequireDefault(_demo);
+var _2 = _interopRequireDefault(_);
 
 require('./editor/index');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // OPTIONS
-var audioSrc = 'dist/sounds/queens.mp3'; /* 
-                                         Bodegas Doc
-                                         */
+var audioSrc = 'dist/sounds/queens.mp3'; // ========
+// BODEGA MAIN
+// ========
 
-var editMode = true;
+var editMode = false;
 // OPTIONS
 
 // Edit Mode
@@ -44869,6 +45022,7 @@ window.onload = function () {
   var creditsBtn = document.getElementById('creditsBtn'); // Not in use for now
   var loader = document.getElementById('loader');
   var subtitlesElt = document.getElementById('subtitles');
+  var editor = document.getElementById('editor');
 
   // Start the Film
   var start = function start() {
@@ -44876,54 +45030,33 @@ window.onload = function () {
     cover.style.display = 'none';
     overlay.style.display = 'none';
     loader.style.display = 'block';
-    (0, _animationManager2.default)(editMode, audioSrc, _queens2.default, _demo2.default, subtitlesElt);
+    (0, _animationManager2.default)(audioSrc, _queens2.default, _2.default, subtitlesElt);
   };
 
   // Begin on click or in debug mode
-  editMode ? start() : watchBtn.addEventListener('click', start);
+  if (editMode) {
+    start();
+  } else {
+    editor.style.display = 'none';
+    watchBtn.addEventListener('click', start);
+  }
 };
 
-},{"./animationManager":3,"./editor/index":5,"./models/queens":10,"./subtitles/demo":11}],8:[function(require,module,exports){
+exports.editMode = editMode;
+
+},{"./animationManager":3,"./editor/index":8,"./models/queens":15,"./subtitles/1511661098592":16}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.loadModels = undefined;
-
-var _meshManager = require('./meshManager');
-
-var loadModels = function loadModels(scene, models) {
-  models.forEach(function (model, index) {
-    var id = Date.now() + Math.random();
-    setTimeout(function () {
-      (0, _meshManager.addMesh)(scene, model, id);
-    }, model.start * 1000);
-    setTimeout(function () {
-      (0, _meshManager.removeMesh)(scene, model, id);
-    }, model.end * 1000);
-  });
-}; // ========
-// Load and remove a mesh at a specific time using setTimeout.
-// ========
-
-exports.loadModels = loadModels;
-
-},{"./meshManager":9}],9:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.currentMeshes = exports.removeMesh = exports.addMesh = undefined;
+exports.currentMeshes = exports.removeMesh = exports.addMesh = exports.loadMeshes = undefined;
 
 var _three = require('three');
 
 var THREE = _interopRequireWildcard(_three);
 
 var _utils = require('./utils/utils');
-
-var utils = _interopRequireWildcard(_utils);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -44933,13 +45066,25 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 var currentMeshes = {};
 
+// Load all Models(meshes)
+var loadMeshes = function loadMeshes(scene, models) {
+  models.forEach(function (model, index) {
+    setTimeout(function () {
+      addMesh(scene, model);
+    }, (0, _utils.HHMMSStoSeconds)(model.start) * 1000);
+    setTimeout(function () {
+      removeMesh(scene, model);
+    }, (0, _utils.HHMMSStoSeconds)(model.end) * 1000);
+  });
+};
+
 // Add a Mesh
-var addMesh = function addMesh(scene, model, id) {
+var addMesh = function addMesh(scene, model) {
   var loader = new THREE.JSONLoader().load('dist/models/' + model.name + '/' + model.name + '.js', function (geometry) {
     var material = new THREE.MeshBasicMaterial();
     var mesh = new THREE.Mesh(geometry, material);
     material.map = new THREE.TextureLoader().load('dist/models/' + model.name + '/' + model.name + '.jpg');
-    currentMeshes[id] = mesh;
+    currentMeshes[model.id] = mesh;
     scene.add(mesh);
   }, function (xhr) {
     console.log(xhr.loaded / xhr.total * 100 + '% loaded');
@@ -44949,16 +45094,17 @@ var addMesh = function addMesh(scene, model, id) {
 };
 
 // Remove a Mesh
-var removeMesh = function removeMesh(scene, model, id) {
-  scene.remove(currentMeshes[id]);
-  delete currentMeshes[id];
+var removeMesh = function removeMesh(scene, model) {
+  scene.remove(currentMeshes[model.id]);
+  delete currentMeshes[model.id];
 };
 
+exports.loadMeshes = loadMeshes;
 exports.addMesh = addMesh;
 exports.removeMesh = removeMesh;
 exports.currentMeshes = currentMeshes;
 
-},{"./utils/utils":14,"three":1}],10:[function(require,module,exports){
+},{"./utils/utils":19,"three":1}],15:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -44967,161 +45113,123 @@ Object.defineProperty(exports, "__esModule", {
 // Objects to load
 
 var models = [{
-  "id_sub": 1,
+  "id": "197dac5d-0832-3213-94b0-77c1804a76b4",
   "name": "croissant02",
   "start": "00:00:12",
-  "end": "00:00:54",
-  "buffer": false
+  "end": "00:00:54"
 }, {
+  "id": "a5323ee9-2fec-6e87-d3a0-847395a3434a",
   "name": "napkins",
   "start": "00:00:44",
-  "end": "00:00:54",
-  "buffer": false
+  "end": "00:00:54"
 }, {
-  "id_sub": 6,
+  "id": "c8adb906-1f21-f2ac-a4a2-cc6b7b58dc74",
   "name": "coffee01",
   "start": "00:01:30",
-  "end": "00:02:07",
-  "buffer": false
+  "end": "00:02:07"
 }, {
-  "id_sub": 7,
+  "id": "5d8fa12f-bc63-fd33-dcf6-949fc2eb7669",
   "name": "empanada",
   "start": "00:02:00",
-  "end": "00:02:07",
-  "buffer": false
+  "end": "00:02:07"
 }, {
-  "id_sub": 7,
+  "id": "589b5d19-7e0b-2aab-deb3-9a0be3e3b3db",
   "name": "empanada",
   "start": "00:02:01",
-  "end": "00:02:07",
-  "buffer": false
+  "end": "00:02:07"
 }, {
-  "id_sub": 10,
+  "id": "bee9215a-4a0a-5c25-fe26-95a053dabaa5",
   "name": "coffee01",
   "start": "00:02:16",
-  "end": "00:02:22",
-  "buffer": false
+  "end": "00:02:22"
 }, {
-  "id_sub": 16,
+  "id": "007b8e1b-805c-5ec0-34a4-4f164d6106b7",
   "name": "banana",
   "start": "00:02:38",
-  "end": "00:02:55",
-  "buffer": false
+  "end": "00:02:55"
 }, {
-  "id_sub": 18,
+  "id": "709f7d29-f80a-3a21-ba81-d584f07653c6",
   "name": "coffee01",
   "start": "00:03:00",
-  "end": "00:03:10",
-  "buffer": false
+  "end": "00:03:10"
 }, {
-  "id_sub": 18,
+  "id": "0e430d4f-400f-3cc3-c3b2-655cd3901989",
   "name": "bagelButter",
   "start": "00:03:01",
-  "end": "00:03:10",
-  "buffer": false
+  "end": "00:03:10"
 }, {
-  "id_sub": 22,
+  "id": "8c24a6bd-a833-3d6b-d81c-e41d50ba3550",
   "name": "bagelButter",
   "start": "00:04:32",
-  "end": "00:04:42",
-  "buffer": false
+  "end": "00:04:42"
 }, {
-  "id_sub": 22,
+  "id": "741be71b-2b08-23f6-c09e-892102da3702",
   "name": "coffee01",
   "start": "00:04:35",
-  "end": "00:04:42",
-  "buffer": false
+  "end": "00:04:42"
 }, {
-  "id_sub": 27,
+  "id": "e332d914-6467-7d7b-a476-bfec2b7a6fd5",
   "name": "brownBag",
   "start": "00:04:43",
-  "end": "00:05:13",
-  "buffer": false
+  "end": "00:05:13"
 }, {
-  "id_sub": 27,
+  "id": "2534627e-d044-769c-1b1d-93502bc3db6b",
   "name": "coffee01",
   "start": "00:04:43",
-  "end": "00:05:13",
-  "buffer": false
+  "end": "00:05:13"
 }, {
-  "id_sub": 34,
+  "id": "e60ecc05-4504-e77b-e9a6-1bad712aa5a0",
   "name": "coffee02",
   "start": "00:05:54",
-  "end": "00:06:04",
-  "buffer": false
+  "end": "00:06:04"
 }, {
-  "id_sub": 34,
+  "id": "c059fca5-b580-79dc-c575-e02349dd1d48",
   "name": "coffee02",
   "start": "00:05:55",
-  "end": "00:06:04",
-  "buffer": false
+  "end": "00:06:04"
 }, {
-  "id_sub": 40,
+  "id": "e2b1f4ba-8e83-2ccf-f3da-9c9a0e33813f",
   "name": "coffee01",
   "start": "00:06:33",
-  "end": "00:06:50",
-  "buffer": false
+  "end": "00:06:50"
 }, {
-  "id_sub": 44,
+  "id": "50172818-ee28-bb7c-baef-0ee60fc7d234",
   "name": "brownBag",
   "start": "00:07:00",
-  "end": "00:07:20",
-  "buffer": false
+  "end": "00:07:20"
 }, {
-  "id_sub": 44,
+  "id": "150de888-a6be-8786-374a-f1c3532f9b73",
   "name": "bagelButter",
   "start": "00:07:01",
-  "end": "00:07:20",
-  "buffer": false
+  "end": "00:07:20"
 }, {
-  "id_sub": 49,
+  "id": "78500b54-3979-92b7-c93c-0642c928900a",
   "name": "coffee02",
   "start": "00:07:32",
-  "end": "00:07:40",
-  "buffer": false
+  "end": "00:07:40"
 }, {
-  "id_sub": 50,
+  "id": "601bf424-79e9-a5f4-4863-761162a38620",
   "name": "hamTurkey",
   "start": "00:08:09",
-  "end": "00:08:25",
-  "buffer": false
+  "end": "00:08:25"
 }, {
-  "id_sub": 50,
+  "id": "4e872fd4-c4e2-103d-2f37-a4e55ea85625",
   "name": "oatmeal",
   "start": "00:08:12",
-  "end": "00:08:25",
-  "buffer": false
+  "end": "00:08:25"
 }];
 
 exports.default = models;
 
-},{}],11:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var subtitles = [{
-  "id": "3a2bdeaa-069b-191f-07f6-1ce6ac640250",
-  "first": "- Can I pay now? I just ordered. Bacon, egg and chesse croissant.",
-  "start": "00:00:12",
-  "end": "00:00:17"
-}, {
-  "id": "5397dc3c-914b-f62b-5d61-89347f3f325d",
-  "first": "- Thanks buddy.",
-  "start": "00:00:39",
-  "end": "00:00:41"
-}];
-
-exports.default = subtitles;
-
-},{}],12:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
+module.exports=[{"id":"3a2bdeaa-069b-191f-07f6-1ce6ac640250","first":"- Can I pay now? I just ordered. Bacon, egg and chesse croissant.","start":"00:00:12","end":"00:00:17"},{"id":"5397dc3c-914b-f62b-5d61-89347f3f325d","first":"- Thanks buddy.","start":"00:00:03","end":"00:00:05"},{"id":"edab291c-182d-36f0-94c8-13b2fecd5273","start":"00:00:15","end":"00:00:17","first":"- Sample Text"},{"id":"bbf92ca0-ce36-29d0-3c6d-278fa39242f9","start":"00:04:39","end":"00:04:41","first":"- Sample Text"},{"id":"04841ff5-34a3-99a1-cec3-80d17d9e5a4e","start":"00:03:57","end":"00:03:59","first":"- Sample Text"},{"id":"942db1bc-a517-c9a2-65da-8cd0216f533e","start":"00:00:07","end":"00:00:09","first":"- La raja esto","second":"- o no=?"}]
+},{}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.saveSubtitlesToFile = exports.updateSubtitles = exports.removeSubtitle = exports.clearSubtitlesQueue = exports.loadSubtitles = exports.initSubtitles = exports.subtitles = undefined;
+exports.loadSubtitlesFromFile = exports.saveSubtitlesToFile = exports.updateSubtitles = exports.removeSubtitle = exports.clearSubtitlesQueue = exports.loadSubtitles = exports.initSubtitles = exports.subtitles = undefined;
 
 var _utils = require('./utils/utils');
 
@@ -45130,14 +45238,16 @@ var subtitlesQueue = []; // ========
 // ========
 
 var subtitles = void 0;
+var subtitlesElt = void 0;
 
 // Init: this is just called by the editor
-var initSubtitles = function initSubtitles(_subtitles) {
+var initSubtitles = function initSubtitles(_subtitles, _subtitlesElt) {
   exports.subtitles = subtitles = _subtitles;
+  subtitlesElt = _subtitlesElt;
 };
 
 // Load the Subtitles in time
-var loadSubtitles = function loadSubtitles(subtitlesElt, currentTime) {
+var loadSubtitles = function loadSubtitles(currentTime) {
   subtitles.forEach(function (sub, i) {
     var start = (0, _utils.HHMMSStoSeconds)(sub.start);
     var end = (0, _utils.HHMMSStoSeconds)(sub.end);
@@ -45165,7 +45275,7 @@ var loadSubtitles = function loadSubtitles(subtitlesElt, currentTime) {
 };
 
 // Clear the queue of subtitles to render
-var clearSubtitlesQueue = function clearSubtitlesQueue(subtitlesElt) {
+var clearSubtitlesQueue = function clearSubtitlesQueue() {
   subtitlesQueue.forEach(function (sub) {
     clearTimeout(sub);
   });
@@ -45216,6 +45326,23 @@ var saveSubtitlesToFile = function saveSubtitlesToFile() {
   a.click();
 };
 
+// Load Subtitles from File
+var loadSubtitlesFromFile = function loadSubtitlesFromFile(callback) {
+  var fileSelector = document.createElement('input');
+  fileSelector.setAttribute('type', 'file');
+  fileSelector.click();
+  fileSelector.addEventListener('change', function () {
+    var file = fileSelector.files[0];
+    var reader = new FileReader();
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      exports.subtitles = subtitles = JSON.parse(reader.result);
+      callback();
+    };
+    reader.readAsText(file);
+  }, false);
+};
+
 exports.subtitles = subtitles;
 exports.initSubtitles = initSubtitles;
 exports.loadSubtitles = loadSubtitles;
@@ -45223,16 +45350,17 @@ exports.clearSubtitlesQueue = clearSubtitlesQueue;
 exports.removeSubtitle = removeSubtitle;
 exports.updateSubtitles = updateSubtitles;
 exports.saveSubtitlesToFile = saveSubtitlesToFile;
+exports.loadSubtitlesFromFile = loadSubtitlesFromFile;
 
-},{"./utils/utils":14}],13:[function(require,module,exports){
+},{"./utils/utils":19}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-/*
-Time manager
-*/
+// ========
+// Clock Manager (not the THREE or animation clock, just the one on top)
+// ========
 
 var currentTime = document.getElementById('current_time');
 
@@ -45247,7 +45375,7 @@ var updateClock = function updateClock() {
 
 exports.updateClock = updateClock;
 
-},{}],14:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 var _three = require('three');
@@ -45382,4 +45510,4 @@ module.exports = {
   UUIID: UUIID
 };
 
-},{"three":1}]},{},[7]);
+},{"three":1}]},{},[13]);

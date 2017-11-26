@@ -1,10 +1,10 @@
-/*
-Time manager
-*/
+// ========
+// Clock Manager (not the THREE or animation clock, just the one on top)
+// ========
 
-let currentTime = document.getElementById('current_time');
+const currentTime = document.getElementById('current_time');
 
-let updateClock = () =>  {
+const updateClock = () =>  {
   let time = new Date;
   let minutes = time.getMinutes();
   let seconds = time.getSeconds();
