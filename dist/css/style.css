@@ -61,12 +61,37 @@ button:hover {
     #title {
         font-size: 9vh;
     }
+    #titleCredits {
+        font-size: 3vh;
+    }
 }
 
 @media all and (min-width: 401px) {
     #title {
         font-size: 10vh;
     }
+    #titleCredits {
+        font-size: 5vh;
+    }
+}
+
+#intro {
+    transition: all 2s ease-in-out;
+    margin: 32vh 5vw;
+}
+
+#credits {
+    opacity: 0;
+    transition: all 2s ease-in-out;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    top: 9vh;
+    text-align: center;
+    width: 100%;
+    z-index: -10;
 }
 
 #overlay {
@@ -79,23 +104,21 @@ button:hover {
     width: 100%;
     height: 100%;
     z-index: 8;
+    transition: all 2s ease-in-out;
 }
 
 #cover {
     opacity: 0.9;
     position: absolute;
     z-index: 9;
-    padding: 32vh 5vw;
     height: 100%;
     width: 100%;
     text-align: left;
-    /* display: none; */
+    transition: all 1s ease-in-out;
     background: #000000;
     background: -webkit-linear-gradient(to left, #434343, #000000);
     background: linear-gradient(to left, #434343, #000000);
 }
-
-
 
 
 
@@ -109,19 +132,24 @@ button:hover {
     bottom: 30%;    
 } */
 
-#title {
+.title {
     font-family: 'benton-bold', 'Helvetica', Arial, sans-serif;
+}
+
+#title {
+    color: #c3c3c3;
+    text-shadow: #0c0c0c 10px 0px 50px;
 }
 
 #description {
     font-family: 'benton', 'Helvetica', Arial, sans-serif;
     color: #f7f7f7;
-    width: 40%;
+    width: 34%;
     font-size: 13px;
     line-height: 23px;
     z-index: 10;
     min-width: 300px;
-    max-width: 360px;
+    max-width: 310px;
 }
 
 #sound {
@@ -129,9 +157,6 @@ button:hover {
     opacity: 1;
     display: block;
 }
-
-
-
 
 
 
@@ -192,7 +217,9 @@ button:hover {
 }
 
 #current_time {
-    color: #8a8a8a;
+    color: #f5f2f2;
+    font-family: 'benton-bold', 'Helvetica', Arial, sans-serif;
+    text-align: right;
 }
 
 #watchBtnImage {
@@ -224,12 +251,14 @@ button:focus {
     font-size: 13px;
     margin: 3vh 10px 10px 0px;
     color: #fff9f9;
+    transition: all 1s ease-in-out;
     border: 1px solid white;
     background: rgba(226, 224, 224, 0);
 }
 
 .btn:hover {
     color: black;
+    opacity: 1;
 }
 
 #loader {
@@ -259,7 +288,6 @@ button:focus {
 }
 
 .runningSubtitles {
-    font-family: 'Helvetica', Arial, sans-serif;
     font-weight: lighter;
     max-width: 50vw;
     margin: auto;
@@ -268,11 +296,13 @@ button:focus {
     color: #d6d6d6;
     display: inline;
     padding: 3px 4px;
+    font-family: 'benton', 'Helvetica', Arial, sans-serif;
+    text-shadow: #545252 1px 1px 0px;
 }
 
 #time {
     position: absolute;
-    right: 5vh;
+    right: 2vh;
     top: 3vh;
     z-index: 9;
     text-align: center;
@@ -280,9 +310,7 @@ button:focus {
 }
 
 #currentBodega {
-    position: absolute;
-    right: 5vh;
-    z-index: 20;
+    z-index: 40;
     text-align: right;
     top: 12vh;
     color: #b9b9b9;
@@ -323,10 +351,10 @@ h6 {
     position: relative;
     z-index: 30;
     background: #2b2b2b;
-    border-bottom:1px solid #2b2b2b;
+    border-bottom: 1px solid #2b2b2b;
 }
 
-.audioBtn:hover{
+.audioBtn:hover {
     background: black;
     border-bottom: 1px solid #43aad4;
 }
@@ -384,7 +412,7 @@ wave {
     cursor: pointer;
 }
 
-#subtitleTooltip{
+#subtitleTooltip {
     position: absolute;
     z-index: 200;
     font-size: 11px;
@@ -394,7 +422,7 @@ wave {
     padding: 1px;
 }
 
-#modelTimeTooltip{
+#modelTimeTooltip {
     position: absolute;
     z-index: 200;
     font-size: 11px;
@@ -404,7 +432,7 @@ wave {
     padding: 1px;
 }
 
-#modelTooltip{
+#modelTooltip {
     position: absolute;
     z-index: 200;
     font-size: 11px;
@@ -414,7 +442,7 @@ wave {
     padding: 1px;
 }
 
-#subtitleTimeTooltip{
+#subtitleTimeTooltip {
     position: absolute;
     z-index: 200;
     font-size: 11px;
@@ -424,18 +452,18 @@ wave {
     padding: 1px;
 }
 
-#editor{
+#editor {
     background: #333333;
     position: absolute;
     z-index: 400;
 }
 
-#move{
+#move {
     cursor: move;
     z-index: 400;
 }
 
-#subtitlesTracks{
+#subtitlesTracks {
     height: 150px;
     width: 50%;
     background: #353535;
@@ -443,20 +471,20 @@ wave {
     overflow-y: scroll;
 }
 
-.subtitleTrack{
+.subtitleTrack {
     background: #564f4f;
     font-size: 12px;
     cursor: text;
     border: 0.4px solid #585858;
 }
 
-.subId{
+.subId {
     background: #478b94;
     padding: 2px;
     display: inline-block;
 }
 
-.subStart{
+.subStart {
     background: #2f2f2f;
     color: #43aad4;
     padding: 2px;
@@ -464,7 +492,7 @@ wave {
     margin: 0px 2px;
 }
 
-.subEnd{
+.subEnd {
     background: #2f2f2f;
     color: #43aad4;
     padding: 2px;
@@ -472,16 +500,92 @@ wave {
     margin: 0px 2px;
 }
 
-.subFirst{
+.subFirst {
     background: #6b6b6b;
     padding: 2px;
     margin: 0px 2px;
     display: inline-block;
 }
 
-.subSecond{
+.subSecond {
     background: #828282;
     padding: 2px;
     display: inline-block;
     margin: 0px 2px;
+}
+
+.credit {
+    font-size: 12px;
+    margin: 0px 0px 5vh 0px;
+    width: 100%;
+}
+
+.credit div {}
+
+.leftcredit {
+    width: 47%;
+    display: inline;
+    float: left;
+    text-align: right;
+}
+
+.leftcredit p {
+    font-family: 'benton-bold', 'Helvetica', Arial, sans-serif;
+}
+
+.rightcredit p {
+    width: 50%;
+    display: inline-block;
+}
+
+.rightcredit {
+    text-align: left;
+    width: 40%;
+    text-align: left;
+    padding: 0px 0px 0px 10px;
+}
+
+.rightcredit a {
+    text-decoration: none;
+    display: inherit;
+}
+
+#itplogo img {
+    width: 6vw;
+    margin: 2vw 0px 0px 0px;
+}
+
+#titleCredits {
+    margin: 0px 0px 2rem 0px;
+}
+
+#buttonBack {
+    z-index: 99;
+    position: absolute;
+    bottom: 1em;
+    right: 1em;
+    opacity: 0.2;
+}
+
+#buttonBack:hover {
+    opacity: 1;
+    transition: all 2s ease-in-out;
+}
+
+#miniTitle {
+    position: absolute;
+    bottom: 2em;
+    z-index: 99;
+    left: 2em;
+}
+
+h5{
+    font-family: 'benton-bold', 'Helvetica', Arial, sans-serif;
+    color: #888888;
+    font-size: 1.1rem;
+}
+
+#miniTitle p {
+    color: #585656;
+    font-size: 0.8rem;
 }

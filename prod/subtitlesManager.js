@@ -23,18 +23,14 @@ const loadSubtitles = currentTime => {
       start = start - currentTime;
       end = end - currentTime;
       subtitlesQueue.push(setTimeout(() => {
-        subtitlesElt.children[0].style.background = '#1d1d1d';
         subtitlesElt.children[0].innerText = sub.first;
         if (sub.second != undefined && sub.second != 'undefined') {
-          subtitlesElt.children[2].style.background = '#1d1d1d';
           subtitlesElt.children[2].innerText = sub.second;
         }
       }, start * 1000));
       subtitlesQueue.push(setTimeout(() => {
-        subtitlesElt.children[0].style.background = '#000000';
         subtitlesElt.children[0].innerText = '';
         if (sub.second != undefined && sub.second != 'undefined') {
-          subtitlesElt.children[2].style.background = '#000000';
           subtitlesElt.children[2].innerText = '';
         }
       }, end * 1000));

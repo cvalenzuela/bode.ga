@@ -14,12 +14,56 @@
 <body id="body">
   <div id="overlay"></div>
   <div id="cover">
-    <h1 id="title">BODEGA</h1>
-    <p id="description">An experimental documentary that follows a bodega in Queens for 24 hours. Based on your location you will be paired with a particular bodega. Each bodega is represented by a looping 24-hour audio recording that was taken at the same time of day.
-      <br>
-    </p>
-    <button id="watchBtn" class="btn">Watch</button>
-    <button id="creditsBtn" class="btn">Credits</button>
+    <div id="intro">
+      <h1 id="title" class="title">BODEGA</h1>
+      <p id="description">A 24-hour web documentary that captures the everyday interactions and transactions of a small bodega in Queens, NY.
+        <br>
+      </p>
+      <button id="watchBtn" class="btn">Watch</button>
+      <button id="creditsBtn" class="btn">Credits</button>
+    </div>
+    <div id="credits">
+      <h1 id="titleCredits" class="title">BODEGA</h1>
+
+      <div id="madeby" class="credit">
+        <div class="leftcredit">
+          <p class="">Made by</p>
+        </div>
+        <div class="rightcredit">
+          <a href="https://www.jlimetc.com/">Jenny Lim</a>
+          <a href="http://cvalenzuelab.com/">Cristóbal Valenzuela</a>
+          <a href="http://www.electricsleep.net/">Scott Reitherman</a>
+        </div>
+      </div>
+
+      <div id="bodegaOwner" class="credit">
+        <div class="leftcredit">
+          <p class="">Bodega</p>
+        </div>
+        <div class="rightcredit">
+          <a href="https://www.yelp.com/biz/lic-deli-and-grocery-long-island-city">Lic Deli & Grocery</a>
+          <a href="#">2901 39th Ave <br>
+              Long Island City, NY 11101 <br>
+              Long Island City</a>
+        </div>
+      </div>
+
+      <div id="itplogo" class="credit">
+        <p>Made at</p>
+        <a href="https://tisch.nyu.edu/itp">
+          <img src="dist/images/itplogo.png" alt="" srcset="dist/images/itplogo.png">
+        </a>
+      </div>
+
+      <div>
+        <button id="fromCreditsHomeBtn" class="btn">Back</button>
+      </div>
+
+      <!-- <div id="year" class="credit">
+        2017
+      </div> -->
+
+    </div>
   </div>
 
   <div id="loader">
@@ -31,16 +75,23 @@
   <div id="app">
     <div id="time">
       <h1 id="current_time"></h1>
+      <p id="currentBodega">Lic Deli & Grocery, Long Island City, NY.</p>
     </div>
-
-    <div id="moviedescription">
-      <p id="currentBodega">Bodega in Long Island City, Queens</p>
-    </div>
+    
 
     <div class="subtitles" id="subtitles">
       <h4 class="runningSubtitles"></h4>
       <br>
       <h4 class="runningSubtitles"></h4>
+    </div>
+
+    <div id="miniTitle">
+      <h5>BODEGA</h5>
+      <p>A 24-hour web documentary</p>
+    </div>
+
+    <div id="buttonBack">
+      <button id="backHomeBtn" class="btn">Home</button>
     </div>
   </div>
 
@@ -69,7 +120,6 @@
 
   </div>
   <!-- timeline -->
-
   <script src="dist/bundle.js"></script>
 </body>
 
