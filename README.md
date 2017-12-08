@@ -1,9 +1,19 @@
-# bo.dega.nyc
+# BODEGA
 
-An experimental documentary that follows a series of bodegas around NYC. Based on your location you will be paired with a particular bodega. Each bodega is represented by a looping 24-hour audio recording that was taken at the same time of day.
+A 24-hour web documentary that captures the everyday interactions and transactions of a small bodega in Queens, NY.
 
-Live: [bo.dega.nyc](http://bo.dega.nyc)
+![demo](images/front.png)
 
-Models: [Models](http://bo.dega.nyc/models.html)
+## Watch it
+
+[bo.dega.nyc](http://bo.dega.nyc)
+
+
+## Models
+
+View the models [here](http://bo.dega.nyc/models.html).
+
+
+## Credits
 
 Made by Jenny Lim, Scott Reitherman and Cristóbal Valenzuela
