@@ -3,9 +3,10 @@
 // ========
 
 import * as THREE from 'three';
+import TWEEN from '@tweenjs/tween.js';
 import * as utils from './utils/utils';
 import { initSubtitles, loadSubtitles } from './subtitlesManager';
-import { startAudio } from './audioManger';
+import { startAudio, audio } from './audioManger';
 import { updateClock } from './timeManager';
 import { initModels, loadModels, currentModels } from './modelManager';
 import { initEditMode } from './editor';
@@ -72,6 +73,16 @@ let render = () => {
 
 // Animate Loop
 let animate = () => {
+  TWEEN.update();
+  
+  if (audio) {
+    if (!audio.isPlaying) {
+      audio.play();
+      loadSubtitles(0);
+      loadModels(0);
+    }
+  }
+
   let current = 1;
   let total = Object.keys(currentModels).length;
   // Rotate the objects

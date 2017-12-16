@@ -20,6 +20,7 @@
     "watchify": "3.9.0"
   },
   "dependencies": {
+    "@tweenjs/tween.js": "17.1.1",
     "moment": "2.18.1",
     "three": "0.87.1",
     "wavesurfer.js": "2.0.0-beta02"

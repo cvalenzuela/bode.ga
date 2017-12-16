@@ -3,11 +3,13 @@
 // ========
 
 import * as THREE from 'three';
+import TWEEN from '@tweenjs/tween.js';
 import { HHMMSStoSeconds } from './utils/utils';
 
 let currentModels = {};
 let modelsQueue = [];
 let scene, models;
+const MODELS = [];
 
 // Init the Meshes
 const initModels = (_scene, _models) => { 
@@ -77,6 +79,9 @@ const addModel = model => {
       let material = new THREE.MeshBasicMaterial();
       let mesh = new THREE.Mesh(geometry, material);
       material.map = new THREE.TextureLoader().load('dist/models/' + model.name + '/' + model.name + '.jpg');
+      material.transparent = true;
+      material.opacity = 0.1;
+      new TWEEN.Tween(material).to({opacity: 1}, 15000).easing(TWEEN.Easing.Exponential.Out).start()
       currentModels[model.id] = mesh;
       scene.add(mesh);
     },

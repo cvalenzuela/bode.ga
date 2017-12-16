@@ -5,7 +5,7 @@
 import init from './animationManager';
 
 // OPTIONS
-import models from './models/jenny';
+import models from './models/final';
 import subtitles from './subtitles/final';
 const audioSrc = 'dist/sounds/licdeli.mp3';
 const editMode = false;

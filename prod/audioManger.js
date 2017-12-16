@@ -6,7 +6,7 @@ import * as THREE from 'three';
 
 let audioListener, audio, loader;
 
-let startAudio = (camera, audioSrc, callback) =>  {
+const startAudio = (camera, audioSrc, callback) =>  {
   // Create the Audio Listener
   audioListener = new THREE.AudioListener();
   audio = new THREE.Audio(audioListener);
@@ -15,12 +15,12 @@ let startAudio = (camera, audioSrc, callback) =>  {
   // Add the Audio Listener to the camera
   camera.add(audioListener);
 
-  let onProgress = xhr => {
+  const onProgress = xhr => {
     console.log(`Loading sound: ${xhr.loaded / xhr.total * 100} % loaded`);
   };
-  let onError = err => {
+  const onError = err => {
     console.log(`An error happened ${err}`);
-  }
+  };
   // Load the audio src
   loader.load(audioSrc, audioBuffer => {
     audio.setBuffer(audioBuffer);
@@ -30,4 +30,4 @@ let startAudio = (camera, audioSrc, callback) =>  {
 
 };
 
-export { startAudio };
+export { startAudio, audio };

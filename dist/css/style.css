@@ -144,12 +144,10 @@ button:hover {
 #description {
     font-family: 'benton', 'Helvetica', Arial, sans-serif;
     color: #f7f7f7;
-    width: 34%;
-    font-size: 13px;
-    line-height: 23px;
+    font-size: 1.3vw;
     z-index: 10;
     min-width: 300px;
-    max-width: 310px;
+    max-width: 25vw;
 }
 
 #sound {
@@ -289,15 +287,11 @@ button:focus {
 
 .runningSubtitles {
     font-weight: lighter;
-    max-width: 50vw;
-    margin: auto;
-    line-height: 30px;
-    background: #000000;
-    color: #d6d6d6;
+    color: #e6d7d7;
     display: inline;
-    padding: 3px 4px;
     font-family: 'benton', 'Helvetica', Arial, sans-serif;
     text-shadow: #545252 1px 1px 0px;
+    font-size: 1.6vw;
 }
 
 #time {
@@ -314,6 +308,7 @@ button:focus {
     text-align: right;
     top: 12vh;
     color: #b9b9b9;
+    font-size: 1.2vw;
 }
 
 .useroptions {
@@ -582,10 +577,10 @@ wave {
 h5{
     font-family: 'benton-bold', 'Helvetica', Arial, sans-serif;
     color: #888888;
-    font-size: 1.1rem;
+    font-size: 1.8vw;
 }
 
 #miniTitle p {
     color: #585656;
-    font-size: 0.8rem;
+    font-size: 1vw;
 }
