@@ -67,6 +67,7 @@ button:hover {
     padding: 0vh 3vw;
     height: 100%;
     text-align: center;
+    width: 100%;
     /* display: none; */
 }
 
